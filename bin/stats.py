@@ -16,7 +16,7 @@ YEAR = 2022
 
 random.seed(YEAR)
 fake = faker.Faker()
-faker.Faker.seed(YEAR)
+fake.seed(YEAR)
 with contextlib.closing(sqlite3.connect(DATABASE)) as db:
     with open(SCHEMA) as f:
         db.executescript(f.read())
