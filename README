@@ -1,0 +1,62 @@
+Project 3 team members:
+- Anitha Chockalingam
+- Michael Dang
+- Quentin May
+- Kevin Sierras
+
+NOTE: the .sql files are not used but kept for learning purposes
+
+Initialize the Answers.db and WordList.db databases:
+    - WordList.db contains the valid five-letter words
+    - Answers.db contains the answers and their word_id
+- run:  bin/init.sh
+
+Install traefik in the root folder of project
+
+Initialize stats.db database:
+- create a database with 1 million stats and 100k users
+- run: python3 bin/stats.py
+- NOTE: this will create a ./var/stats.db file which the program uses, 
+    if you have a ./var/sqlite3-populated.db file, please change it to ./var/stats.db
+    The program won't work without ./var/stats.db
+Shard the database into 1 users and 3 games shards with uuid as PRIMARY KEY:
+- run: python3 bin/shard.py
+Start traefik reverse proxy/load balancing:
+- run: ./traefik --configFile=traefik.toml
+Run the Procfile with 3 users stats service, 1 check and 1 validate service:
+- run: foreman start -m 'stats=3,check=1,validate=1'
+
+The services and their documentation are located at the following addresses:
+- stats: localhost:9000/api/v1/
+- check: localhost:9100/api/v1/
+- validate: localhost:9200/api/v1/
+
+Using the API
+- The best way to see how the API works is with the automatic documentation provided by FastAPI
+- Navigate to the microservice using the link provided by foreman in a browser
+- add '/docs' after the link in browser 
+- The available functions are listed along with the required parameters 
+- You can enter some values to see what gets returned for each function
+
+  
+There are 2 microservices:
+WordValidation
+- Validate a word against a database of valid words
+- Add a valid word to database
+- Remove a word from database of valid words
+
+WordCheck
+- Check a word against the answer
+- Change the answer of a game
+
+Project 3:
+New microservice added:
+Stats
+- Posts a win or loss for a particular game along with timestamp and number of guesses
+- Retrieving the statistics for a user
+- Retrieving top 10 users by number of wins
+- Retrieving top 10 users by longest streak
+
+
+
+

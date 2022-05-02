@@ -1,0 +1,62 @@
+[http]
+  [http.middlewares]
+
+    [http.middlewares.api-stripprefix.stripPrefix]
+      prefixes = ["/api/v1"]
+
+  [http.routers]
+
+    [http.routers.app-stats]
+      entryPoints = ["stats"]
+      service = "app-stats"
+      rule = "PathPrefix(`/api/v1`)"
+      middlewares = ["api-stripprefix"]
+
+    [http.routers.dash]
+      entryPoints = ["traefik"]
+      rule = "PathPrefix(`/dashboard`)"
+      service = "api@internal"
+      middlewares = ["api-stripprefix"]
+    
+    [http.routers.app-wordCheck]
+      entryPoints = ["wordCheck"]
+      service = "app-wordCheck"
+      rule = "PathPrefix(`/api/v1`)"
+      middlewares = ["api-stripprefix"]
+
+    [http.routers.app-wordValidate]
+      entryPoints = ["wordValidate"]
+      service = "app-wordValidate"
+      rule = "PathPrefix(`/api/v1`)"
+      middlewares = ["api-stripprefix"]
+
+    [http.routers.app-play]
+      entryPoints = ["play"]
+      service = "app-play"
+      rule = "PathPrefix(`/api/v1`)"
+      middlewares = ["api-stripprefix"]
+
+  [http.services]
+
+    [http.services.app]
+      [http.services.app-stats.loadBalancer]
+        [[http.services.app-stats.loadBalancer.servers]]
+          url = "http://127.0.0.1:5000"
+        [[http.services.app-stats.loadBalancer.servers]]
+          url = "http://127.0.0.1:5001"
+        [[http.services.app-stats.loadBalancer.servers]]
+          url = "http://127.0.0.1:5002"
+    [http.services.app-wordCheck]
+      [http.services.app-wordCheck.loadBalancer]
+        [[http.services.app-wordCheck.loadBalancer.servers]]
+          url = "http://127.0.0.1:5100"
+    
+    [http.services.app-play]
+      [http.services.app-play.loadBalancer]
+        [[http.services.app-play.loadBalancer.servers]]
+          url = "http://127.0.0.1:5300"
+
+    
+    
+        
+

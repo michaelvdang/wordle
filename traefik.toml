@@ -1,0 +1,24 @@
+[entryPoints]
+  [entryPoints.traefik]
+    address = ":9999"
+  [entryPoints.stats]
+    address = ":9000"
+  [entryPoints.wordCheck]
+    address = ":9100"
+  [entryPoints.wordValidate]
+    address = ":9200"
+    [entryPoints.play]
+    address = ":9300"
+
+[providers]
+  [providers.file]
+    filename = "routes.toml"
+
+[api]
+  # Dashboard
+  #
+  # Optional
+  # Default: true
+  #
+  dashboard = true
+  insecure = true

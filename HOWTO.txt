@@ -1,0 +1,17 @@
+To start redis server
+- redis-server
+
+- redis-cli
+- redis-cli -n {DB number}
+- redis-cli ping
+View process number
+- pgrep redis-server
+
+Run redis in background
+- redis-server --daemonize yes
+or
+- brew services start redis
+- brew services stop redis
+stop redis server if it's running in background and we can't stop it
+- pkill redis-server
+
