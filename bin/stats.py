@@ -10,8 +10,8 @@ import faker
 DATABASE = './var/stats.db'
 SCHEMA = './share/stats.sql'
 
-NUM_STATS = 1_000_000
-NUM_USERS = 100_000
+NUM_STATS = 1_000
+NUM_USERS = 100
 YEAR = 2022
 
 random.seed(YEAR)
