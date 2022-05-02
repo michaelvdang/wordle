@@ -7,7 +7,7 @@
     address = ":9100"
   [entryPoints.wordValidate]
     address = ":9200"
-    [entryPoints.play]
+  [entryPoints.play]
     address = ":9300"
 
 [providers]

@@ -50,7 +50,11 @@
       [http.services.app-wordCheck.loadBalancer]
         [[http.services.app-wordCheck.loadBalancer.servers]]
           url = "http://127.0.0.1:5100"
-    
+    [http.services.app-wordValidate]
+      [http.services.app-wordValidate.loadBalancer]
+        [[http.services.app-wordValidate.loadBalancer.servers]]
+          url = "http://127.0.0.1:5200"
+
     [http.services.app-play]
       [http.services.app-play.loadBalancer]
         [[http.services.app-play.loadBalancer.servers]]
