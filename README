@@ -24,12 +24,13 @@ Shard the database into 1 users and 3 games shards with uuid as PRIMARY KEY:
 Start traefik reverse proxy/load balancing:
 - run: ./traefik --configFile=traefik.toml
 Run the Procfile with 3 users stats service, 1 check and 1 validate service:
-- run: foreman start -m 'stats=3,check=1,validate=1'
+- run: foreman start -m 'stats=3,check=1,validate=1,play=1'
 
 The services and their documentation are located at the following addresses:
 - stats: localhost:9000/api/v1/
 - check: localhost:9100/api/v1/
 - validate: localhost:9200/api/v1/
+- play: localhost:9300/api/v1/
 
 Using the API
 - The best way to see how the API works is with the automatic documentation provided by FastAPI
