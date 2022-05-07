@@ -4,13 +4,15 @@ from fastapi import FastAPI, Depends
 import contextlib
 import sqlite3
 import redis
+import os
+from datetime import datetime
 
 r = redis.Redis()
 
-GAME1_DB = './var/game1.db'
-GAME2_DB = './var/game2.db'
-GAME3_DB = './var/game3.db'
-
+GAME1_DB = os.path.join(os.path.dirname(__file__),'./../var/game1.db')
+GAME2_DB = os.path.join(os.path.dirname(__file__),'./../var/game2.db')
+GAME3_DB = os.path.join(os.path.dirname(__file__),'./../var/game3.db')
+print(datetime.now())
 
 with contextlib.closing(sqlite3.connect(GAME1_DB)) as g1:
   with contextlib.closing(sqlite3.connect(GAME2_DB)) as g2:
