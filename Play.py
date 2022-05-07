@@ -1,3 +1,5 @@
+# create, update and retrieve games from users
+
 from logging.handlers import WatchedFileHandler
 from fastapi import FastAPI, Depends
 import random
@@ -36,7 +38,9 @@ def update_game(user_id: int, game_id: int, guess: str, r: redis.Redis = Depends
         pipe.lset(key, 0, guesses_remain - 1)
         pipe.rpush(key, guess)
         pipe.execute()
-      return "Updated game successfully"
+        return "Updated game successfully"
+      else:
+        return "ERROR: guesses limit reached"
     except redis.WatchError:
       return "ERROR: someone tried guessing at the same time"
 
@@ -50,8 +54,9 @@ def restore_game(user_id: int, game_id: int, r: redis.Redis = Depends(get_db)):
       pipe.watch(key)
       guesses_remain = int(r.lindex(key, 0))
       game['guesses_remain'] = guesses_remain
-      for i in range(1, guesses_remain + 1):
+      for i in range(1, 7):
         game['guesses' + str(i)] = r.lindex(key, i)
+      # for i in range()
       return game
     except redis.WatchError:
       return "ERROR: someone tried playing this game at the same time"

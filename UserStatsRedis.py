@@ -1,3 +1,5 @@
+# top 30 winners and streaks are stored in Redis
+
 from fastapi import FastAPI, Depends
 import contextlib
 import datetime

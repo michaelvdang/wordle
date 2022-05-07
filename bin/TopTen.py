@@ -1,3 +1,5 @@
+# stores top ten wins and streaks of each shard in Redis
+
 from fastapi import FastAPI, Depends
 import contextlib
 import sqlite3
@@ -18,7 +20,7 @@ with contextlib.closing(sqlite3.connect(GAME1_DB)) as g1:
         streaks = g.execute("SELECT * FROM streaks ORDER BY streak DESC LIMIT 10").fetchall()
         with r.pipeline() as pipe:
           for s in streaks:
-            pipe.zadd('top_streaks', {s[0]: s[1]}, nx = True)
+            pipe.zadd('top_streaks', {s[0]: s[1]})
             # print(s[0], s[1])
           pipe.execute()
       
@@ -26,7 +28,7 @@ with contextlib.closing(sqlite3.connect(GAME1_DB)) as g1:
         wins = g.execute('SELECT * FROM wins LIMIT 10').fetchall()
         with r.pipeline() as pipe:
           for w in wins:
-            pipe.zadd('top_wins', {w[0] : w[1]}, nx=True)
+            pipe.zadd('top_wins', {w[0] : w[1]})
           pipe.execute()
 
 

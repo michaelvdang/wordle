@@ -1,3 +1,44 @@
+Project 4 team members:
+- Anitha Chockalingam
+- Michael Dang
+- Quentin May
+- Kevin Sierras
+
+NOTE: the .sql files are not used but kept for learning purposes
+
+Initialize the databases:
+- run:  bin/init.sh
+- What previous line did:
+    Initialize the Answers.db and WordList.db databases:
+        - WordList.db contains the valid five-letter words
+        - Answers.db contains the answers and their word_id
+
+
+    Initialize stats.db database:
+    - create a database with 1 million stats and 100k users
+    - run: python3 bin/stats.py
+    - NOTE: this will create a ./var/stats.db file which the program uses, 
+        if you have a ./var/sqlite3-populated.db file, please change it to ./var/stats.db
+        The program won't work without ./var/stats.db
+    Shard the database into 1 users and 3 games shards with uuid as PRIMARY KEY:
+    - run: python3 bin/shard.py
+
+
+Install traefik in the root folder of project
+Start traefik reverse proxy/load balancing:
+- run: ./traefik --configFile=traefik.toml
+Run the Procfile with 3 users stats service, 1 check and 1 validate service:
+- run: foreman start -m 'stats=3,check=1,validate=1,play=1'
+
+Add a cronjob to update Redis every 10 minutes:
+- run: crontab -e
+- Enter: '*/10 * * * * /usr/bin/python3 /{path to project folder}/bin/TopTen.py'
+- Save and quit editor
+
+
+
+
+
 Project 3 team members:
 - Anitha Chockalingam
 - Michael Dang
@@ -6,10 +47,11 @@ Project 3 team members:
 
 NOTE: the .sql files are not used but kept for learning purposes
 
+- run:  bin/init.sh
+
 Initialize the Answers.db and WordList.db databases:
     - WordList.db contains the valid five-letter words
     - Answers.db contains the answers and their word_id
-- run:  bin/init.sh
 
 Install traefik in the root folder of project
 
@@ -21,6 +63,8 @@ Initialize stats.db database:
     The program won't work without ./var/stats.db
 Shard the database into 1 users and 3 games shards with uuid as PRIMARY KEY:
 - run: python3 bin/shard.py
+
+
 Start traefik reverse proxy/load balancing:
 - run: ./traefik --configFile=traefik.toml
 Run the Procfile with 3 users stats service, 1 check and 1 validate service:
