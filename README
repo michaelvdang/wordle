@@ -6,8 +6,8 @@ Project 4 team members:
 
 NOTE: the .sql files are not used but kept for learning purposes
 
-Initialize the databases:
-- run:  bin/init.sh
+Initialize the databases: (adjust num of stats and users in stats.py for speed)
+- run: bin/init.sh
 - What previous line did:
     Initialize the Answers.db and WordList.db databases:
         - WordList.db contains the valid five-letter words
@@ -32,8 +32,7 @@ Run the Procfile with 3 users stats service, 1 check and 1 validate service:
 
 Add a cronjob to update Redis every 10 minutes:
 - run: crontab -e
-- Enter: '*/10 * * * * /usr/bin/python3 /{path to project folder}/bin/TopTen.py'
-- '*/10 * * * *  /usr/bin/python3 /{path to project folder}/bin/TopTen.py >> /home/student/cpsc449/PythonProject/Project4/cron.log 2>&1'
+- Enter: '*/10 * * * *  /usr/bin/python3 /{path to project folder}/bin/TopTen.py >> /{Path to project folder}/cron.log 2>&1'
 - Save and quit editor
 
 

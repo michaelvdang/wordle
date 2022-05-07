@@ -1,3 +1,4 @@
+# a service that stores game state in SQLite
 from fastapi import FastAPI, Depends 
 import contextlib
 import uuid

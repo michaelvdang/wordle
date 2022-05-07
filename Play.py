@@ -1,3 +1,4 @@
+# service which stores game state in Redis
 # create, update and retrieve games from users
 
 from logging.handlers import WatchedFileHandler

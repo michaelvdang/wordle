@@ -1,3 +1,4 @@
+# deprecated with UserStatsRedis.py
 # top winners and streaks are stored in SQLite
 from fastapi import FastAPI, Depends
 import contextlib
