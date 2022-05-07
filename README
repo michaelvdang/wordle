@@ -32,7 +32,7 @@ Run the Procfile with 3 users stats service, 1 check and 1 validate service:
 
 Add a cronjob to update Redis every 10 minutes:
 - run: crontab -e
-- Enter: '*/10 * * * * /usr/bin/python3 /{path to project folder}/bin/TopTen.py'
+- Enter: '*/10 * * * *  /usr/bin/python3 /home/student/cpsc449/PythonProject/Project4/cml.py >> /home/student/cpsc449/PythonProject/Project4/cron.log 2>&1'
 - Save and quit editor
 
 
