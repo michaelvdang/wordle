@@ -25,10 +25,9 @@ Initialize the databases: (adjust num of stats and users in stats.py for speed)
 
 
 Install traefik in the root folder of project
-Start traefik reverse proxy/load balancing:
-- run: ./traefik --configFile=traefik.toml
-Run the Procfile with 3 users stats service, 1 check and 1 validate service:
-- run: foreman start -m 'stats=3,check=1,validate=1,play=1'
+Run the Procfile with services and start traefik reverse proxy/load balancing:
+- run: foreman start -m 'stats=3,check=1,validate=1,play=1,traefik=1'
+
 
 Add a cronjob to update Redis every 10 minutes:
 - run: crontab -e
