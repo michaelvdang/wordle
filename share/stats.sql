@@ -10,6 +10,8 @@ CREATE TABLE users(
     username VARCHAR UNIQUE
 );
 
+CREATE INDEX username ON users(username);
+
 CREATE TABLE games(
     user_id INTEGER NOT NULL,
     game_id INTEGER NOT NULL,

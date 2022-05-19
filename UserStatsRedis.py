@@ -75,10 +75,11 @@ def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connectio
             """,
             [str(guid), user_id, game_id, finished, guesses, won]
         )
+        gamedb[int(guid) % 3].commit()
+        return {'Success' : 'Game recorded'}
 
     except sqlite3.IntegrityError:
         return 'Integrity error, there is another game with this game_id'
-    gamedb[int(guid) % 3].commit()
 
 
 @app.get('/stats/top-winners')
@@ -136,3 +137,11 @@ def getUserStats(userID: int, udb: sqlite3.Connection = Depends(get_db), g1: sql
         guesses.update({row[0]: row[1]})
     data_json.update({"guesses": guesses})
     return data_json
+
+@app.get('/stats')
+def get_user_id(user_name: str, udb: sqlite3.Connection = Depends(get_db)):
+    row = udb.execute('SELECT * FROM users WHERE username=?', [user_name])
+    try:
+        return row.fetchone()[0]
+    except TypeError:
+        return -1

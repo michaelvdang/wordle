@@ -36,6 +36,12 @@
       rule = "PathPrefix(`/api/v1`)"
       middlewares = ["api-stripprefix"]
 
+    [http.routers.app-orchestrator]
+      entryPoints = ["orchestrator"]
+      service = "app-orchestrator"
+      rule = "PathPrefix(`/api/v1`)"
+      middlewares = ["api-stripprefix"]
+
   [http.services]
 
     [http.services.app]
@@ -60,6 +66,10 @@
         [[http.services.app-play.loadBalancer.servers]]
           url = "http://127.0.0.1:5300"
 
+    [http.services.app-orchestrator]
+      [http.services.app-orchestrator.loadBalancer]
+        [[http.services.app-orchestrator.loadBalancer.servers]]
+          url = "http://127.0.0.1:5400"
     
     
         

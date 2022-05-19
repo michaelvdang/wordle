@@ -9,6 +9,8 @@
     address = ":9200"
   [entryPoints.play]
     address = ":9300"
+  [entryPoints.orchestrator]
+    address = ":9400"
 
 [providers]
   [providers.file]

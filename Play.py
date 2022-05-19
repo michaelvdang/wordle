@@ -1,7 +1,7 @@
 # service which stores game state in Redis
 # create, update and retrieve games from users
 
-from logging.handlers import WatchedFileHandler
+# from logging.handlers import WatchedFileHandler
 from fastapi import FastAPI, Depends
 import random
 import redis
@@ -11,8 +11,12 @@ def get_db():
 
 app = FastAPI()
 
+@app.get('/')
+def get_test():
+  return {'Page': 'Service working'}
+
 @app.post('/play')
-def play_new_game(user_id: int, game_id: int, r: redis.Redis = Depends(get_db)):
+def play_new_game(user_id: str, game_id: int, r: redis.Redis = Depends(get_db)):
   key = f"{user_id}:{game_id}"
   with r.pipeline() as pipe:
     try:
@@ -22,12 +26,12 @@ def play_new_game(user_id: int, game_id: int, r: redis.Redis = Depends(get_db)):
         return "ERROR: this game already exists"
       r.rpush(key, 6)
       pipe.unwatch()
-      return "Started new game"
+      return {'game': r.lrange(key, 0, -1)}
     except redis.WatchError:
       return "ERROR: someone has just started the same game on this account?"
   
 @app.put('/play')
-def update_game(user_id: int, game_id: int, guess: str, r: redis.Redis = Depends(get_db)):
+def update_game(user_id: str, game_id: int, guess: str, r: redis.Redis = Depends(get_db)):
   key = f"{user_id}:{game_id}"
 
   with r.pipeline() as pipe:
@@ -39,14 +43,17 @@ def update_game(user_id: int, game_id: int, guess: str, r: redis.Redis = Depends
         pipe.lset(key, 0, guesses_remain - 1)
         pipe.rpush(key, guess)
         pipe.execute()
-        return "Updated game successfully"
+        return {'game' : r.lrange(key, 0, -1)}
+        # return "Updated game successfully"
       else:
-        return "ERROR: guesses limit reached"
+        return {'game' : {}, 'error': 'guesses limit reached'}
+        # return "ERROR: guesses limit reached"
     except redis.WatchError:
-      return "ERROR: someone tried guessing at the same time"
+      return {'game' : {}, 'error': 'someone tried guessing at the same time'}
+      # return "ERROR: someone tried guessing at the same time"
 
 @app.get('/play')
-def restore_game(user_id: int, game_id: int, r: redis.Redis = Depends(get_db)):
+def restore_game(user_id: str, game_id: int, r: redis.Redis = Depends(get_db)):
   key = f"{user_id}:{game_id}"
   game = {}
 

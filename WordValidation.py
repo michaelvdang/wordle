@@ -7,9 +7,11 @@ def isValid(word: str):
     connection = sqlite3.connect("./var/WordList.db",timeout=10)
     cursor = connection.cursor()
     if cursor.execute("SELECT 1 FROM ValidWords WHERE word = (?)",[word]).fetchone():
+        return {'is_valid_word': True}
         return {"Word found":word}
     else:
-       return {"Word not found" : word}
+        return {'is_valid_word': False}
+        return {"Word not found" : word}
 
 @app.post("/word/{word}")
 def addword(word: str):

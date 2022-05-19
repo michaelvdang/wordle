@@ -4,6 +4,7 @@ import contextlib
 
 from fastapi import FastAPI, Body, Depends
 from pydantic import BaseModel, BaseSettings
+from models import Game
 
 
 class Settings(BaseSettings):
@@ -11,12 +12,6 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".envWordCheck"
-
-
-class Game(BaseModel):
-    game_id: int
-    word_id: int
-    guess: str
 
 
 def get_db():
@@ -42,11 +37,11 @@ def checkAnswer(game: Game, db: sqlite3.Connection = Depends(get_db)):
     results = []
     for i in range(len(guess)):
         if guess[i] == answer[i]:
-            results.append('G')
+            results.append(2)
         elif guess[i] in answer:
-            results.append('Y')
+            results.append(1)
         else:
-            results.append('N')
+            results.append(0)
     return results
 
 
@@ -58,3 +53,8 @@ def changeAnswer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(g
     row = db.execute(
         "SELECT * FROM Answers WHERE word_id = ? LIMIT 1", [word_id]).fetchone()
     return f'new word for id {word_id} is {row[1]}'
+
+@app.get("/answers/count")
+def get_answers_count(db: sqlite3.Connection = Depends(get_db)):
+    row = db.execute('SELECT count(*) FROM Answers').fetchone()
+    return {'count': row[0]}

@@ -6,6 +6,8 @@ Project 4 team members:
 
 NOTE: the .sql files are not used but kept for learning purposes
 
+Install Redis if you haven't done it, the Play service requires it
+
 Initialize the databases: (adjust num of stats and users in stats.py for speed)
 - run: bin/init.sh
 - What previous line did:
