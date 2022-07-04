@@ -13,64 +13,65 @@ def test():
 
 @app.post('/game/new', status_code=201)
 def start_new_game(user_name: str):# = Body()):
-    # # find user_id
-    # user = httpx.get('http://localhost:9000/api/v1/stats?user_name=' + user_name)
-    # user_id = user.json()
+    # find user_id
+    user = httpx.get('http://localhost:9000/api/v1/stats?user_name=' + user_name)
+    user_id = user.json()
 
-    # if user_id == -1:
-    #     return {'game_id' : -1, 'error': 'user does not exist'}
+    if user_id == -1:
+        return {'game_id' : -1, 'error': 'user does not exist'}
 
-    # # choose new game_id 
-    # answers = httpx.get('http://localhost:9100/api/v1/answers/count')
-    # game_id = random.randint(100, answers.json()['count']) + 100 - 1
+    # choose new game_id 
+    answers = httpx.get('http://localhost:9100/api/v1/answers/count')
+    game_id = random.randint(100, answers.json()['count']) + 100 - 1
 
-    # # create new game
+    # create new game
     # new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + '1' + 
     #                             '&game_id=' + str(game_id))
-    # # new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + (user_id) + 
-    # #                             '&game_id=' + str(game_id))
-    # return {'game_id' : game_id, **new_game.json()}
+    new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + (user_id) + 
+                                '&game_id=' + str(game_id))
+    return {'status' : 'new', 'user_id' : user_id, 'game_id' : game_id, **new_game.json()}
 
 
 
 
 
-    async def find_user_id():
-        async with httpx.AsyncClient() as client:
-            # find user_id
-            user_id = await client.get('http://localhost:9000/api/v1/stats?user_name=' + user_name)
-            # user_id = user.json()
-            if user_id == -1:
-                return {'user_id' : -1, 'error': 'user does not exist'}
-            else:
-                return {'user_id' : user_id}
+    # async def find_user_id():
+    #     async with httpx.AsyncClient() as client:
+    #         # find user_id
+    #         user_id = await client.get('http://localhost:9000/api/v1/stats?user_name=' + user_name)
+    #         # user_id = user.json()
+    #         if user_id == -1:
+    #             return {'user_id' : -1, 'error': 'user does not exist'}
+    #         else:
+    #             return {'user_id' : user_id}
 
-    async def get_new_game_id():
-        async with httpx.AsyncClient() as client:
-            # choose new game_id 
-            answers = await client.get('http://localhost:9100/api/v1/answers/count')
-            return {'new_game_id' : random.randint(100, answers.json()['count']) + 100 - 1}
+    # async def get_new_game_id():
+    #     async with httpx.AsyncClient() as client:
+    #         # choose new game_id 
+    #         answers = await client.get('http://localhost:9100/api/v1/answers/count')
+    #         return {'new_game_id' : random.randint(100, answers.json()['count']) + 100 - 1}
 
-    async def api_calls():
-        results = await asyncio.gather(find_user_id(), get_new_game_id())
-        user_id = results[0]['user_id']
-        game_id = results[1]['new_game_id']
-        # create new game
-        new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + '1' + 
-                                    '&game_id=' + str(results[1]['new_game_id'])).json()
-        if results[0]['user_id'] == -1:
-            return {'user_id' : -1, 'error': 'user does not exist'}
-        # new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + str(user_id) + 
-        #                             '&game_id=' + str(game_id)).json()
-        return {'game_id' : game_id, **new_game}
+    # async def api_calls():
+    #     results = await asyncio.gather(find_user_id(), get_new_game_id())
+    #     return results[0]
+    #     user_id = results[0]['user_id']
+    #     game_id = results[1]['new_game_id']
+    #     # create new game
+    #     # new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + '1' + 
+    #     #                             '&game_id=' + str(results[1]['new_game_id'])).json()
+    #     new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + str(user_id) + 
+    #                                 '&game_id=' + str(game_id)).json()
+    #     if results[0]['user_id'] == -1:
+    #         return {'user_id' : -1, 'error': 'user does not exist'}
+    #     return {'user_id' : user_id, 'game_id' : game_id, **new_game}
         
-    return asyncio.run(api_calls())
+    # return asyncio.run(api_calls())
 
 
 
 
 @app.post('/game/{game_id}', status_code=201)
-def add_guess(*, user_id: int = Query(default=None), game_id: int, guess: str):
+def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
     # check word is valid and has guesses_remaining
 
     async def validate_word():
@@ -160,6 +161,12 @@ def add_guess(*, user_id: int = Query(default=None), game_id: int, guess: str):
 
     # guess is incorrect and guesses remain
     else:
+        # return {'status' : 'incorrect',
+        #             'remaining' : curr_game['game'][0],
+        #             'letters' : {
+        #                 'correct' : [],
+        #                 'present' : []
+        #             }}
         return word_check_result
 
 
