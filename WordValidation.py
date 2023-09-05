@@ -2,6 +2,10 @@ from fastapi import FastAPI, Response
 import sqlite3
 app = FastAPI()
 
+@app.get('/')
+def test():
+    return {'message': 'WordValidation.py'}
+
 @app.get("/word/is-valid/{word}")
 def isValid(word: str):
     connection = sqlite3.connect("./var/WordList.db",timeout=10)

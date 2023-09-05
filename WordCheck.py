@@ -3,15 +3,16 @@ import sqlite3
 import contextlib
 
 from fastapi import FastAPI, Body, Depends
-from pydantic import BaseModel, BaseSettings
+from pydantic import BaseModel#, BaseSettings
+from pydantic_settings import BaseSettings
 from models import Game
 
 
 class Settings(BaseSettings):
     answers_database: str = './var/Answers.db'
 
-    class Config:
-        env_file = ".envWordCheck"
+    # class Config:
+    #     env_file = ".envWordCheck"
 
 
 def get_db():
@@ -26,6 +27,9 @@ def get_logger():
 settings = Settings()
 app = FastAPI()
 
+@app.get("/")
+def test():
+    return {'hello': 'WordCheck.py'}
 
 @app.post("/answers/check")
 def checkAnswer(game: Game, db: sqlite3.Connection = Depends(get_db)):
@@ -43,7 +47,6 @@ def checkAnswer(game: Game, db: sqlite3.Connection = Depends(get_db)):
         else:
             results.append(0)
     return results
-
 
 @app.put("/answers/change")
 def changeAnswer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(get_db)):

@@ -13,7 +13,7 @@ app = FastAPI()
 
 @app.get('/')
 def get_test():
-  return {'Page': 'Service working'}
+  return {'message': 'Play.py'}
 
 @app.post('/play')
 def play_new_game(user_id: str, game_id: int, r: redis.Redis = Depends(get_db)):

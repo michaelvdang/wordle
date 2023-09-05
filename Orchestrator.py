@@ -9,7 +9,7 @@ app = FastAPI()
 
 @app.get('/')
 def test():
-    return {'detail' : 'app is working'}
+    return {'message' : 'Orchestrator.py'}
 
 @app.post('/game/new', status_code=201)
 def start_new_game(user_name: str):# = Body()):
@@ -103,9 +103,6 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
     if results[1]['current_game']['guesses_remain'] < 1:
         return 'Impossible, user is out of guesses'
 
-
-
-
     # record and check if guess is correct
 
     async def record_guess():
@@ -130,9 +127,6 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
         return await asyncio.gather(record_guess(), check_guess())
 
     curr_game, word_check_result = asyncio.run(record_and_check_guess())
-    
-
-
 
     # guess is correct, they are all 2's? 
     # 1. record the win
@@ -143,10 +137,6 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
     # 2. retrieve user's score to return
         return {'game_result' : {**game_result, 'guesses' : curr_game['game'][1:]}}
 
-
-
-
-
     # guess is incorrect and no guesses remain
     elif int(curr_game['game'][0]) == 0:
         # 1. record the loss
@@ -155,9 +145,6 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
                                                 data=json.dumps(game_result)).json()
         # 2. return user's score
         return {'game_result' : {**game_result, 'guesses' : curr_game['game'][1:]}}
-
-
-
 
     # guess is incorrect and guesses remain
     else:
@@ -168,11 +155,6 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
         #                 'present' : []
         #             }}
         return word_check_result
-
-
-
-
-
 
     # # check that guess is_valid
     # validate_result = httpx.get('http://localhost:9200/api/v1/word/is-valid/' + guess).json()

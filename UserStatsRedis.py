@@ -4,7 +4,8 @@ from fastapi import FastAPI, Depends
 import contextlib
 import datetime
 import sqlite3
-from pydantic import BaseModel, BaseSettings
+from pydantic import BaseModel#, BaseSettings
+from pydantic_settings import BaseSettings
 import json
 import uuid
 import redis
@@ -56,8 +57,7 @@ app = FastAPI()
 
 @app.get("/")
 def hello():
-    return {"message": "hello world", "message2": "monster"}
-
+    return {"message": "hello world", "message2": "UserStatsRedis.py"}
 
 @app.post("/stats/{user_id}/{game_id}")
 def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):

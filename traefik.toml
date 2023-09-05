@@ -9,8 +9,10 @@
     address = ":9200"
   [entryPoints.play]
     address = ":9300"
-  [entryPoints.orchestrator]
+  [entryPoints.orchestratorb]
     address = ":9400"
+  [entryPoints.tester]
+    address = ":9500"
 
 [providers]
   [providers.file]
