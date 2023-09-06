@@ -59,6 +59,7 @@ app = FastAPI()
 def hello():
     return {"message": "hello world", "message2": "UserStatsRedis.py"}
 
+# insert game into the correct shard based on guid for storage
 @app.post("/stats/{user_id}/{game_id}")
 def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
     try:
@@ -81,7 +82,7 @@ def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connectio
     except sqlite3.IntegrityError:
         return 'Integrity error, there is another game with this game_id'
 
-
+# return top 10 winners
 @app.get('/stats/top-winners')
 def getTopWinners():
   r = redis.Redis()
@@ -89,14 +90,14 @@ def getTopWinners():
   
   return [(user_id.decode(), int(score)) for (user_id, score) in top_wins]
 
-
+# return top 10 streaks
 @app.get('/stats/top-streaks')
 def getTopStreaks():
   r = redis.Redis()
   top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)
   return [(user_id.decode(), int(score)) for (user_id, score) in top_streaks]
 
-
+# return stats for a given user
 @app.get('/stats/{userID}')
 def getUserStats(userID: int, udb: sqlite3.Connection = Depends(get_db), g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
     gamedb = (GAME1_DB, GAME2_DB, GAME3_DB)
@@ -105,21 +106,31 @@ def getUserStats(userID: int, udb: sqlite3.Connection = Depends(get_db), g1: sql
     cursor.execute('ATTACH DATABASE ' + "'" +
                    gamedb[int(guid) % 3] + "'" + ' AS ga')
 
-    cursor.execute('''select  i.gamesPlayed,i.gamesWon,
-	       (cast(i.gameswon as real)/cast(i.gamesplayed as real))*100 as winPercentage,
-	          cast(i.guesses as real)/cast(i.gamesplayed as real) as averageGuesses,
-	             s.streak as currentStreak, i.maxStreak
+    cursor.execute('''
+        select  
+            i.gamesPlayed,
+            i.gamesWon,
+	        (cast(i.gameswon as real)/cast(i.gamesplayed as real))*100 as winPercentage,
+	        cast(i.guesses as real)/cast(i.gamesplayed as real) as averageGuesses,
+	        s.streak as currentStreak, 
+            i.maxStreak
         from
-            (select u.user_id,u.username,count(g.game_id) as gamesplayed, w.[count(won)] as gameswon, sum(g.guesses)as guesses,max(st.streak) as maxstreak
+            (select 
+                u.user_id,
+                u.username,
+                count(g.game_id) as gamesplayed, 
+                w.[count(won)] as gameswon, 
+                sum(g.guesses)as guesses,
+                max(st.streak) as maxstreak
             from
-	       main.users u
-	       inner join ga.wins w on u.user_id=w.user_id
-	         inner join ga.games g on w.user_id = g.user_id
-	        left outer join streaks st on st.user_id=g.user_id
-        where
-	     u.user_id=(?))i
+	            main.users u
+	            inner join ga.wins w on u.user_id=w.user_id
+	            inner join ga.games g on w.user_id = g.user_id
+	            left outer join streaks st on st.user_id=g.user_id
+            where
+	            u.user_id=(?)) i
 	    left join streaks s on s.user_id = i.user_id
-    order by beginning desc
+        order by beginning desc
         limit 1
         ''', (userID,))
     data_json = {}
@@ -138,6 +149,7 @@ def getUserStats(userID: int, udb: sqlite3.Connection = Depends(get_db), g1: sql
     data_json.update({"guesses": guesses})
     return data_json
 
+# return user_guid for a given username
 @app.get('/stats')
 def get_user_id(user_name: str, udb: sqlite3.Connection = Depends(get_db)):
     row = udb.execute('SELECT * FROM users WHERE username=?', [user_name])

@@ -16,8 +16,8 @@ def get_test():
   return {'message': 'Play.py'}
 
 @app.post('/play')
-def play_new_game(user_id: str, game_id: int, r: redis.Redis = Depends(get_db)):
-  key = f"{user_id}:{game_id}"
+def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_db)):
+  key = f"{guid}:{game_id}"
   with r.pipeline() as pipe:
     try:
       pipe.watch(key)
@@ -31,8 +31,8 @@ def play_new_game(user_id: str, game_id: int, r: redis.Redis = Depends(get_db)):
       return "ERROR: someone has just started the same game on this account?"
   
 @app.put('/play')
-def update_game(user_id: str, game_id: int, guess: str, r: redis.Redis = Depends(get_db)):
-  key = f"{user_id}:{game_id}"
+def update_game(guid: str, game_id: int, guess: str, r: redis.Redis = Depends(get_db)):
+  key = f"{guid}:{game_id}"
 
   with r.pipeline() as pipe:
     try: 
@@ -53,8 +53,8 @@ def update_game(user_id: str, game_id: int, guess: str, r: redis.Redis = Depends
       # return "ERROR: someone tried guessing at the same time"
 
 @app.get('/play')
-def restore_game(user_id: str, game_id: int, r: redis.Redis = Depends(get_db)):
-  key = f"{user_id}:{game_id}"
+def restore_game(guid: str, game_id: int, r: redis.Redis = Depends(get_db)):
+  key = f"{guid}:{game_id}"
   game = {}
 
   with r.pipeline() as pipe:

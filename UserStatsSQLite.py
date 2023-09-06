@@ -48,6 +48,7 @@ app = FastAPI()
 def hello():
     return {"message": "hello world", "message2": "UserStatsSQLite.py"}
 
+# insert game into the correct shard based on user_id for storage
 @app.post("/stats/{user_id}/{game_id}")
 def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
     try:
@@ -69,6 +70,7 @@ def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connectio
         return 'Integrity error, there is another game with this game_id'
     gamedb[int(guid) % 3].commit()
 
+# select top 10 winners from each shard (30 total) and return the top 10 winners
 @app.get('/stats/top-winners')
 def getTopWinners(g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
     gamedb = (g1, g2, g3)
@@ -82,6 +84,7 @@ def getTopWinners(g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connect
 
     return winners[:10]
 
+# select top 10 streaks from each shard (30 total) and reutrn the top 10 streaks
 @app.get('/stats/top-streaks')
 def getTopStreaks(g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
     gamedb = (g1, g2, g3)
@@ -94,6 +97,7 @@ def getTopStreaks(g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connect
        key=lambda x: x[1])
     return topStreaks[:10]
     
+# 
 @app.get('/stats/{userID}')
 def getUserStats(userID: int, udb: sqlite3.Connection = Depends(get_db), g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
     gamedb = (GAME1_DB, GAME2_DB, GAME3_DB)

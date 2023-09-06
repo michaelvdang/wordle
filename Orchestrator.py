@@ -14,10 +14,11 @@ def test():
 @app.post('/game/new', status_code=201)
 def start_new_game(user_name: str):# = Body()):
     # find user_id
-    user = httpx.get('http://localhost:9000/api/v1/stats?user_name=' + user_name)
-    user_id = user.json()
+    res = httpx.get('http://localhost:9000/api/v1/stats?user_name=' + user_name)
+    guid = res.json()
 
-    if user_id == -1:
+    # deny when there wrong user_name is given
+    if guid == -1:
         return {'game_id' : -1, 'error': 'user does not exist'}
 
     # choose new game_id 
@@ -27,9 +28,9 @@ def start_new_game(user_name: str):# = Body()):
     # create new game
     # new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + '1' + 
     #                             '&game_id=' + str(game_id))
-    new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + (user_id) + 
+    new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + (guid) + 
                                 '&game_id=' + str(game_id))
-    return {'status' : 'new', 'user_id' : user_id, 'game_id' : game_id, **new_game.json()}
+    return {'status' : 'new', 'user_id' : guid, 'game_id' : game_id, **new_game.json()}
 
 
 

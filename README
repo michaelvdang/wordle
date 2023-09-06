@@ -1,13 +1,34 @@
-Project 5 team members:
-- Michael Dang
-- Maia Nguyen
-- Kevin Garcia Sarmiento
-- Javier Diaz
+WordList.db 
+    - all the 5 letter words in the dictionary
+stats.db - 
+    tables: 
+        users (id, username) 
+        games(user_id, game_id, finished, guesses, won) 
+    views: streaks, wins
+users.db - 
+    tables: users(guid, user_id, username)
+Answers.db:
+    tables: 
+        Answers(word_id, gameword)
+        Games(game_id, word_id)
+game1.db:
+    tables:
+        tables:
+            games(guid, user_id, game_id, finished, guesses, won)
+            streaks(user_id, streak, beginning, ending)
+            wins(user_id, count(won))
+
+
+
+Project 5:
 
 How to start the application:
 - Install all dependencies, some of the required modules are, but there could be others:
     - python redis module: python3 -m pip install redis
     - python httpx module: python3 -m pip install httpx
+    - pip: sudo apt install python3-pip
+    - uvicorn: pip install uvicorn
+    - fastapi: pip install fastapi
     - (other modules)
 - Download traefik to the application's root folder
 
@@ -25,14 +46,7 @@ How to start the application:
 
 
 
-
-
-
-Project 4 team members:
-- Anitha Chockalingam
-- Michael Dang
-- Quentin May
-- Kevin Sierras
+Project 4:
 
 NOTE: the .sql files are not used but kept for learning purposes
 
@@ -68,13 +82,7 @@ Add a cronjob to update Redis every 10 minutes:
 
 
 
-
-
 Project 3 team members:
-- Anitha Chockalingam
-- Michael Dang
-- Quentin May
-- Kevin Sierras
 
 NOTE: the .sql files are not used but kept for learning purposes
 
@@ -132,7 +140,4 @@ Stats
 - Retrieving the statistics for a user
 - Retrieving top 10 users by number of wins
 - Retrieving top 10 users by longest streak
-
-
-
 

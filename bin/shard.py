@@ -1,3 +1,7 @@
+# used only during initial setup
+# sharding the games table from stats.db into game1.db, game2.db, game3.db
+# copying users from stats.db to users.db
+# also create index for games.won to speed up the view creation for wins and streaks
 import contextlib
 import uuid
 import sqlite3
@@ -21,7 +25,7 @@ with contextlib.closing(sqlite3.connect(DATABASE)) as db:
                     gc2 = g2.cursor()
                     gc3 = g3.cursor()
                     uc = u.cursor()
-                    
+                    # deleting existing tables and views
                     deleteExisting = ('DROP VIEW IF EXISTS wins','DROP VIEW IF EXISTS streaks;','DROP TABLE IF EXISTS games;')
                     uc.execute('DROP TABLE IF EXISTS users;')
                     for cmd in deleteExisting:
@@ -35,7 +39,7 @@ with contextlib.closing(sqlite3.connect(DATABASE)) as db:
                     gc3.execute(gamesTable)
 
                     uc.execute('CREATE TABLE users (guid GUID PRIMARY KEY, user_id INTEGER NOT NULL, username TEXT)')
-                    
+                    # copying users from stats.db to users.db
                     users = c.execute('SELECT * FROM users').fetchall()
                     count1 = 0
                     count2 = 0
@@ -50,6 +54,7 @@ with contextlib.closing(sqlite3.connect(DATABASE)) as db:
                         [str(new_uuid), user[0], user[1]]
                         )
                     u.commit()
+                    # copying/sharding games from stats.db to game1.db, game2.db, game3.db
                     games = db.execute('SELECT * FROM games').fetchall() 
                     for game in games:
                         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(game[0]))
