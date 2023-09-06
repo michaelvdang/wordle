@@ -19,18 +19,18 @@ def start_new_game(user_name: str):# = Body()):
 
     # deny when there wrong user_name is given
     if guid == -1:
-        return {'game_id' : -1, 'error': 'user does not exist'}
+        return {'game_id' : -1, 'status': 'error', 'message': 'user does not exist'}
 
     # choose new game_id 
     answers = httpx.get('http://localhost:9100/api/v1/answers/count')
-    game_id = random.randint(100, answers.json()['count']) + 100 - 1
+    game_id = random.randint(100, answers.json()['count'])
 
     # create new game
     # new_game = httpx.post('http://localhost:9300/api/v1/play?guid=' + '1' + 
     #                             '&game_id=' + str(game_id))
     new_game = httpx.post('http://localhost:9300/api/v1/play?guid=' + (guid) + 
                                 '&game_id=' + str(game_id))
-    return {'status' : 'new', 'guid' : guid, 'game_id' : game_id, **new_game.json()}
+    return {'status' : 'new game created', 'guid' : guid, 'game_id' : game_id, **new_game.json()}
 
 
 
@@ -85,7 +85,7 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
     async def has_guesses_remaining():
         async with httpx.AsyncClient() as client:
             # check game has guesses remaining
-            _curr_game_future = await client.get('http://localhost:9300/api/v1/play?user_id=' + str(guid) + 
+            _curr_game_future = await client.get('http://localhost:9300/api/v1/play?guid=' + str(guid) + 
                                         '&game_id=' + str(game_id))
             curr_game = _curr_game_future.json()
 
@@ -155,7 +155,7 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
         #                 'correct' : [],
         #                 'present' : []
         #             }}
-        return word_check_result
+        return {'guess_results': word_check_result, 'curr_game': curr_game}
 
     # # check that guess is_valid
     # validate_result = httpx.get('http://localhost:9200/api/v1/word/is-valid/' + guess).json()
