@@ -37,6 +37,8 @@ def update_game(guid: str, game_id: int, guess: str, r: redis.Redis = Depends(ge
   with r.pipeline() as pipe:
     try: 
       pipe.watch(key)
+      # store game state in redis as a list of guesses, 
+      # with the first element being the number of guesses remaining
       guesses_remain: int = int(r.lindex(key, 0))
       if guesses_remain > 0:
         pipe.multi()
