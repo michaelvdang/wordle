@@ -30,7 +30,7 @@ def start_new_game(user_name: str):# = Body()):
     #                             '&game_id=' + str(game_id))
     new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + (guid) + 
                                 '&game_id=' + str(game_id))
-    return {'status' : 'new', 'user_id' : guid, 'game_id' : game_id, **new_game.json()}
+    return {'status' : 'new', 'guid' : guid, 'game_id' : game_id, **new_game.json()}
 
 
 
