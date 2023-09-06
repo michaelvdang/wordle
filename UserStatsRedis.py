@@ -151,7 +151,7 @@ def getUserStats(userID: int, udb: sqlite3.Connection = Depends(get_db), g1: sql
 
 # return user_guid for a given username
 @app.get('/stats')
-def get_user_id(user_name: str, udb: sqlite3.Connection = Depends(get_db)):
+def get_user_guid(user_name: str, udb: sqlite3.Connection = Depends(get_db)):
     row = udb.execute('SELECT * FROM users WHERE username=?', [user_name])
     try:
         return row.fetchone()[0]
