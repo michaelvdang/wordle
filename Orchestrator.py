@@ -26,9 +26,9 @@ def start_new_game(user_name: str):# = Body()):
     game_id = random.randint(100, answers.json()['count']) + 100 - 1
 
     # create new game
-    # new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + '1' + 
+    # new_game = httpx.post('http://localhost:9300/api/v1/play?guid=' + '1' + 
     #                             '&game_id=' + str(game_id))
-    new_game = httpx.post('http://localhost:9300/api/v1/play?user_id=' + (guid) + 
+    new_game = httpx.post('http://localhost:9300/api/v1/play?guid=' + (guid) + 
                                 '&game_id=' + str(game_id))
     return {'status' : 'new', 'guid' : guid, 'game_id' : game_id, **new_game.json()}
 
@@ -72,7 +72,7 @@ def start_new_game(user_name: str):# = Body()):
 
 
 @app.post('/game/{game_id}', status_code=201)
-def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
+def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
     # check word is valid and has guesses_remaining
 
     async def validate_word():
@@ -85,7 +85,7 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
     async def has_guesses_remaining():
         async with httpx.AsyncClient() as client:
             # check game has guesses remaining
-            _curr_game_future = await client.get('http://localhost:9300/api/v1/play?user_id=' + str(user_id) + 
+            _curr_game_future = await client.get('http://localhost:9300/api/v1/play?user_id=' + str(guid) + 
                                         '&game_id=' + str(game_id))
             curr_game = _curr_game_future.json()
 
@@ -109,8 +109,8 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
     async def record_guess():
         async with httpx.AsyncClient() as client:
             # record the guess and update number of guesses remaining
-            _curr_game_future = await client.put('http://localhost:9300/api/v1/play?user_id=' + 
-                            str(user_id) + '&game_id=' + str(game_id) + '&guess=' + guess)
+            _curr_game_future = await client.put('http://localhost:9300/api/v1/play?guid=' + 
+                            str(guid) + '&game_id=' + str(game_id) + '&guess=' + guess)
             curr_game = _curr_game_future.json()
             return curr_game
     
@@ -133,7 +133,7 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
     # 1. record the win
     if word_check_result.count(2) == 5:
         game_result = {'num_guesses' : 6 - int(curr_game['game'][0]), 'won' : True}
-        httpx.post('http://localhost:9000/api/v1/stats/' + str(user_id) + '/' + str(game_id), 
+        httpx.post('http://localhost:9000/api/v1/stats/' + str(guid) + '/' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
     # 2. retrieve user's score to return
         return {'game_result' : {**game_result, 'guesses' : curr_game['game'][1:]}}
@@ -142,7 +142,7 @@ def add_guess(*, user_id: str = Query(default=None), game_id: int, guess: str):
     elif int(curr_game['game'][0]) == 0:
         # 1. record the loss
         game_result = {'num_guesses' : 6, 'won' : False}
-        httpx.post('http://localhost:9000/api/v1/stats/' + str(user_id) + '/' + str(game_id), 
+        httpx.post('http://localhost:9000/api/v1/stats/' + str(guid) + '/' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
         # 2. return user's score
         return {'game_result' : {**game_result, 'guesses' : curr_game['game'][1:]}}
