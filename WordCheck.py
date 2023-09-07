@@ -32,7 +32,7 @@ def test():
     return {'hello': 'WordCheck.py'}
 
 @app.post("/answers/check")
-def checkAnswer(game: Game, db: sqlite3.Connection = Depends(get_db)):
+def check_answer(game: Game, db: sqlite3.Connection = Depends(get_db)):
     row = db.execute(
         "SELECT * FROM Answers WHERE word_id = ? LIMIT 1", [game.word_id]).fetchone()
     #return row[1]
@@ -49,7 +49,7 @@ def checkAnswer(game: Game, db: sqlite3.Connection = Depends(get_db)):
     return results
 
 @app.put("/answers/change")
-def changeAnswer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(get_db)):
+def change_answer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(get_db)):
     db.execute("UPDATE Answers SET gameword = (?) WHERE word_id = ? LIMIT 1", [
                new_word, word_id]).fetchone()
     db.commit()

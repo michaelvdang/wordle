@@ -24,7 +24,7 @@ def start_new_game(user_name: str):# = Body()):
     # choose new game_id 
     answers = httpx.get('http://localhost:9100/api/v1/answers/count')
     game_id = random.randint(100, answers.json()['count'])
-
+    # print('new guid: ' + guid)
     # create new game
     # new_game = httpx.post('http://localhost:9300/api/v1/play?guid=' + '1' + 
     #                             '&game_id=' + str(game_id))
@@ -89,7 +89,7 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
                                         '&game_id=' + str(game_id))
             curr_game = _curr_game_future.json()
 
-            if curr_game['guesses_remain'] < 1:
+            if int(curr_game['remain']) < 1:
                 return 'Impossible, user is out of guesses'
             else:
                 return {'current_game' : curr_game}
@@ -101,7 +101,7 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
 
     if not results[0]:
         return 'Invalid guess, try again'
-    if results[1]['current_game']['guesses_remain'] < 1:
+    if int(results[1]['current_game']['remain']) < 1:
         return 'Impossible, user is out of guesses'
 
     # record and check if guess is correct
@@ -111,8 +111,8 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
             # record the guess and update number of guesses remaining
             _curr_game_future = await client.put('http://localhost:9300/api/v1/play?guid=' + 
                             str(guid) + '&game_id=' + str(game_id) + '&guess=' + guess)
-            curr_game = _curr_game_future.json()
-            return curr_game
+            curr_game_result = _curr_game_future.json()
+            return curr_game_result
     
     async def check_guess():
         async with httpx.AsyncClient() as client:
@@ -127,27 +127,34 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
     async def record_and_check_guess():
         return await asyncio.gather(record_guess(), check_guess())
 
-    curr_game, word_check_result = asyncio.run(record_and_check_guess())
+    curr_game_result, word_check_result = asyncio.run(record_and_check_guess())
 
-    # guess is correct, they are all 2's? 
+    # WIN: guess is correct, they are all 2's? 
     # 1. record the win
     if word_check_result.count(2) == 5:
-        game_result = {'num_guesses' : 6 - int(curr_game['game'][0]), 'won' : True}
+        # from UserStatsRedis.py, to store game result in SQLite
+        # class Result(BaseModel):
+            # guesses: int
+            # won: bool
+        game_result = {'guesses': 6 - curr_game_result['remain'], 'won' : True}
         httpx.post('http://localhost:9000/api/v1/stats/' + str(guid) + '/' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
     # 2. retrieve user's score to return
-        return {'game_result' : {**game_result, 'guesses' : curr_game['game'][1:]}}
+        return {**(curr_game_result), 'won': True}
 
-    # guess is incorrect and no guesses remain
-    elif int(curr_game['game'][0]) == 0:
+    # LOSE: guess is incorrect and no guesses remain
+    elif int(curr_game_result['remain']) == 0:
         # 1. record the loss
-        game_result = {'num_guesses' : 6, 'won' : False}
+        game_result = {'guesses' : 6, 'won' : False}
         httpx.post('http://localhost:9000/api/v1/stats/' + str(guid) + '/' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
-        # 2. return user's score
-        return {'game_result' : {**game_result, 'guesses' : curr_game['game'][1:]}}
+        # 2. Retrieve winning word
+        
+        # 3. return user's score
+        
+        return {**(curr_game_result), 'won': False}
 
-    # guess is incorrect and guesses remain
+    # CONT: guess is incorrect and guesses remain
     else:
         # return {'status' : 'incorrect',
         #             'remaining' : curr_game['game'][0],
@@ -155,7 +162,7 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
         #                 'correct' : [],
         #                 'present' : []
         #             }}
-        return {'guess_results': word_check_result, 'curr_game': curr_game}
+        return {'guess_results': word_check_result, **(curr_game_result)}
 
     # # check that guess is_valid
     # validate_result = httpx.get('http://localhost:9200/api/v1/word/is-valid/' + guess).json()
