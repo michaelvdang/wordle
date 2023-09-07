@@ -4621,3 +4621,8 @@ INSERT INTO Games VALUES(2406,2307);
 INSERT INTO Games VALUES(2407,2308);
 INSERT INTO Games VALUES(2408,2309);
 COMMIT;
+
+CREATE VIEW Game_words AS 
+    select game_id,g.word_id, gameword 
+    from Games g JOIN Answers a ON g.word_id=a.word_id 
+;

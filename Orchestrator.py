@@ -88,11 +88,7 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
             _curr_game_future = await client.get('http://localhost:9300/api/v1/play?guid=' + str(guid) + 
                                         '&game_id=' + str(game_id))
             curr_game = _curr_game_future.json()
-
-            if int(curr_game['remain']) < 1:
-                return 'Impossible, user is out of guesses'
-            else:
-                return {'current_game' : curr_game}
+            return {'remain': int(curr_game['remain'])}
 
     async def validate_move():
         return await asyncio.gather(validate_word(), has_guesses_remaining())
@@ -100,9 +96,9 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
     results = asyncio.run(validate_move())
 
     if not results[0]:
-        return 'Invalid guess, try again'
-    if int(results[1]['current_game']['remain']) < 1:
-        return 'Impossible, user is out of guesses'
+        return {'status': 'error', 'message': 'Invalid guess, try again'}
+    if int(results[1]['remain']) < 1:
+        return {'status': 'error', 'message': 'Impossible, user is out of guesses'}
 
     # record and check if guess is correct
 
@@ -149,10 +145,14 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
         httpx.post('http://localhost:9000/api/v1/stats/' + str(guid) + '/' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
         # 2. Retrieve winning word
-        
+        async def get_game_answer():
+            async with httpx.AsyncClient() as client:
+                return (await client.get('http://localhost:9100/api/v1/answers/correct?game_id=' + str(game_id))).json()
+        answer = asyncio.run(get_game_answer())
+
         # 3. return user's score
         
-        return {**(curr_game_result), 'won': False}
+        return {'answer': answer['word'], **(curr_game_result), 'won': False}
 
     # CONT: guess is incorrect and guesses remain
     else:

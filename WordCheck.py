@@ -61,3 +61,9 @@ def change_answer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(
 def get_answers_count(db: sqlite3.Connection = Depends(get_db)):
     row = db.execute('SELECT count(*) FROM Answers').fetchone()
     return {'count': row[0]}
+
+@app.get("/answers/correct")
+def get_correct_answer(game_id: int, db: sqlite3.Connection = Depends(get_db)):
+    row = db.execute("SELECT gameword FROM Game_words WHERE game_id = (?)", [game_id]).fetchone()
+    print(row)
+    return {'word': row[0], 'status': 'success'}
