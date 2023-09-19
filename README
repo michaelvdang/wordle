@@ -18,7 +18,7 @@ game1.db:
             streaks(user_id, streak, beginning, ending)
             wins(user_id, count(won))
 
-
+ 
 
 Project 5:
 
