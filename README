@@ -24,20 +24,37 @@ Project 5:
 
 How to start the application:
 - Install all dependencies, some of the required modules are, but there could be others:
-    - python redis module: python3 -m pip install redis
-    - python httpx module: python3 -m pip install httpx
-    - pip: sudo apt install python3-pip
+    - apt install python3-pip
+    - venv: apt install python3.10-venv
+- Create virtual environment and use it
+    - python3 -m venv venv
+    - chmod u+rwx venv/bin/activate
+    - source venv/bin/activate
+- Install python dependencies
+    - pip install Faker
+    - python redis module: pip install redis
+    - Redis server: sudo apt install redis-server
+    - Redis-cli: apt install redis-tools
+    - python httpx module: pip install httpx
     - uvicorn: pip install uvicorn
     - fastapi: pip install fastapi
+    - pydantic_settings: pip install pydantic-settings
+    - sqlite3: apt install sqlite3
     - (other modules)
 - Download traefik to the application's root folder
+    - LINK: https://github.com/traefik/traefik/releases/download/v2.10.4/traefik_v2.10.4_linux_amd64.tar.gz
+    - tar -xvzf traefik_v2.10.4_linux_amd64.tar.gz
+- Install foreman
+    - apt install ruby-rubygems
+    - gem install foreman
+
 
 - Once all dependencies are installed, initialize the databases
     - open Terminal in the application's root folder: bin/init.sh
 
 - Start the application server:
     - in Terminal: 
-        - foreman start -m 'stats=3,check=1,validate=1,play=1,orchestrator=1,traefik=1' 
+        - foreman start -m 'stats=3,check=1,validate=1,play=1,orchestratorb=1,traefik=1' 
 
 - Add a cronjob to update Redis every 10 minutes:
     - run: crontab -e

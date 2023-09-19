@@ -59,7 +59,7 @@ app = FastAPI()
 def hello():
     return {"message": "hello world", "message2": "UserStatsRedis.py"}
 
-# insert game into the correct shard based on guid for storage
+# insert finished game into the correct shard based on guid for storage
 @app.post("/stats/{user_id}/{game_id}")
 def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
     try:
