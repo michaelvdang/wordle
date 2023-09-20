@@ -7,7 +7,7 @@ import random
 import redis
 
 def get_db():
-  yield redis.Redis()
+  yield redis.Redis(host='redis', port=6379, decode_responses=True)
 
 app = FastAPI()
 
