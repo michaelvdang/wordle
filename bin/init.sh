@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/sh 
+# this script is for running directly in bash (not containers)
 rm -r var
 mkdir -p ./var
 sqlite3 ./var/WordList.db < ./share/WordList.sql

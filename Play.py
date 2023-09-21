@@ -67,6 +67,11 @@ def restore_game(guid: str, game_id: int, r: redis.Redis = Depends(get_db)):
   key = f"{guid}:{game_id}"
   # response = {}
 
+  # response = r.hgetall(key)
+  # response['status'] = 'success'
+  # return response
+
+  ## do we need pipe here?
   with r.pipeline() as pipe:
     try:
       pipe.watch(key)

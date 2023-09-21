@@ -1,0 +1,7 @@
+1. figure out how containers communicate with one another (it's something about localhost)
+2. databases in each container are separate (not shared) -> can we use volume to solve this? 
+  - using the same volume names in each container won't do it
+  - Yes we can use docker volumes to solve this: https://docs.docker.com/storage/volumes/
+  - Can we create volume in docker-compose or do we have to create them before docker-compose
+  - read docker compose volume: https://docs.docker.com/compose/compose-file/07-volumes/
+  

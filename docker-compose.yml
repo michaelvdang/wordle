@@ -11,35 +11,35 @@ services:
     ports: 
       - "9000:9000"
     volumes:
-      - ./app:/app
+      - ./var:./var
   wordcheck:
     build: .
     container_name: 'wordcheck-container'
     ports: 
       - "9100:9100"
     volumes:
-      - ./app:/app
+      - ./var:./var
   wordvalidation:
     build: .
     container_name: 'wordvalidation-container'
     ports: 
       - "9200:9200"
     volumes:
-      - ./app:/app
+      - ./var:./var
   play:
     build: .
     container_name: 'play-container'
     ports: 
       - "9300:9300"
     volumes:
-      - ./app:/app
+      - ./var:./var
   orchestrator:
     build: .
     container_name: 'orchestrator-container'
     ports: 
       - "9400:9400"
     volumes:
-      - ./app:/app
+      - ./var:./var
     depends_on:
       - stats
       - wordcheck
