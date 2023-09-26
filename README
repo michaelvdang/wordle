@@ -56,9 +56,10 @@ How to start the application:
     - in Terminal: 
         - foreman start -m 'stats=3,check=1,validate=1,play=1,orchestratorb=1,traefik=1' 
 
-- Add a cronjob to update Redis every 10 minutes:
+- Add a cronjob to update Redis every 10 minutes - use a lightweight image with cron:
     - run: crontab -e
     - Enter: '*/10 * * * *  /usr/bin/python3 /{path to project folder}/bin/TopTen.py >> /{Path to project folder}/cron.log 2>&1'
+    - Testing Wordle: '*/1 * * * *  python ./bin/TopTen.py >> .bin/cron.log 2>&1'
     - Save and quit editor
 
 

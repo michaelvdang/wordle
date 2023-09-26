@@ -5,3 +5,5 @@
   - Can we create volume in docker-compose or do we have to create them before docker-compose
   - read docker compose volume: https://docs.docker.com/compose/compose-file/07-volumes/
 3. connect to Redis from Stats (see fastapi-redis)
+
+*/1 * * * *  python ./bin/TopTen.py >> .bin/cron.log 2>&1

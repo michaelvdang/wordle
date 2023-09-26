@@ -5,6 +5,14 @@ services:
     container_name: 'redis-container'
     ports:
       - "6379:6379"
+  # cron:
+  #   image: cron-alpine
+  #   container_name: 'cron-container'
+  #   volumes:
+  #     - ./var:/wordle/var
+  #   ports:
+  #     - "9500:9500"
+    
   stats:
     build: .
     container_name: 'stats-container'
@@ -12,6 +20,8 @@ services:
       - "9000:9000"
     volumes:
       - ./var:/wordle/var
+    depends_on:
+      - redis
   wordcheck:
     build: .
     container_name: 'wordcheck-container'

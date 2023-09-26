@@ -10,6 +10,7 @@ import json
 import uuid
 import redis
 
+
 USER_DB = './var/users.db'
 GAME1_DB = './var/game1.db'
 GAME2_DB = './var/game2.db'
@@ -85,17 +86,21 @@ def store_game_result(user_id: int, game_id: int, result: Result, g1: sqlite3.Co
 # return top 10 winners
 @app.get('/stats/top-winners')
 def getTopWinners():
-  r = redis.Redis('redis://redis:6379')
-  top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
-  
-  return [(user_id.decode(), int(score)) for (user_id, score) in top_wins]
+    r = redis.Redis(host='redis', port=6379, decode_responses=True)
+    # r = redis.Redis('redis://redis:6379')
+    # r = aioredis.from_url(config.redis_url, decode_responses=True)
+    top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
+    
+    return [(user_id, int(score)) for (user_id, score) in top_wins]
 
 # return top 10 streaks
 @app.get('/stats/top-streaks')
 def getTopStreaks():
-  r = redis.Redis('redis://redis:6379')
-  top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)
-  return [(user_id.decode(), int(score)) for (user_id, score) in top_streaks]
+    r = redis.Redis(host='redis', port=6379, decode_responses=True)
+    # r = redis.Redis('redis://redis:6379')
+    # r = aioredis.from_url(config.redis_url, decode_responses=True)
+    top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)
+    return [(user_id, int(score)) for (user_id, score) in top_streaks]
 
 # return stats for a given user
 @app.get('/stats/{userID}')

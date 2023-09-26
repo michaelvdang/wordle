@@ -1,0 +1,2 @@
+* * * * *  python ./bin/TopTen.py >> ./cron.log 2>&1
+* * * * * echo "hello stackoverflow" >> /test_file 2>&1
