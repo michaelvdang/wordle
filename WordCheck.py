@@ -9,7 +9,8 @@ from models import Game
 
 
 class Settings(BaseSettings):
-    answers_database: str = './var/Answers.db'
+    answers_database: str = '/wordle/var/Answers.db'  # for container
+    # answers_database: str = './var/Answers.db'    # for non-container
 
     # class Config:
     #     env_file = ".envWordCheck"

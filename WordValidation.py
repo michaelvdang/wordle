@@ -8,7 +8,8 @@ def test():
 
 @app.get("/word/is-valid/{word}")
 def isValid(word: str):
-    connection = sqlite3.connect("./var/WordList.db",timeout=10)
+    connection = sqlite3.connect("/wordle/var/WordList.db",timeout=10)  ## for container
+    # connection = sqlite3.connect("./var/WordList.db",timeout=10)  ## for non-container
     cursor = connection.cursor()
     if cursor.execute("SELECT 1 FROM ValidWords WHERE word = (?)",[word]).fetchone():
         return {'is_valid_word': True}
@@ -19,7 +20,8 @@ def isValid(word: str):
 
 @app.post("/word/{word}")
 def addword(word: str):
-    connection = sqlite3.connect("./var/WordList.db", timeout=10)
+    connection = sqlite3.connect("/wordle/var/WordList.db", timeout=10) ## for container
+    # connection = sqlite3.connect("./var/WordList.db", timeout=10) ## for non-container
     cursor = connection.cursor()
     if cursor.execute("SELECT 1 FROM ValidWords WHERE word = (?)",[word]).fetchone():
         return {"Word already available":word}
@@ -31,7 +33,8 @@ def addword(word: str):
 
 @app.delete("/word/{word}")
 def deleteword(word: str):
-    connection = sqlite3.connect("./var/WordList.db",timeout=10)
+    connection = sqlite3.connect("/wordle/var/WordList.db",timeout=10)
+    # connection = sqlite3.connect("./var/WordList.db",timeout=10)  ## for non-container
     cursor = connection.cursor()
     if cursor.execute("SELECT 1 FROM ValidWords WHERE word = (?)",[word]).fetchone():
          cursor.execute("DELETE FROM ValidWords WHERE word = (?)",[word])

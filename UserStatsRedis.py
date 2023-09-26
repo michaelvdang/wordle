@@ -61,7 +61,7 @@ def hello():
 
 # insert finished game into the correct shard based on guid for storage
 @app.post("/stats/{user_id}/{game_id}")
-def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
+def store_game_result(user_id: int, game_id: int, result: Result, g1: sqlite3.Connection = Depends(get_db1), g2: sqlite3.Connection = Depends(get_db2), g3: sqlite3.Connection = Depends(get_db3)):
     try:
         gamedb = (g1, g2, g3)
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id))
@@ -85,7 +85,7 @@ def gameResult(user_id: int, game_id: int, result: Result, g1: sqlite3.Connectio
 # return top 10 winners
 @app.get('/stats/top-winners')
 def getTopWinners():
-  r = redis.Redis()
+  r = redis.Redis('redis://redis:6379')
   top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
   
   return [(user_id.decode(), int(score)) for (user_id, score) in top_wins]
@@ -93,7 +93,7 @@ def getTopWinners():
 # return top 10 streaks
 @app.get('/stats/top-streaks')
 def getTopStreaks():
-  r = redis.Redis()
+  r = redis.Redis('redis://redis:6379')
   top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)
   return [(user_id.decode(), int(score)) for (user_id, score) in top_streaks]
 
