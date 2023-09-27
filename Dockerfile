@@ -20,8 +20,8 @@ RUN ./bin/init-docker.sh
 
 # multiple calls to uvicorn doesn't work
 ## build each image separately, uncomment each one to build, then run docker compose
-CMD ["uvicorn", "UserStatsRedis:app", "--host", "0.0.0.0", "--port", "9000"]
+# CMD ["uvicorn", "UserStatsRedis:app", "--host", "0.0.0.0", "--port", "9000"]
 # CMD ["uvicorn", "WordCheck:app", "--host", "0.0.0.0", "--port", "9100"]
 # CMD ["uvicorn", "WordValidation:app", "--host", "0.0.0.0", "--port", "9200"]
 # CMD ["uvicorn", "Play:app", "--host", "0.0.0.0", "--port", "9300"]
-# CMD ["uvicorn", "Orchestrator:app", "--host", "0.0.0.0", "--port", "9400"]
+CMD ["uvicorn", "Orchestrator:app", "--host", "0.0.0.0", "--port", "9400"]

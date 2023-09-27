@@ -5,53 +5,50 @@ services:
     container_name: 'redis-container'
     ports:
       - "6379:6379"
-  # cron:
-  #   image: cron-alpine
-  #   container_name: 'cron-container'
-  #   volumes:
-  #     - ./var:/wordle/var
-  #   ports:
-  #     - "9500:9500"
-    
   stats:
-    build: .
+    # build: .
+    image: w-stats
     container_name: 'stats-container'
     ports: 
       - "9000:9000"
     volumes:
-      - ./var:/wordle/var
+      - db:/wordle/var
     depends_on:
       - redis
   wordcheck:
-    build: .
+    # build: .
+    image: w-check
     container_name: 'wordcheck-container'
     ports: 
       - "9100:9100"
     volumes:
-      - ./var:/wordle/var
+      - db:/wordle/var
   wordvalidation:
-    build: .
+    # build: .
+    image: w-validation
     container_name: 'wordvalidation-container'
     ports: 
       - "9200:9200"
     volumes:
-      - ./var:/wordle/var
+      - db:/wordle/var
   play:
-    build: .
+    # build: .
+    image: w-play
     container_name: 'play-container'
     ports: 
       - "9300:9300"
-    volumes:
-      - ./var:/wordle/var
   orchestrator:
-    build: .
+    # build: .
+    image: w-orc
     container_name: 'orchestrator-container'
     ports: 
       - "9400:9400"
     volumes:
-      - ./var:/wordle/var
+      - db:/wordle/var
     depends_on:
       - stats
       - wordcheck
       - wordvalidation
       - play
+volumes:
+  db:

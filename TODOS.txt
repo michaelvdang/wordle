@@ -7,3 +7,8 @@
 3. connect to Redis from Stats (see fastapi-redis)
 
 */1 * * * *  python ./bin/TopTen.py >> .bin/cron.log 2>&1
+
+4. Move microservices to their own folders and create image from there 
+  -> Restore to last commit, then use volume to persist SQLite
+  -> We will no longer need to run init-docker.sh for every container, fewer files to copy
+  -> maybe leave Orchestrator out in root folder to copy bin and call init-docker.sh
