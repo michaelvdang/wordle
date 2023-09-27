@@ -154,12 +154,13 @@ def getUserStats(userID: int, udb: sqlite3.Connection = Depends(get_db), g1: sql
     data_json.update({"guesses": guesses})
     return data_json
 
-# return user_guid for a given username
+# return user info for a given username
 @app.get('/stats')
 def get_user_guid(user_name: str, udb: sqlite3.Connection = Depends(get_db)):
     row = udb.execute('SELECT * FROM users WHERE username=?', [user_name])
     try:
-        return row.fetchone()[0]
+        user = row.fetchone()
+        return {'guid': str(user[0]), 'user_id': user[1], 'username': user[2]}
     except TypeError:
         return -1
     
@@ -169,9 +170,12 @@ def create_user(user_name: str, udb: sqlite3.Connection = Depends(get_db)):
     try:
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, user_name)
         print('GUID: ', guid)
-        udb.execute('INSERT INTO users(username) VALUES(?)', [user_name])
+        res = udb.execute('SELECT count(*) FROM users')
+        user_id = res.fetchone()[0] + 1
+        udb.execute('INSERT INTO users(guid, user_id, username) VALUES(?,?,?)', [str(guid), user_id, user_name])
         udb.commit()
-        return {'Success' : 'User created'}
-    except sqlite3.IntegrityError:
-        return {'Error' : 'Integrity error, there is another user with this username'}
-    
+        return {'Success' : 'User created', 'user': {'guid': str(guid), 'user_id': user_id, 'username': user_name}}
+    except sqlite3.IntegrityError as e:
+        return {'Error' : 'User already exists', 'user': {'guid': str(guid), 'user_id': user_id, 'username': user_name}}
+    except Exception as e:
+        return {'Error' : e}
