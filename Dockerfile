@@ -13,6 +13,7 @@ COPY ./ /wordle
 ## include these lines if the service needs these databases (stats, check, validation)
 ## but these lines create different databases for each container (not shared)
 RUN mkdir -p /wordle/var
+RUN chmod 544 ./bin/init-docker.sh
 RUN ./bin/init-docker.sh
 
 # CMD ["ls", "./var"]

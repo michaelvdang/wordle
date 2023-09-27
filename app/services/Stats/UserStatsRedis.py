@@ -85,7 +85,7 @@ def store_game_result(user_id: int, game_id: int, result: Result, g1: sqlite3.Co
 
 # return top 10 winners
 @app.get('/stats/top-winners')
-def getTopWinners():
+def get_top_winners():
     r = redis.Redis(host='redis', port=6379, decode_responses=True)
     # r = redis.Redis('redis://redis:6379')
     # r = aioredis.from_url(config.redis_url, decode_responses=True)
@@ -95,7 +95,7 @@ def getTopWinners():
 
 # return top 10 streaks
 @app.get('/stats/top-streaks')
-def getTopStreaks():
+def get_top_streaks():
     r = redis.Redis(host='redis', port=6379, decode_responses=True)
     # r = redis.Redis('redis://redis:6379')
     # r = aioredis.from_url(config.redis_url, decode_responses=True)
@@ -162,3 +162,16 @@ def get_user_guid(user_name: str, udb: sqlite3.Connection = Depends(get_db)):
         return row.fetchone()[0]
     except TypeError:
         return -1
+    
+# create new user
+@app.post('/stats')
+def create_user(user_name: str, udb: sqlite3.Connection = Depends(get_db)):
+    try:
+        guid = uuid.uuid3(uuid.NAMESPACE_DNS, user_name)
+        print('GUID: ', guid)
+        udb.execute('INSERT INTO users(username) VALUES(?)', [user_name])
+        udb.commit()
+        return {'Success' : 'User created'}
+    except sqlite3.IntegrityError:
+        return {'Error' : 'Integrity error, there is another user with this username'}
+    
