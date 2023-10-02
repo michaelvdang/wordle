@@ -9,7 +9,19 @@ from pydantic_settings import BaseSettings
 import json
 import uuid
 import redis
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
+def get_redis(username: str = 'default'):
+    yield redis.Redis(host='redis', 
+                    port=6379, 
+                    decode_responses=True, 
+                    password=REDISCLI_AUTH_PASSWORD,
+                    # username=username
+                    )
 
 USER_DB = './var/users.db'
 GAME1_DB = './var/game1.db'
@@ -28,8 +40,9 @@ class Settings(BaseSettings):
     game2db: str = GAME2_DB
     game3db: str = GAME3_DB
 
-    class Config():
-        env_file = '.env'
+    ## leaving this will throw an error because we have another .env
+    # class Config():
+    #     env_file = '.env'
 
 
 def get_db():
@@ -85,8 +98,7 @@ def store_game_result(user_id: int, game_id: int, result: Result, g1: sqlite3.Co
 
 # return top 10 winners
 @app.get('/stats/top-winners')
-def get_top_winners():
-    r = redis.Redis(host='redis', port=6379, decode_responses=True)
+def get_top_winners(r: redis.Redis = Depends(get_redis)):
     # r = redis.Redis('redis://redis:6379')
     # r = aioredis.from_url(config.redis_url, decode_responses=True)
     top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
@@ -95,8 +107,8 @@ def get_top_winners():
 
 # return top 10 streaks
 @app.get('/stats/top-streaks')
-def get_top_streaks():
-    r = redis.Redis(host='redis', port=6379, decode_responses=True)
+def get_top_streaks(r: redis.Redis = Depends(get_redis)):
+    print('PASSWORD: ', REDISCLI_AUTH_PASSWORD)
     # r = redis.Redis('redis://redis:6379')
     # r = aioredis.from_url(config.redis_url, decode_responses=True)
     top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)

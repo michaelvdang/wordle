@@ -1,14 +1,19 @@
-1. figure out how containers communicate with one another (it's something about localhost)
-2. databases in each container are separate (not shared) -> can we use volume to solve this? 
+1. DONE: figure out how containers communicate with one another (it's something about localhost)
+2. DONE: databases in each container are separate (not shared) -> can we use volume to solve this? 
   - using the same volume names in each container won't do it
   - Yes we can use docker volumes to solve this: https://docs.docker.com/storage/volumes/
   - Can we create volume in docker-compose or do we have to create them before docker-compose
   - read docker compose volume: https://docs.docker.com/compose/compose-file/07-volumes/
-3. connect to Redis from Stats (see fastapi-redis)
-
+3. DONE: connect to Redis from Stats (see fastapi-redis)
 */1 * * * *  python ./bin/TopTen.py >> .bin/cron.log 2>&1
 
-4. Move microservices to their own folders and create image from there 
+4. DONE: Move microservices to their own folders and create image from there 
   -> Restore to last commit, then use volume to persist SQLite
   -> We will no longer need to run init-docker.sh for every container, fewer files to copy
   -> maybe leave Orchestrator out in root folder to copy bin and call init-docker.sh
+
+5. DONE: For Wednesday, first thing is to check whether making Redis private stopped the flushing by hackers
+However, crontab stopped working because it can't access Redis
+
+6. Use env to store redis password, see how a simple container works with redis password
+It's not working for Wordle currently

@@ -5,21 +5,32 @@
 from fastapi import FastAPI, Depends
 import random
 import redis
+import os
+from dotenv import load_dotenv
 
-def get_db():
-  yield redis.Redis(host='redis', port=6379, decode_responses=True)
+load_dotenv()
+
+REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
+def get_redis(username: str = 'default'):
+  yield redis.Redis(host='redis', 
+                    port=6379, 
+                    decode_responses=True, 
+                    password=REDISCLI_AUTH_PASSWORD,
+                    username=username
+                    )
 
 app = FastAPI()
 
 @app.get('/')
-def get_test():
+def get_test(r: redis.Redis = Depends(get_redis)):
   return {'message': 'Play.py'}
 
 # create a new game object with 6 remaining guesses in Redis
 @app.post('/play')
-def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_db)):
+def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
+  top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
+  print('TOP WINS: ', top_wins)
   key = f"{guid}:{game_id}"
-  print('new key: ', key)
   with r.pipeline() as pipe:
     try:
       pipe.watch(key)
@@ -27,6 +38,7 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_db)):
       if r.exists(key):
         return {'status': 'error', 'message':"ERROR: this game already exists"}
       r.hset(key, 'remain', 6)
+      r.expire(key, 60*60*24) # expire in 24 hours
       # r.rpush(key, 6)
       pipe.unwatch()
       return {**(r.hgetall(key)), 'status': 'success'}
@@ -36,13 +48,15 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_db)):
   
 # add new guess to current game
 @app.put('/play')
-def update_game_with_guess(guid: str, game_id: int, guess: str, r: redis.Redis = Depends(get_db)):
+def update_game_with_guess(guid: str, 
+                           game_id: int, 
+                           guess: str, 
+                           r: redis.Redis = Depends(get_redis)):
   key = f"{guid}:{game_id}"
-
   with r.pipeline() as pipe:
     try: 
       pipe.watch(key)
-      remain: int = int(r.hget(key, 'remain'))
+      remain: int = int(r.hget(key, 'remain')) # error checking, if key doesn't exist, int(NoneType) will return error
       # guesses_remain: int = int(r.lindex(key, 0))
       if remain > 0:
         pipe.multi()
@@ -63,7 +77,9 @@ def update_game_with_guess(guid: str, game_id: int, guess: str, r: redis.Redis =
       # return "ERROR: someone tried guessing at the same time"
 
 @app.get('/play')
-def restore_game(guid: str, game_id: int, r: redis.Redis = Depends(get_db)):
+def restore_game(guid: str, 
+                 game_id: int, 
+                 r: redis.Redis = Depends(get_redis)):
   key = f"{guid}:{game_id}"
   # response = {}
 

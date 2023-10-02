@@ -3,20 +3,25 @@ services:
   redis:
     image: redis:alpine
     container_name: 'redis-cont'
+    # command: ash -c "redis-server --appendonly yes --requirepass password"
+    command: redis-server /etc/redis.conf # this file has password and other configs
     ports:
-      - "6379:6379"
+      - "6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
+    volumes:
+      - ./var/redis:/data     # add volume to persist data between container restarts
+      - ./redis.conf:/etc/redis.conf  # don't forget to import the config file
   stats:
-    # build: .
-    image: w-stats
-    container_name: 'stats-container'
+    # build: . # specify the directory of the Dockerfile to build the image
+    image: w-stats    # must build image manually first
+    container_name: 'stats-cont'
     ports: 
       - "9000:9000"
     volumes:
       - db:/wordle/var
+      - .env:/wordle/.env
     depends_on:
       - redis
   wordcheck:
-    # build: .
     image: w-check
     container_name: 'check-cont'
     ports: 
@@ -24,7 +29,6 @@ services:
     volumes:
       - db:/wordle/var
   wordvalidation:
-    # build: .
     image: w-validation
     container_name: 'validation-cont'
     ports: 
@@ -32,19 +36,21 @@ services:
     volumes:
       - db:/wordle/var
   play:
-    # build: .
     image: w-play
     container_name: 'play-cont'
     ports: 
       - "9300:9300"
+    volumes:
+      - db:/wordle/var
+      - .env:/wordle/.env
   orchestrator:
-    # build: .
     image: w-orc
     container_name: 'orc-cont'
     ports: 
       - "9400:9400"
     volumes:
       - db:/wordle/var
+      - ./.env:/wordle/.env
     depends_on:
       - stats
       - wordcheck

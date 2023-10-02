@@ -16,10 +16,12 @@ def start_new_game(user_name: str):# = Body()):
     # find user_id
     res = httpx.get('http://stats:9000/stats?user_name=' + user_name)    # for container
     # res = httpx.get('http://localhost:9000/api/v1/stats?user_name=' + user_name) # for non-container
-    guid = res.json()
-    print
+    # guid = res.json()
+    user = res.json()
+    
     # deny when there wrong user_name is given
-    if guid == -1:
+    if user == -1:
+    # if guid == -1:
         return {'game_id' : -1, 'status': 'error', 'message': 'user does not exist'}
 
     # choose new game_id 
@@ -29,9 +31,9 @@ def start_new_game(user_name: str):# = Body()):
     # create new game
     # new_game = httpx.post('http://localhost:9300/api/v1/play?guid=' + '1' + 
     #                             '&game_id=' + str(game_id))
-    new_game = httpx.post('http://play:9300/play?guid=' + (guid) + 
+    new_game = httpx.post('http://play:9300/play?guid=' + (user['guid']) + 
                                 '&game_id=' + str(game_id))
-    return {'status' : 'new game created', 'guid' : guid, 'game_id' : game_id, **new_game.json()}
+    return {'status' : 'new game created', 'guid' : user['guid'], 'game_id' : game_id, **new_game.json()}
 
 
 

@@ -56,13 +56,32 @@ How to start the application:
     - in Terminal: 
         - foreman start -m 'stats=3,check=1,validate=1,play=1,orchestratorb=1,traefik=1' 
 
-- Add a cronjob to update Redis every 10 minutes - use a lightweight image with cron:
+- Add a cronjob to update Redis every 10 minutes - needs patience because it quietly fails:
     - run: crontab -e
     - Enter: '*/10 * * * *  /usr/bin/python3 /{path to project folder}/bin/TopTen.py >> /{Path to project folder}/cron.log 2>&1'
-    - Testing Wordle: '*/1 * * * *  python ./bin/TopTen.py >> .bin/cron.log 2>&1'
+    - NOTE: in DO Ubuntu Droplet, the 'Home' directory is /root, 
+        so the full file path for this is /root/wordle/bin/TopTen.py
+    - Also: chmod 744 bin/TopTen.py (has been added to Dockerfile for Orchestrator)
     - Save and quit editor
 
-
+- Redis:
+    - Security:
+        - We must set password to use ACL because the port is open to WAN, anyone can access it
+        - Also, protected mode protects from non-localhost users but we still have to set a password anyway or otherwise we'd lose access
+        - See list of ACL users: ACL LIST
+        - More commands: https://redis.io/commands/acl-setuser/
+        - But the way to go is by using redis.conf file, (or an external ACL file)
+            - https://redis.io/docs/management/config-file/
+        - To use redis.conf in docker compose:
+            - services > redis:
+                - command: redis-server /etc/redis.conf
+                - volumes:
+                    - ./redis.conf:/etc/redis.conf
+    - Data persistence: 
+        - Data is wiped from memory between restarts, but redis periodically dumps data to a file, just give it a volume like:
+            - ./var/redis:/data
+        - But this way we can lose a couple minutes' worth of data in case of an outage. so use Append Only File in redis.conf:
+            - appendonly yes
 
 Project 4:
 

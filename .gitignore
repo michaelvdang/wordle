@@ -1,3 +1,10 @@
+.env
+redis.conf
+var/
+*.tar.gz
+__pycache__
+depr
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

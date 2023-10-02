@@ -14,6 +14,7 @@ COPY ./ /wordle
 ## but these lines create different databases for each container (not shared)
 RUN mkdir -p /wordle/var
 RUN chmod 544 ./bin/init-docker.sh
+RUN chmod 544 ./bin/TopTen.py
 RUN ./bin/init-docker.sh
 
 # CMD ["ls", "./var"]
