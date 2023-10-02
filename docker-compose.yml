@@ -11,8 +11,8 @@ services:
       - ./var/redis:/data     # add volume to persist data between container restarts
       - ./redis.conf:/etc/redis.conf  # don't forget to import the config file
   stats:
-    # build: . # specify the directory of the Dockerfile to build the image
-    image: w-stats    # must build image manually first
+    build: ./app/services/Stats
+    # image: w-stats    # must build image manually first
     container_name: 'stats-cont'
     ports: 
       - "9000:9000"
@@ -22,21 +22,24 @@ services:
     depends_on:
       - redis
   wordcheck:
-    image: w-check
+    build: ./app/services/WordCheck
+    # image: w-check
     container_name: 'check-cont'
     ports: 
       - "9100:9100"
     volumes:
       - db:/wordle/var
   wordvalidation:
-    image: w-validation
+    build: ./app/services/WordValidation
+    # image: w-validation
     container_name: 'validation-cont'
     ports: 
       - "9200:9200"
     volumes:
       - db:/wordle/var
   play:
-    image: w-play
+    build: ./app/services/Play
+    # image: w-play
     container_name: 'play-cont'
     ports: 
       - "9300:9300"
@@ -44,7 +47,8 @@ services:
       - db:/wordle/var
       - .env:/wordle/.env
   orchestrator:
-    image: w-orc
+    build: .
+    # image: w-orc
     container_name: 'orc-cont'
     ports: 
       - "9400:9400"
