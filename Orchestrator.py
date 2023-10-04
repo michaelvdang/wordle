@@ -1,11 +1,24 @@
 import httpx
 from fastapi import FastAPI, Depends, Body, Query
+from fastapi.middleware.cors import CORSMiddleware
 import random
 from models import Game
 import json
 import asyncio
 
 app = FastAPI()
+origins = [     # curl and local browser are always allowed
+    # "http://localhost:8080",
+    "http://localhost:5173",    # needs this even when React App is local and Orc is remote
+    "http://localhost:9100",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/')
 def test():
@@ -31,6 +44,8 @@ def start_new_game(user_name: str):# = Body()):
     # create new game
     # new_game = httpx.post('http://localhost:9300/api/v1/play?guid=' + '1' + 
     #                             '&game_id=' + str(game_id))
+    print('new guid: ' + user['guid'])
+    print('new game_id: ' + str(game_id))
     new_game = httpx.post('http://play:9300/play?guid=' + (user['guid']) + 
                                 '&game_id=' + str(game_id))
     return {'status' : 'new game created', 'guid' : user['guid'], 'game_id' : game_id, **new_game.json()}
@@ -75,7 +90,7 @@ def start_new_game(user_name: str):# = Body()):
 
 
 @app.post('/game/{game_id}', status_code=201)
-def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
+def add_guess(*, guid: str, game_id: int, guess: str):
     # check word is valid and has guesses_remaining
 
     async def validate_word():
@@ -110,6 +125,8 @@ def add_guess(*, guid: str = Query(default=None), game_id: int, guess: str):
             # record the guess and update number of guesses remaining
             _curr_game_future = await client.put('http://play:9300/play?guid=' + 
                             str(guid) + '&game_id=' + str(game_id) + '&guess=' + guess)
+            # add something like: word_check_results = {'guess_results': word_check_result}
+            # and have play append the results to a results string like: '01200|20210|'
             curr_game_result = _curr_game_future.json()
             return curr_game_result
     

@@ -1,6 +1,6 @@
 # stores top ten wins and streaks of each shard in Redis
 
-from fastapi import FastAPI, Depends
+# from fastapi import FastAPI, Depends
 import contextlib
 import sqlite3
 import redis
@@ -44,7 +44,7 @@ with contextlib.closing(sqlite3.connect(GAME1_DB)) as g1:
           for s in streaks:
             pipe.zadd('top_streaks', {s[0]: s[1]})
             # print(s[0], s[1])
-          pipe.expire('top_streaks', 20)
+          pipe.expire('top_streaks', 24*60*60)
           pipe.execute()
       
       for g in games: 
@@ -53,7 +53,7 @@ with contextlib.closing(sqlite3.connect(GAME1_DB)) as g1:
         with r.pipeline() as pipe:
           for w in wins:
             pipe.zadd('top_wins', {w[0] : w[1]})
-          pipe.expire('top_wins', 60)
+          pipe.expire('top_wins', 24*60*60)
           pipe.execute()
 
 print('Updated top 10 streaks and wins in Redis at ' + str(datetime.now()))

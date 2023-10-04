@@ -5,6 +5,9 @@ var/
 __pycache__
 depr
 
+# React frontend
+node_modules
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

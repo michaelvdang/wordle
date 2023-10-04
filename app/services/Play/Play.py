@@ -11,13 +11,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
-def get_redis(username: str = 'default'):
-  yield redis.Redis(host='redis', 
-                    port=6379, 
-                    decode_responses=True, 
-                    password=REDISCLI_AUTH_PASSWORD,
-                    username=username
-                    )
+def get_redis():
+  yield redis.Redis(
+    host='redis', 
+    port=6379, 
+    decode_responses=True, 
+    password=REDISCLI_AUTH_PASSWORD
+  )
 
 app = FastAPI()
 
