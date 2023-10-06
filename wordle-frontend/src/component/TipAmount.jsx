@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const tips = [
-  { tip: 5, isCustom: false },
+  // { tip: 5, isCustom: false },
   { tip: 10, isCustom: false },
   { tip: 15, isCustom: false },
   { tip: 20, isCustom: false },
@@ -17,6 +17,29 @@ const TipAmount = ({setTip}) => {
   const [activeTip, setActiveTip] = useState(null);
   const [customTip, setCustomTip] = useState(0);
   
+  const handleTipClick = (index) => {
+    setCustomSelected(false);
+    if (activeTip === index) {
+      setActiveTip(null);
+      return;
+    }
+
+    setActiveTip(index);
+    setTip(tips[index].tip / 100);
+  };
+  
+  const handleCustomTip = () => {
+    setActiveTip(null);
+    setCustomSelected(true);
+    setTip(customTip / 100);
+  }
+
+  const handleCustomTipBlur = () => {
+    setTip(customTip / 100);
+    if (customTip > 0) return;
+    setCustomSelected(false);
+  }
+  
   return (
     <div>
       <label
@@ -29,7 +52,7 @@ const TipAmount = ({setTip}) => {
       <div className="mt-2 grid grid-cols-3 gap-3">
         {tips.map((tip, index) => (
           <div key={index}>
-            {tip.isCustome ? (
+            {tip.isCustom ? (
               <>
                 {customSelected ? (
                   <input
@@ -44,14 +67,18 @@ const TipAmount = ({setTip}) => {
                     aria-describedby="tip-amount"
                     value={customTip}
                     onChange={(e) => setCustomTip(e.target.value)}
+                    onBlur={handleCustomTipBlur}
                   />
-                ): (
+                ) : (
                   <button
                     type="button"
-                    className="w-full rounded-md bg-gray-100 px-3.5 py-2.5 font-medium
-                    text-cyan-700 shadow-sm hover:bg-gray-200 focus-visible:outline
+                    className=" bg-gray-100 text-cyan-700 hover:bg-gray-200 
+                    w-full rounded-md px-3.5 py-2.5 font-medium shadow-sm 
+                    focus:outline focus:outline-2 focus:outline-offset-2 
+                    focus:outline-cyan-600 focus-visible:outline
                     focus-visible:outline-2 focus-visible:outline-offset-2
                     focus-visible:outline-cyan-600"
+                    onClick={handleCustomTip}
                   >
                     Custom
                   </button>
@@ -61,13 +88,15 @@ const TipAmount = ({setTip}) => {
               <button
               type="button"
               className={`${
-                activeTip === tip.tip
+                activeTip === index
                   ? 'bg-cyan-200 text-cyan-700 hover:bg-cyan-100'
                   : 'bg-cyan-600 text-white hover:bg-cyan-500'
-              } w-full rounded-md px-3.5 py-2.5 file:font-medium
-              shadow-sm focus-visible:outline
-              focus-visible:outline-2 focus-visible:outline-offset-2
-              focus-visible:outline-cyan-600`} 
+                } w-full rounded-md px-3.5 py-2.5 font-medium
+                shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 
+                focus:outline-cyan-600 focus-visible:outline
+                focus-visible:outline-2 focus-visible:outline-offset-2
+                focus-visible:outline-cyan-600`} 
+                onClick={() => handleTipClick(index)}
               >
                 {tip.tip}%
               </button>

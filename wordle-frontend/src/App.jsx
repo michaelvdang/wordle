@@ -1,5 +1,6 @@
 import Page from "./component/Page";
 import React from "react";
+import Wordle from "./component/Wordle";
 
 export default function App() {
   // const data = fetch('http://localhost:8000/')
@@ -31,7 +32,10 @@ export default function App() {
   //       .then(data => console.log(data))
   
   return (
-    <Page/>
+    // <div className="items-center justify-center">
+      <Wordle/>
+      // <Page/>
+    // </div>
 
     // <main className="flex min-h-screen flex-col items-center justify-center p-5 lg:p-24">
     //   <h1 className="my-14 text-center text-3xl font-bold uppercase tracking-widest text-cyan-800">
