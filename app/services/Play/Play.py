@@ -13,6 +13,7 @@ load_dotenv()
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
 def get_redis():
   yield redis.Redis(
+    # host='localhost', 
     host='redis', 
     port=6379, 
     decode_responses=True, 
@@ -28,8 +29,6 @@ def get_test(r: redis.Redis = Depends(get_redis)):
 # create a new game object with 6 remaining guesses in Redis
 @app.post('/play')
 def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
-  top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
-  print('TOP WINS: ', top_wins)
   key = f"{guid}:{game_id}"
   with r.pipeline() as pipe:
     try:
@@ -37,7 +36,13 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
       # TODO: raise proper error
       if r.exists(key):
         return {'status': 'error', 'message':"ERROR: this game already exists"}
-      r.hset(key, 'remain', 6)
+      r.hset(key, mapping={
+        'remain': 6,
+        'present_letters': '',
+        'absent_letters': '',
+        'game_progress': '', # *ng** for n and g in correct position
+      })
+      # r.hset(key, 'remain', 6)
       r.expire(key, 60*60*24) # expire in 24 hours
       # r.rpush(key, 6)
       pipe.unwatch()
@@ -55,19 +60,14 @@ def update_game_with_guess(guid: str,
   key = f"{guid}:{game_id}"
   with r.pipeline() as pipe:
     try: 
-      pipe.watch(key)
       remain: int = int(r.hget(key, 'remain')) # error checking, if key doesn't exist, int(NoneType) will return error
-      # guesses_remain: int = int(r.lindex(key, 0))
+      pipe.watch(key)
       if remain > 0:
         pipe.multi()
         pipe.hincrby(key, 'remain', -1)
         pipe.hset(key, 'guess' + str(6 - remain + 1), guess)
-        # pipe.lset(key, 0, guesses_remain - 1)
-        # pipe.rpush(key, guess)
         pipe.execute()
         return {**(r.hgetall(key)), 'status': 'success'}
-        # return {'game' : r.lrange(key, 0, -1), 'status': 'success'}
-        # return "Updated game successfully"
       else:
         pipe.unwatch()
         return {'game' : {}, 'status': 'error', 'message': 'guesses limit reached'}
@@ -81,11 +81,6 @@ def restore_game(guid: str,
                  game_id: int, 
                  r: redis.Redis = Depends(get_redis)):
   key = f"{guid}:{game_id}"
-  # response = {}
-
-  # response = r.hgetall(key)
-  # response['status'] = 'success'
-  # return response
 
   ## do we need pipe here?
   with r.pipeline() as pipe:

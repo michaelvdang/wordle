@@ -13,8 +13,8 @@ class Game(BaseModel):
     guess: str
 
 class Settings(BaseSettings):
-    answers_database: str = '/wordle/var/Answers.db'  # for container
-    # answers_database: str = './var/Answers.db'    # for non-container
+    # answers_database: str = '/wordle/var/Answers.db'  # for container
+    answers_database: str = './var/Answers.db'    # for non-container
 
     # class Config:
     #     env_file = ".envWordCheck"
@@ -44,14 +44,19 @@ def check_answer(game: Game, db: sqlite3.Connection = Depends(get_db)):
     answer = row[1]
     guess = game.guess
     results = []
+    present_letters = set()
+    absent_letters = set()
     for i in range(len(guess)):
         if guess[i] == answer[i]:
             results.append(2)
+            present_letters.add(guess[i])
         elif guess[i] in answer:
             results.append(1)
+            present_letters.add(guess[i])
         else:
             results.append(0)
-    return results
+            absent_letters.add(guess[i])
+    return {'results': results, 'present_letters': present_letters, 'absent_letters': absent_letters}
 
 @app.put("/answers/change")
 def change_answer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(get_db)):
