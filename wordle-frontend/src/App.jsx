@@ -6,10 +6,10 @@ export default function App() {
   // const data = fetch('http://localhost:8000/')
   // const data = fetch('https://jsonplaceholder.typicode.com/todos/1')
 
-  // // testing the API
-  const data = fetch('http://146.190.58.25:9400/')
-      .then(response => response.json())
-      .then(data => console.log(data))
+  // // // testing the API
+  // const data = fetch('http://146.190.58.25:9400/')
+  //     .then(response => response.json())
+  //     .then(data => console.log(data))
   
   // // // add new guess
   // const guid = "afd0b036-625a-3aa8-b639-9dc8c8fff0ff";
@@ -33,7 +33,9 @@ export default function App() {
   
   return (
     // <div className="items-center justify-center">
+    <>
       <Wordle/>
+    </>
       // <Page/>
     // </div>
 

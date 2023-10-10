@@ -31,12 +31,12 @@ def start_new_game(user_name: str):# = Body()):
     # res = httpx.get('http://stats:9000/stats?user_name=' + user_name)    # for container
     # res = httpx.get('http://localhost:9000/api/v1/stats?user_name=' + user_name) # for non-container
     # guid = res.json()
-    user = res.json()
+    user = res.json() 
     
-    # deny when there wrong user_name is given
+    # create new user when there wrong user_name is given
     if user == -1:
-    # if guid == -1:
-        return {'game_id' : -1, 'status': 'error', 'message': 'user does not exist'}
+        res = httpx.post('http://stats:9000/stats?user_name=' + user_name)
+        user = res.json()['user']
 
     # choose new game_id 
     # answers = httpx.get('http://localhost:9100/answers/count')   # use localhost for non container
@@ -114,16 +114,16 @@ def add_guess(*, guid: str, game_id: int, guess: str):
     # 1. record the win
     print('word_check: ', word_check)
     if word_check['results'].count(2) == 5:
-        game_result = {'guesses': 6 - int(curr_game_result['remain']), 'won' : True}
+        game_result = {'guesses': 6 - int(curr_game_result['remain']), 'won' : True, 'completed' : True}
         httpx.post('http://stats:9000/stats/' + str(guid) + '/' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
     # 2. retrieve user's score to return
-        return {**(curr_game_result), 'won': True}
+        return {'guess_results': word_check['results'], **(curr_game_result), 'won': True, 'completed' : True}
 
     # LOSE: guess is incorrect and no guesses remain
     elif int(curr_game_result['remain']) == 0:
         # 1. record the loss
-        game_result = {'guesses' : 6, 'won' : False}
+        game_result = {'guesses' : 6, 'won' : False, 'completed' : True}
         httpx.post('http://stats:9000/stats/' + str(guid) + '/' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
         # 2. Retrieve winning word
@@ -134,12 +134,12 @@ def add_guess(*, guid: str, game_id: int, guess: str):
 
         # 3. return user's score
         
-        return {'answer': answer['word'], **(curr_game_result), 'won': False}
+        return {'guess_results': word_check['results'], 'answer': answer['word'], **(curr_game_result), 'won': False, 'completed' : True}
 
     # CONT: guess is incorrect and guesses remain
     else:
         # modify curr_game_result here to include word check results and update game progress
         # figure out how to store absent letters and present letters
         # they don't need to be a set because the max length is only 25
-        return {'guess_results': word_check['results'], **(curr_game_result)}
+        return {'guess_results': word_check['results'], **(curr_game_result), 'won': False, 'completed' : False}
 

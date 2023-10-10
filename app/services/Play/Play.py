@@ -41,6 +41,8 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
         'present_letters': '',
         'absent_letters': '',
         'game_progress': '', # *ng** for n and g in correct position
+        # 'completed': int(False),
+        # 'won': int(False),
       })
       # r.hset(key, 'remain', 6)
       r.expire(key, 60*60*24) # expire in 24 hours
