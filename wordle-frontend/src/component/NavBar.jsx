@@ -2,19 +2,27 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
-const navigation = [
-  { name: 'New Game', href: '#', current: true },
-  // { name: 'Team', href: '#', current: false },
-  // { name: 'Projects', href: '#', current: false },
-  // { name: 'Calendar', href: '#', current: false },
-]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function NavBar(props) {
-  const { setIsNewGame } = props
+  const { setIsNewGame, setShowStats, setShowLeaderboard, username, setIsSettingUsername } = props
+  const handleUsernameClick = () => {
+    setIsSettingUsername(true);
+  }
+
+
+  
+  const navigation = [
+    { name: 'User Stats', href: '#', current: false, onClick: () => setShowStats(true) },
+    { name: 'Leaderboard', href: '#', current: false, onClick: () => setShowLeaderboard(true) },
+    { name: 'New Game', href: '#', current: false, onClick: () => setIsNewGame(true) },
+    // { name: 'Team', href: '#', current: false },
+    // { name: 'Projects', href: '#', current: false },
+    // { name: 'Calendar', href: '#', current: false },
+  ]
   
   return (
     <Disclosure as="nav" className="bg-gray-800 w-full">
@@ -42,6 +50,12 @@ export default function NavBar(props) {
                     alt="Your Company"
                   />
                 </div>
+                <div 
+                  className='px-4 flex items-center'
+                  onClick={handleUsernameClick}
+                >
+                  {username}
+                </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 {/* <button
@@ -59,11 +73,11 @@ export default function NavBar(props) {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                          'rounded-md px-3 py-2 text-sm font-medium bg-green-500'
+                          item.current ? 'bg-gray-900 text-white' : 'text-slate-900 hover:bg-green-500 hover:text-white',
+                          'rounded-md px-3 py-2 text-sm font-medium bg-green-400'
                         )}
                         aria-current={item.current ? 'page' : undefined}
-                        onClick={() => setIsNewGame(true)}
+                        onClick={item.onClick}
                       >
                         {item.name}
                       </a>
@@ -143,7 +157,7 @@ export default function NavBar(props) {
                     'block rounded-md px-3 py-2 text-base font-medium'
                   )}
                   aria-current={item.current ? 'page' : undefined}
-                  onClick={() => setIsNewGame(true)}
+                  onClick={item.onClick}
                 >
                   {item.name}
                 </Disclosure.Button>

@@ -85,8 +85,8 @@ How to start the application:
 
 Deploy using Docker: 
 - Most of the above steps are done automatically using docker compose, except for 3 things:
-    - Copying the .env file (was .gitignore so git clone doesn't work)
-    - Copying the redis.conf file (also .gitignore)
+    - Copying the .env file (was .gitignored so git clone doesn't work)
+    - Copying the redis.conf file (also .gitignored)
     - Setting up crontab
 - .env and redis.conf has passwords so they must be copied manually
 - Setting up crontab (probably best done manualy since it's outside of docker)

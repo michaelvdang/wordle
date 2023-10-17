@@ -1,7 +1,10 @@
 import React, {createRef, useEffect, useState} from 'react'
 import NewGameDialog from './NewGameDialog'
 import NewGameDialogHTML from './NewGameDialogHTML'
+import UsernameDialog from './UsernameDialog'
 import NavBar from './NavBar'
+import StatsDialog from './StatsDialog'
+import LeaderboardModal from './LeaderboardModal'
 
 const LETTERS = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -19,7 +22,10 @@ const GUESSES = [
 
 const Wordle = () => {
 
-  const [userName, setUserName] = useState('ucohen');
+  const [username, setUsername] = useState('ucohen');
+  const [isSettingUsername, setIsSettingUsername] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [guesses, setGuesses] = useState([]);       // array of made guesses
   const [guessIndex, setGuessIndex] = useState(0);  // index of the current guess
   // const [letterIndex, setLetterIndex] = useState(0);
@@ -32,6 +38,7 @@ const Wordle = () => {
     game_id: '',
     user_name: '',
     guid: '',
+    user_id: '',
     remain: 0,
     guesses: [],
     absent_letters: [],
@@ -40,38 +47,48 @@ const Wordle = () => {
     completed: false,
     won: false,
     answer: '',
-  })
+  });
   const mainRef = createRef(null);
 
   const fetchNewGame = () => {
-    fetch('http://localhost:9400/game/new?user_name=' + userName,
-      // fetch('http://146.190.58.25:9400/game/new?user_name=' + userName,
-        {
-          method: 'POST',
-        })
-        .then(response => response.json())
-        .then(data => setGame({
-          game_id: data.game_id,
-          user_name: userName,
-          guid: data.guid, 
-          remain: parseInt(data.remain),
-          guesses: [],
-          absent_letters: '',
-          present_letters: '',
-          correct_letters: '*****',
-          completed: false,
-          won: false,
-        }))
+    fetch('http://localhost:9400/game/new?user_name=' + username,
+      // fetch('http://146.190.58.25:9400/game/new?user_name=' + username,
+      {
+        method: 'POST',
+      })
+      .then(response => response.json())
+      .then(data => setGame({
+        game_id: data.game_id,
+        user_name: username,
+        guid: data.guid,
+        user_id: data.user_id,
+        remain: parseInt(data.remain),
+        guesses: [],
+        absent_letters: '',
+        present_letters: '',
+        correct_letters: '*****',
+        completed: false,
+        won: false,
+      }))
   }
 
-  // first page load, start new game with userName
+  // first page load, start new game with username
   useEffect(() => {
+    if (username === '') {
+      setIsSettingUsername(true);
+    }
     setGuesses([]);
     setGuessIndex(0);
     setCurrentGuess('');
-    fetchNewGame();
+    console.log('component did mount');
   }, [])
-  
+
+  useEffect(() => {
+    if (username !== '')
+      fetchNewGame();
+    console.log('isSettingUsername updated');
+  }, [isSettingUsername])
+
   // reset and start new game
   useEffect(() => {
     if (isNewGame) {
@@ -86,33 +103,21 @@ const Wordle = () => {
     }
   }, [isNewGame])
   
-  // console.log('Wordle data: ', game);
-
+  useEffect(() => {
+    mainRef.current.focus();
+  }, [showStats])
+  
   const handleClick = () => {
     setGuesses([...guesses, GUESSES[guessIndex]]);
     setGuessIndex(guessIndex + 1);
   }
 
-  // useEffect(() => {
-  //   document.addEventListener('keydown', handleKeyDown)
-  //   return () => {
-  //     document.removeEventListener('keydown', null);
-  //   }
-  // }, [])
-
-  useEffect(() => {
-    // console.log('useEffect currentGuess: ', currentGuess);
-    mainRef.current.focus();
-  }, [guesses])
-  
   useEffect(() => {
     console.log('game: ', game);
   }, [game])
   
   
   const handleValidWord = (data) => {
-
-
     // update game
     // update correct, present, and absent letters
     const results = data['guess_results'];
@@ -163,7 +168,7 @@ const Wordle = () => {
       if (e.key === 'Enter') {
         fetch('http://localhost:9400/game/' + game.game_id 
         // fetch('http://146.190.58.25:9400/game/' + game.game_id 
-          + '?guid=' + game.guid + '&guess=' + currentGuess,
+          + '?guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
           {
             method: 'POST',
           })
@@ -192,20 +197,33 @@ const Wordle = () => {
   
 
   const bubbleStyle = 'flex items-center justify-center \
-                        rounded-full cursor-default select-none text-gray-800 w-28 h-28 \
-                        font-bold text-6xl pb-2 font-serif ';
+                        rounded-full cursor-default select-none \
+                        w-14 h-14 text-xl\
+                        sm:w-20 sm:h-20 sm:text-3xl \
+                        md:w-28 md:h-28 md:text-6xl md:pb-2 \
+                        text-gray-800 font-bold font-serif ';
   const smallBubbleStyle = 'flex items-center justify-center \
                         cursor-default select-none rounded-3xl \
-                        text-gray-800 w-10 h-10 font-bold text-sm pb-1 font-serif';
+                        w-6 h-6 text-[10px] \
+                        sm:w-8 sm:h-8 sm:text-xs \
+                        md:w-10 md:h-10 md:text-sm md:pb-1 \
+                        font-bold text-gray-800 font-serif';
   // const wonStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-green-500 ';
   const errorStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-red-500 ';
   const regularStyle = 'bg-white ';
   const absentLetterStyle = 'bg-gray-500 ';
   const presentLetterStyle = 'bg-blue-300 ';
   const correctLetterStyle = 'bg-green-300 ';
-  
+
   return (
     <>
+    {isSettingUsername && 
+      <UsernameDialog 
+        username={username}
+        setUsername={setUsername} 
+        setIsSettingUsername={setIsSettingUsername}
+      />
+    }
     {game.completed && // problem is this is not getting the latest game object
     // {gameCompleted &&
       <NewGameDialog
@@ -217,16 +235,34 @@ const Wordle = () => {
         numGuesses={guessIndex}
       />
     }
+    {showStats && 
+      <StatsDialog 
+        setShowStats={setShowStats}
+        username={username}
+        user_id={game.user_id}
+        mainRef={mainRef}
+      />
+    }
+    {showLeaderboard && 
+      <LeaderboardModal 
+        setShowLeaderboard={setShowLeaderboard}
+      />
+    }
     <NavBar 
       setIsNewGame={setIsNewGame}
+      setShowStats={setShowStats}
+      setShowLeaderboard={setShowLeaderboard}
+      username={username}
+      setIsSettingUsername={setIsSettingUsername}
     />
     <main 
-      className="flex min-h-screen flex-col items-center justify-center outline-none " 
+      className="flex flex-col items-center justify-center outline-none mt-12" 
+      // className="flex min-h-screen flex-col items-center justify-center outline-none " 
       onKeyDown={handleKeyDown}
       tabIndex={0}
       ref={mainRef}
       >
-      <div className='grid grid-rows-6 gap-2 mb-24'>
+      <div className='grid grid-rows-6 gap-2 mb-12 sm:mb-18 md:mb-24'>
         {[0,1,2,3,4,5].map((i) => (
           <div key={i} className='grid grid-cols-5 gap-2'>
             {guesses[i] 

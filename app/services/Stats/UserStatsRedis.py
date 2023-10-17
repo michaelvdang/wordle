@@ -5,6 +5,7 @@ import contextlib
 import datetime
 import sqlite3
 from pydantic import BaseModel#, BaseSettings
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic_settings import BaseSettings
 import json
 import uuid
@@ -32,6 +33,7 @@ GAME3_DB = './var/game3.db'
 class Result(BaseModel):
     guesses: int
     won: bool
+    completed: bool
 
 
 class Settings(BaseSettings):
@@ -68,6 +70,18 @@ def get_db3():
 settings = Settings()
 app = FastAPI()
 
+origins = [     # curl and local browser are always allowed
+    # "http://localhost:8080",
+    "http://localhost:5173",    # needs this even when React App is local and Orc is remote
+    "http://localhost:9100",
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def hello():
@@ -164,6 +178,7 @@ def getUserStats(userID: int, udb: sqlite3.Connection = Depends(get_db), g1: sql
     for row in gameguesses:
         guesses.update({row[0]: row[1]})
     data_json.update({"guesses": guesses})
+    data_json.update({'user_id': userID})
     return data_json
 
 # return user info for a given username
