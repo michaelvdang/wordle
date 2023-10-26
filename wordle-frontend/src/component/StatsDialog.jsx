@@ -29,7 +29,7 @@ export default function StatsDialog(props) {
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:9000/stats/` + user_id)
+    fetch(`http://localhost:9000/stats/username/` + user_id)
       .then(res => res.json())
       .then(res => {
         console.log(res);

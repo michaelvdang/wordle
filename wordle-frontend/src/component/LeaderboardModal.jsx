@@ -2,6 +2,8 @@ import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import {UserIcon} from '@heroicons/react/20/solid';
+import TopStreaksTable from './TopStreaksTable';
+import TopWinsTable from './TopWinsTable';
 
 const stats = {
   user_id: 'User ID',
@@ -15,16 +17,22 @@ const stats = {
 }
 
 export default function LeaderboardModal(props) {
-  const {setShowLeaderboard, username, user_id, mainRef} = props;
-
+  const {setShowLeaderboard} = props;
+  const [topStreaks, setTopStreaks] = useState([])
+  const [topWins, setTopWins] = useState([])
+  const [viewTopWins, setViewTopWins] = useState(true);
   const [open, setOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`http://localhost:9000/stats/top_streaks_and_winners`)
       .then(res => res.json())
       .then(res => {
         console.log(res);
-        
+        setTopStreaks(res.top_streaks);
+        setTopWins(res.top_wins);
+        setLoading(false);
       })
   }, [])
   
@@ -32,6 +40,7 @@ export default function LeaderboardModal(props) {
     setShowLeaderboard(false);
   }
 
+  // all the below used the template in the StatsDialog
   return (
     <>
     <Transition.Root show={true} as={Fragment}>
@@ -63,85 +72,40 @@ export default function LeaderboardModal(props) {
                 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                    <div className='flex items-center justify-center'>
-                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 sm:mx-0 sm:h-10 sm:w-10">
-                        <UserIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />
-                        {/* <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" /> */}
-                      </div>
-                    </div>
                     <div className="flex-grow mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-200">
-                        Header
+                        {viewTopWins ? 'Top Wins' : 'Top Streaks'}
                       </Dialog.Title>
                     </div>
                   </div>
-                  <div className="px-4">
-                    <div className="sm:flex sm:items-start">
-                      <div className="w-full ">
-                        <div className='relative mt-2 flex flex-col flex-grow items-stretch focus-within:z-10'>
-                          {/** table */}
-                          <div className="flex flex-col  overflow-x-auto sm:-mx-6 lg:-mx-8  min-w-full py-2 sm:px-6 lg:px-8">
-                            {/* <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                              <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8"> */}
-                                <div className="overflow-hidden">
-                                  <table className="min-w-full text-left text-sm font-light">
-                                    {/* <thead
-                                      class="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600">
-                                      <tr>
-                                        <th scope="col" class="px-6 py-4">#</th>
-                                        <th scope="col" class="px-6 py-4">First</th>
-                                        <th scope="col" class="px-6 py-4">Last</th>
-                                        <th scope="col" class="px-6 py-4">Handle</th>
-                                      </tr>
-                                    </thead> */}
-                                    <tbody>
-                                      {/* {Object.keys().map((key, index) => {
-                                        return (
-                                          <tr key={index}
-                                            className="border-b bg-gray-600  dark:border-neutral-500 dark:bg-gray-600">
-                                            <td className="whitespace-nowrap px-6 py-4">{stats[key]}</td>
-                                            <td className="whitespace-nowrap px-6 py-4">
-                                              {userStats[key]
-                                                ? userStats[key]
-                                                : 'N/A'}
-                                            </td>
-                                          </tr>
-                                        )
-                                      })} */}
-                                      {/* <tr
-                                        class="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700">
-                                        <td class="whitespace-nowrap px-6 py-4">Win Percentage</td>
-                                        <td class="whitespace-nowrap px-6 py-4">{userStats.win_percentage}%</td>
-                                      </tr> */}
-                                      <tr
-                                        className="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700">
-                                        <td
-                                          colSpan="2"
-                                          className="whitespace-nowrap px-6 py-4 text-center">
-                                          Larry the Bird
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                </div>
-                              {/* </div>
-                            </div> */}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  {viewTopWins ? (
+                    <TopWinsTable topWins={topWins} loading={loading} />
+                  ) : (
+                    <TopStreaksTable topStreaks={topStreaks} loading={loading} />
+                  )}
                 </div>
                 <div className="px-4 py-3 sm:flex sm:flex-row justify-center gap-x-4">
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 
-                    text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
-                    hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    onClick={() => setShowLeaderboard(false)}
-                  >
-                    Close
-                  </button>
+                  {viewTopWins ? (
+                    <button
+                      type="button"
+                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 
+                      text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
+                      hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                      onClick={() => setViewTopWins(!viewTopWins)}
+                    >
+                      View Top Streaks
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 
+                      text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
+                      hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                      onClick={() => setViewTopWins(!viewTopWins)}
+                    >
+                      View Top Wins
+                    </button>
+                  )}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
