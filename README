@@ -84,10 +84,12 @@ How to start the application:
 
 
 Deploy using Docker: 
+- Docker Volume NOTE: using named volume in docker compose means that the volume will be managed by Docker (it won't be in the local ./var directory, but will create new .db files in the virtual ./var directory, the local ones, if they have .db files will not reflect what happens in the app when it is running)
 - Most of the above steps are done automatically using docker compose, except for 3 things:
     - Copying the .env file (was .gitignored so git clone doesn't work)
     - Copying the redis.conf file (also .gitignored)
-    - Setting up crontab
+    - Setting up crontab for TopTen leaderboard 
+        - During dev: run: python bin/TopTen.py manually from one of the containers (usually Orchestrator)
 - .env and redis.conf has passwords so they must be copied manually
 - Setting up crontab (probably best done manualy since it's outside of docker)
     - create a venv: python3 -m venv venv

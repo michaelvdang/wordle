@@ -16,6 +16,10 @@ RUN mkdir -p /wordle/var
 RUN chmod 544 ./bin/init-docker.sh
 RUN chmod 544 ./bin/TopTen.py
 RUN ./bin/init-docker.sh
+# RUN python3 /wordle/bin/wordlist.py
+# RUN python3 /wordle/bin/answers.py
+# RUN python3 /wordle/bin/stats.py
+# RUN python3 /wordle/bin/shard.py
 
 # CMD ["ls", "./var"]
 # CMD ["pwd"]

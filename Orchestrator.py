@@ -27,15 +27,15 @@ def test():
 @app.post('/game/new', status_code=201)
 def start_new_game(user_name: str):# = Body()):
     # find user_id
-    res = httpx.get('http://stats:9000/stats?user_name=' + user_name)    # for running local
+    res = httpx.get('http://stats:9000/stats/id/' + user_name)    # for running local
     # res = httpx.get('http://stats:9000/stats?user_name=' + user_name)    # for container
     # res = httpx.get('http://localhost:9000/api/v1/stats?user_name=' + user_name) # for non-container
     # guid = res.json()
     user = res.json() 
-    
+
     # create new user when there wrong user_name is given
     if user == -1:
-        res = httpx.post('http://stats:9000/stats?user_name=' + user_name)
+        res = httpx.post('http://stats:9000/stats/users/new?user_name=' + user_name)
         user = res.json()['user']
 
     # choose new game_id 
@@ -55,7 +55,7 @@ def start_new_game(user_name: str):# = Body()):
 
 
 @app.post('/game/{game_id}', status_code=201)
-def add_guess(*, game_id: int, guid: str, user_id: int, guess: str):
+def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: str):
     # check word is valid and has guesses_remaining
 
     async def validate_word():
@@ -72,7 +72,10 @@ def add_guess(*, game_id: int, guid: str, user_id: int, guess: str):
             _curr_game_future = await client.get('http://play:9300/play?guid=' + str(guid) + 
                                         '&game_id=' + str(game_id))
             curr_game = _curr_game_future.json()
-            return {'remain': int(curr_game['remain'])}
+            try:
+                return {'remain': int(curr_game['remain'])}
+            except KeyError as e:
+                return {'Error': 'Game not found, wrong guid or game_id'}
 
     async def validate_move():
         return await asyncio.gather(validate_word(), has_guesses_remaining())
@@ -118,7 +121,7 @@ def add_guess(*, game_id: int, guid: str, user_id: int, guess: str):
     print('word_check: ', word_check)
     if word_check['results'].count(2) == 5:
         game_result = {'guesses': 6 - int(curr_game_result['remain']), 'won' : True, 'completed' : True}
-        httpx.post('http://stats:9000/stats/' + str(user_id) + '/' + str(game_id), 
+        httpx.post('http://stats:9000/stats/games/store-results?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
     # 2. retrieve user's score to return
         return {'guess_results': word_check['results'], **(curr_game_result), 'won': True, 'completed' : True}
@@ -127,7 +130,7 @@ def add_guess(*, game_id: int, guid: str, user_id: int, guess: str):
     elif int(curr_game_result['remain']) == 0:
         # 1. record the loss
         game_result = {'guesses' : 6, 'won' : False, 'completed' : True}
-        httpx.post('http://stats:9000/stats/' + str(user_id) + '/' + str(game_id), 
+        httpx.post('http://stats:9000/stats/games/store-results?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
         # 2. Retrieve winning word
         async def get_game_answer():

@@ -39,17 +39,17 @@ with contextlib.closing(sqlite3.connect(GAME1_DB)) as g1:
       games = (g1, g2, g3)
       for g in games:
         streaks = g.execute("SELECT * FROM streaks ORDER BY streak DESC LIMIT 10").fetchall()
-        # print('STREAKS: ', streaks)
+        print('STREAKS: ', streaks)
         with r.pipeline() as pipe:
           for s in streaks:
-            pipe.zadd('top_streaks', {s[0]: s[1]})
+            pipe.zadd('top_streaks', {s[0]: s[5]})
             # print(s[0], s[1])
           pipe.expire('top_streaks', 24*60*60)
           pipe.execute()
       
       for g in games: 
         wins = g.execute('SELECT * FROM wins LIMIT 10').fetchall()
-        # print('WINS: ', wins)
+        print('WINS: ', wins)
         with r.pipeline() as pipe:
           for w in wins:
             pipe.zadd('top_wins', {w[0] : w[1]})
