@@ -84,8 +84,12 @@ const Wordle = () => {
   }, [])
 
   useEffect(() => {
-    if (username !== '')
+    if (username !== '') {
+      setGuesses([]);
+      setGuessIndex(0);
+      setCurrentGuess('');
       fetchNewGame();
+    }
     console.log('isSettingUsername updated');
   }, [isSettingUsername])
 
@@ -104,8 +108,14 @@ const Wordle = () => {
   }, [isNewGame])
   
   useEffect(() => {
-    mainRef.current.focus();
-  }, [showStats])
+    if (!showLeaderboard) {
+      mainRef.current.focus();
+    }
+  }, [showLeaderboard])
+
+  // useEffect(() => {
+  //   mainRef.current.focus();
+  // }, [guesses])
   
   const handleClick = () => {
     setGuesses([...guesses, GUESSES[guessIndex]]);
@@ -222,6 +232,7 @@ const Wordle = () => {
         username={username}
         setUsername={setUsername} 
         setIsSettingUsername={setIsSettingUsername}
+        mainRef={mainRef}
       />
     }
     {game.completed && // problem is this is not getting the latest game object

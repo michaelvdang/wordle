@@ -4,7 +4,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import {UserIcon} from '@heroicons/react/20/solid';
 
 export default function UsernameDialog(props) {
-  const {username, setUsername, setIsSettingUsername} = props;
+  const {username, setUsername, setIsSettingUsername, mainRef} = props;
   const [newUsername, setNewUsername] = useState(username);
   const [open, setOpen] = useState(true);
   const [alert, setAlert] = useState(false);  // red letter under input field
@@ -14,6 +14,7 @@ export default function UsernameDialog(props) {
   const handleSetUsername = () => {
     setUsername(newUsername);
     setIsSettingUsername(false);
+    mainRef.current.focus();
   }
 
   const handleCancel = () => {
@@ -21,9 +22,15 @@ export default function UsernameDialog(props) {
       setAlert(true);
     } else {
       setIsSettingUsername(false);
+      mainRef.current.focus();
     }
   }
   
+  const handleClosing = () => {
+    setShowStats(false);
+    mainRef.current.focus();
+  }
+
   return (
     <>
     {!open && 
