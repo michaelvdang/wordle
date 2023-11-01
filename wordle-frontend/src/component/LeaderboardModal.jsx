@@ -29,7 +29,7 @@ export default function LeaderboardModal(props) {
     fetch(`http://localhost:9000/stats/top_streaks_and_winners`)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
+        // console.log(res);
         setTopStreaks(res.top_streaks);
         setTopWins(res.top_wins);
         setLoading(false);
@@ -78,10 +78,17 @@ export default function LeaderboardModal(props) {
                       </Dialog.Title>
                     </div>
                   </div>
+
                   {viewTopWins ? (
-                    <TopWinsTable topWins={topWins} loading={loading} />
+                    (topWins.length 
+                      ? <TopWinsTable topWins={topWins} loading={loading} /> 
+                      : <div className='px-4'>Data not available</div>
+                    )
                   ) : (
-                    <TopStreaksTable topStreaks={topStreaks} loading={loading} />
+                    (topStreaks.length
+                      ? <TopStreaksTable topStreaks={topStreaks} loading={loading} /> 
+                      : <div className='px-4'>Data not available</div>
+                    )
                   )}
                 </div>
                 <div className="px-4 py-3 sm:flex sm:flex-row justify-center gap-x-4">

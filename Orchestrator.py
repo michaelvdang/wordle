@@ -25,17 +25,17 @@ def test():
     return {'message' : 'Orchestrator.py'}
 
 @app.post('/game/new', status_code=201)
-def start_new_game(user_name: str):# = Body()):
+def start_new_game(username: str):# = Body()):
     # find user_id
-    res = httpx.get('http://stats:9000/stats/id/' + user_name)    # for running local
-    # res = httpx.get('http://stats:9000/stats?user_name=' + user_name)    # for container
-    # res = httpx.get('http://localhost:9000/api/v1/stats?user_name=' + user_name) # for non-container
+    res = httpx.get('http://stats:9000/stats/id/' + username)    # for running local
+    # res = httpx.get('http://stats:9000/stats?username=' + username)    # for container
+    # res = httpx.get('http://localhost:9000/api/v1/stats?username=' + username) # for non-container
     # guid = res.json()
-    user = res.json() 
+    user = res.json()
 
-    # create new user when there wrong user_name is given
+    # create new user when there wrong username is given
     if user == -1:
-        res = httpx.post('http://stats:9000/stats/users/new?user_name=' + user_name)
+        res = httpx.post('http://stats:9000/stats/users/new?username=' + username)
         user = res.json()['user']
 
     # choose new game_id 
@@ -94,6 +94,7 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
             # record the guess and update number of guesses remaining
             _curr_game_future = await client.put('http://play:9300/play?guid=' + 
                             str(guid) + '&game_id=' + str(game_id) + '&guess=' + guess)
+            # NOTE: present_letters, absent_letters, game_progress are not used 
             # add something like: word_check_results = {'guess_results': word_check_result}
             # and have play append the results to a results string like: '01200|20210|'
             curr_game_result = _curr_game_future.json()
@@ -121,7 +122,8 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
     print('word_check: ', word_check)
     if word_check['results'].count(2) == 5:
         game_result = {'guesses': 6 - int(curr_game_result['remain']), 'won' : True, 'completed' : True}
-        httpx.post('http://stats:9000/stats/games/store-results?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
+        print('Orchestrator.py game_result: ', game_result)
+        httpx.post('http://stats:9000/stats/games/store-result?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
     # 2. retrieve user's score to return
         return {'guess_results': word_check['results'], **(curr_game_result), 'won': True, 'completed' : True}
@@ -130,7 +132,7 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
     elif int(curr_game_result['remain']) == 0:
         # 1. record the loss
         game_result = {'guesses' : 6, 'won' : False, 'completed' : True}
-        httpx.post('http://stats:9000/stats/games/store-results?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
+        httpx.post('http://stats:9000/stats/games/store-result?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
                                                 data=json.dumps(game_result)).json()
         # 2. Retrieve winning word
         async def get_game_answer():

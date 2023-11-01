@@ -38,9 +38,9 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
         return {'status': 'error', 'message':"ERROR: this game already exists"}
       r.hset(key, mapping={
         'remain': 6,
-        'present_letters': '',
-        'absent_letters': '',
-        'game_progress': '', # *ng** for n and g in correct position
+        # 'present_letters': '',
+        # 'absent_letters': '',
+        # 'game_progress': '', # *ng** for n and g in correct position
         # 'completed': int(False),
         # 'won': int(False),
       })

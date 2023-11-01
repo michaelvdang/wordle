@@ -10,7 +10,7 @@ services:
     volumes:
       - ./var/redis:/data     # add volume to persist data between container restarts
       - ./redis.conf:/etc/redis.conf  # don't forget to import the config file
-    restart: unless-stopped
+    restart: always
   stats:
     build: ./app/services/Stats     # build image automatically from Dockerfile
     # image: w-stats    # must build image manually first
@@ -22,7 +22,7 @@ services:
       - .env:/wordle/.env
     depends_on:
       - redis
-    restart: unless-stopped
+    restart: always
   wordcheck:
     build: ./app/services/WordCheck
     # image: w-check
@@ -31,7 +31,7 @@ services:
       - "9100:9100"
     volumes:
       - db:/wordle/var
-    restart: unless-stopped
+    restart: always
   wordvalidation:
     build: ./app/services/WordValidation
     # image: w-validation
@@ -40,7 +40,7 @@ services:
       - "9200:9200"
     volumes:
       - db:/wordle/var
-    restart: unless-stopped
+    restart: always
   play:
     build: ./app/services/Play
     # image: w-play
@@ -50,7 +50,7 @@ services:
     volumes:
       - db:/wordle/var
       - .env:/wordle/.env
-    restart: unless-stopped
+    restart: always
   orchestrator:
     build: .
     # image: w-orc
@@ -65,6 +65,6 @@ services:
       - wordcheck
       - wordvalidation
       - play
-    restart: unless-stopped
+    restart: always
 volumes:
   db:

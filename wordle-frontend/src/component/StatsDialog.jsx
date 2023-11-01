@@ -11,7 +11,7 @@ const stats = {
   win_percentage: 'Win Percentage',
   average_guesses: 'Average Guesses',
   current_streak: 'Current Streak',
-  max_streak: 'Max Streak',
+  max_win_streak: 'Max Streak',
 }
 
 export default function StatsDialog(props) {
@@ -24,28 +24,41 @@ export default function StatsDialog(props) {
     games_won: 0,
     average_guesses: 0,
     current_streak: 0,
-    max_streak: 0,
+    max_win_streak: 0,
   })
   const [open, setOpen] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:9000/stats/username/` + user_id)
+    // console.log('usename: ', username);
+    // console.log('user_id: ', user_id);
+    // console.log(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username);
+    fetch(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username)
       .then(res => res.json())
       .then(res => {
-        console.log(res);
+        // console.log(res);
         setUserStats({
-          win_percentage: (res.winPercentage ? res.winPercentage.toFixed(2).toString() + '%' : 'N/A'),
-          // user_id: user_id,
-          // username: username,
-          games_played: res.gamesplayed,
-          games_won: res.gameswon,
-          average_guesses: (res.averageGuesses ? res.averageGuesses.toFixed(2) : 'N/A'),
-          current_streak: res.currentStreak,
-          max_streak: res.maxstreak
+          win_percentage: (res.win_percentage ? (res.win_percentage * 100).toFixed(2).toString() + '%' : '0.00%'),
+          games_played: res.games_played,
+          games_won: res.games_won,
+          average_guesses: (res.average_guesses ? res.average_guesses.toFixed(2) : 'N/A'),
+          current_streak: res.current_streak 
+            ?  (res.current_streak.streak + (res.current_streak.won ? ' Wins' : ' Losses'))
+            : 'N/A',
+          max_win_streak: res.max_win_streak,
+          // win_percentage: (res.win_percentage ? (res.win_percentage * 100).toFixed(2).toString() + '%' : 'N/A'),
+          // // user_id: user_id,
+          // // username: username,
+          // games_played: res.games_played,
+          // games_won: res.games_won,
+          // average_guesses: (res.average_guesses ? res.average_guesses.toFixed(2) : 'N/A'),
+          // current_streak: res.current_streak 
+          //     ?  (res.current_streak.streak + (res.current_streak.won ? 'W' : 'L'))
+          //     : 'N/A',
+          // max_win_streak: res.max_win_streak ? res.max_win_streak : 'N/A',
         })
       })
-  }, [])
-  
+  }, []);
+
   const handleClosing = () => {
     setShowStats(false);
     mainRef.current.focus();
@@ -120,9 +133,10 @@ export default function StatsDialog(props) {
                                             className="border-b bg-gray-600  dark:border-neutral-500 dark:bg-gray-600">
                                             <td className="whitespace-nowrap px-6 py-4">{stats[key]}</td>
                                             <td className="whitespace-nowrap px-6 py-4">
-                                              {userStats[key]
+                                              {userStats[key]}
+                                              {/* {userStats[key]
                                                 ? userStats[key]
-                                                : 'N/A'}
+                                                : 'N/A'} */}
                                             </td>
                                           </tr>
                                         )

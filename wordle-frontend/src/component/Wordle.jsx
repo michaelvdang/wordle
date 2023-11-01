@@ -1,6 +1,5 @@
 import React, {createRef, useEffect, useState} from 'react'
 import NewGameDialog from './NewGameDialog'
-import NewGameDialogHTML from './NewGameDialogHTML'
 import UsernameDialog from './UsernameDialog'
 import NavBar from './NavBar'
 import StatsDialog from './StatsDialog'
@@ -36,7 +35,7 @@ const Wordle = () => {
   const [invalidWord, setInvalidWord] = useState(false);
   const [game, setGame] = useState({
     game_id: '',
-    user_name: '',
+    username: '',
     guid: '',
     user_id: '',
     remain: 0,
@@ -51,15 +50,14 @@ const Wordle = () => {
   const mainRef = createRef(null);
 
   const fetchNewGame = () => {
-    fetch('http://localhost:9400/game/new?user_name=' + username,
-      // fetch('http://146.190.58.25:9400/game/new?user_name=' + username,
+    fetch('http://localhost:9400/game/new?username=' + username,
       {
         method: 'POST',
       })
       .then(response => response.json())
       .then(data => setGame({
         game_id: data.game_id,
-        user_name: username,
+        username: username,
         guid: data.guid,
         user_id: data.user_id,
         remain: parseInt(data.remain),
@@ -80,7 +78,7 @@ const Wordle = () => {
     setGuesses([]);
     setGuessIndex(0);
     setCurrentGuess('');
-    console.log('component did mount');
+    // console.log('component did mount');
   }, [])
 
   useEffect(() => {
@@ -90,7 +88,7 @@ const Wordle = () => {
       setCurrentGuess('');
       fetchNewGame();
     }
-    console.log('isSettingUsername updated');
+    // console.log('isSettingUsername updated');
   }, [isSettingUsername])
 
   // reset and start new game
@@ -113,18 +111,14 @@ const Wordle = () => {
     }
   }, [showLeaderboard])
 
-  // useEffect(() => {
-  //   mainRef.current.focus();
-  // }, [guesses])
-  
   const handleClick = () => {
     setGuesses([...guesses, GUESSES[guessIndex]]);
     setGuessIndex(guessIndex + 1);
   }
 
-  useEffect(() => {
-    console.log('game: ', game);
-  }, [game])
+  // useEffect(() => {
+  //   console.log('game: ', game);
+  // }, [game])
   
   
   const handleValidWord = (data) => {
@@ -177,15 +171,12 @@ const Wordle = () => {
     if (currentGuess.length > 4) {  // only register 'Enter' when there are 5 characters in guess
       if (e.key === 'Enter') {
         fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-          // 'http://localhost:9400/game/' + game.game_id 
-        // fetch('http://146.190.58.25:9400/game/' + game.game_id 
-          // + '?username=' + username + '?guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
           {
             method: 'POST',
           })
           .then(response => response.json())
           .then(data => {
-            console.log('data: ', data);
+            // console.log('data: ', data);
             // word is valid
             if (data['status'] === 'success')
               handleValidWord(data);
@@ -219,7 +210,6 @@ const Wordle = () => {
                         sm:w-8 sm:h-8 sm:text-xs \
                         md:w-10 md:h-10 md:text-sm md:pb-1 \
                         font-bold text-gray-800 font-serif';
-  // const wonStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-green-500 ';
   const errorStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-red-500 ';
   const regularStyle = 'bg-white ';
   const absentLetterStyle = 'bg-gray-500 ';
@@ -237,7 +227,6 @@ const Wordle = () => {
       />
     }
     {game.completed && // problem is this is not getting the latest game object
-    // {gameCompleted &&
       <NewGameDialog
         gameCompleted={gameCompleted} 
         setGameCompleted={setGameCompleted}
@@ -269,7 +258,6 @@ const Wordle = () => {
     />
     <main 
       className="flex flex-col items-center justify-center outline-none mt-12" 
-      // className="flex min-h-screen flex-col items-center justify-center outline-none " 
       onKeyDown={handleKeyDown}
       tabIndex={0}
       ref={mainRef}
@@ -303,18 +291,6 @@ const Wordle = () => {
                     )
                   )
                 ))
-                // // used to work and then it didn't for some reason
-                //   <div key={KEYS[i][index]} 
-                //     className={`${bubbleStyle} ${gameWon && wonStyle}
-                //     ${game.absent_letters.includes(letter.toLowerCase()) && absentLetterStyle}
-                //     ${game.correct_letters.includes(letter.toLowerCase()) && letter === game.correct_letters[index] ? correctLetterStyle : regularStyle}
-                //     ${game.present_letters.includes(letter.toLowerCase()) && presentLetterStyle}
-                //     `} 
-                //     // onClick={handleClick}
-                //   >
-                //     {letter ? letter : ' '}
-                //   </div>
-                // ))
               // else: if rendering current guess
               : (currentGuess && guessIndex === i)
                 ? (currentGuess.length === 5)      
@@ -324,7 +300,6 @@ const Wordle = () => {
                         className={`${bubbleStyle} ${regularStyle}
                         shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500
                         ${invalidWord && errorStyle}`} // find the column to highlight the incoming letter of current guess, style invalid words
-                        // onClick={handleClick}
                       >
                         {letter}
                       </div> 
@@ -336,7 +311,6 @@ const Wordle = () => {
                     ${index === currentGuess.length 
                       ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500' 
                       : ''}` } // find the column to highlight the incoming letter of current guess
-                    // onClick={handleClick}
                   >
                     {letter}
                   </div> 
@@ -349,7 +323,6 @@ const Wordle = () => {
                         ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500'
                         : ''} 
                       `} // highlight first box for new guess
-                    // onClick={handleClick}
                   >
                     {space}
                   </div>

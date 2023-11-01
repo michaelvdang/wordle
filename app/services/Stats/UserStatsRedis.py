@@ -74,6 +74,7 @@ origins = [     # curl and local browser are always allowed
     # "http://localhost:8080",
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
     "http://localhost:9100",
+    "http://localhost",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -101,9 +102,6 @@ def store_game_result(
         gamedb = (g1, g2, g3)
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
         print('guid: ', guid)
-        if (username == 'ucohen'):
-            print('STATS ucohen guid: ', guid)
-            print('STATS shard number: ', int(guid) % 3)
 
         finished = datetime.date.today()
         guesses = result.guesses
@@ -147,8 +145,8 @@ def get_top_streaks_and_winners(r: redis.Redis = Depends(get_redis)):
 # return stats for a given user
 @app.get('/stats/users', status_code=200)
 def get_user_stats(
-        username: str,
         user_id: int, 
+        username: str,
         udb: sqlite3.Connection = Depends(get_udb), 
         g1: sqlite3.Connection = Depends(get_db1), 
         g2: sqlite3.Connection = Depends(get_db2), 
@@ -156,11 +154,79 @@ def get_user_stats(
     gamedb = (g1, g2, g3)
     guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
     print('guid: ', guid)
-    gc = gamedb[int(guid) % 3 == 0].cursor()
-    # games = gc.execute('select * from games limit 10;').fetchall()
-    games = gc.execute("select *, (select max(streak) from streaks where user_id=8) from games where user_id=8 order by finished;").fetchall()
+    gc = gamedb[int(guid) % 3].cursor()
+    # games = gc.execute('select * from games where user_id=?', [user_id]).fetchall()
+    games = gc.execute(
+        '''
+        SELECT *
+        FROM games WHERE user_id=? 
+        ORDER BY finished;
+        ''', [user_id]).fetchall()
+    stats = {}
+    wins_count = 0
+    for game in games:
+        if game[5] == 1:
+            wins_count += 1
+    stats['games_won'] = wins_count
+    stats['games_played'] = len(games)
+    if (len(games)): 
+        stats['win_percentage'] = wins_count / len(games)
+    else:
+        stats['win_percentage'] = 0
     print(games)
-    return {'games': games}
+    # NOTE: this sql might not be working correctly, returnin NoneType and zeroes for current_streak and max_win_streak, avg_guesses
+    res = gc.execute(
+        '''
+        WITH GameRows AS (
+        SELECT 
+            ROW_NUMBER() OVER (ORDER BY finished) as row_num, 
+            g.user_id, 
+            username, 
+            finished, 
+            won 
+        FROM Games g 
+        JOIN Users u ON g.user_id=u.user_id
+        WHERE g.user_id=?
+        ORDER BY g.user_id, row_num
+        ),
+        RunGroups AS (
+        SELECT 
+            ng1.row_num, ng1.user_id, ng1.won, ng1.finished,
+            (SELECT COUNT(*)
+            FROM GameRows ng2
+            WHERE ng1.won <> ng2.won
+            AND ng1.row_num > ng2.row_num
+            AND ng1.user_id = ng2.user_id) AS RunGroup
+        FROM GameRows ng1
+        ), 
+        Streaks AS (
+            SELECT 
+                row_num, 
+                user_id, 
+                won, 
+                MIN(finished) AS beginning, 
+                MAX(finished) AS ending, 
+                COUNT(*) AS streak
+            FROM RunGroups
+            GROUP BY user_id, won, RunGroup
+            ORDER BY user_id, row_num
+        )
+        SELECT streak, won, 
+            (SELECT max(streak) FROM streaks WHERE user_id=?) AS max_streak,
+            (SELECT avg(guesses) FROM games WHERE user_id=? and won=1) AS average_guesses
+        FROM Streaks 
+        WHERE row_num=(SELECT MAX(row_num) FROM Streaks);
+        ''', [user_id, user_id, user_id]).fetchone()
+    print('UserStatRedis.py res: ', res)
+    if res and len(res):
+        stats['current_streak'] = {'streak': res[0], 'won': res[1]}
+        stats['max_win_streak'] = res[2]
+        stats['average_guesses'] = res[3]
+    else:
+        stats['current_streak'] = {'streak': 0, 'won': 0}
+        stats['max_win_streak'] = 0
+        stats['average_guesses'] = 0
+    return stats
 
 
     # current streak
@@ -168,9 +234,9 @@ def get_user_stats(
     # max streak 
     #   select *, (select max(streak) from streaks where user_id=8) from games where user_id=8 order by finished;
 
-    
-    
-    
+
+
+
     # cursor = udb.cursor()
     # cursor.execute('ATTACH DATABASE ' + "'" +
     #                gamedb[int(guid) % 3] + "'" + ' AS ga')
@@ -251,7 +317,11 @@ def get_user_id(username: str, udb: sqlite3.Connection = Depends(get_udb)):
     
 # create new user
 @app.post('/stats/users/new', status_code=201)
-def create_user(username: str, udb: sqlite3.Connection = Depends(get_udb)):
+def create_user(username: str, 
+        udb: sqlite3.Connection = Depends(get_udb),
+        g1: sqlite3.Connection = Depends(get_db1), 
+        g2: sqlite3.Connection = Depends(get_db2), 
+        g3: sqlite3.Connection = Depends(get_db3)):
     try:
         # check that username is unique
         row = udb.execute('SELECT * FROM users WHERE username=?', [username])
@@ -267,6 +337,10 @@ def create_user(username: str, udb: sqlite3.Connection = Depends(get_udb)):
         udb.execute('INSERT INTO users(guid, user_id, username) VALUES(?,?,?)', 
                     [str(guid), user_id, username])
         udb.commit()
+        gamesdb = (g1, g2, g3)
+        gc = gamesdb[int(guid) % 3].cursor()
+        gc.execute('INSERT INTO users(guid, user_id, username) VALUES(?,?,?)',
+                    [str(guid), user_id, username])
         return {'Success' : 'User created', 
                 'user': {
                     'guid': str(guid), 

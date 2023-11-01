@@ -48,6 +48,7 @@ with contextlib.closing(sqlite3.connect(DATABASE)) as stats:
                         if (user[0] == 1):
                             print('shard.py user object: ', user)
                             print('shard.py new_uuid: ', new_uuid)
+                            print('shard.py shard number: ', int(new_uuid) % 3)
                         uc.execute(
                             '''
                                 INSERT INTO users(guid, user_id, username)
