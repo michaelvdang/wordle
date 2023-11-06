@@ -50,8 +50,8 @@ const Wordle = () => {
   const mainRef = createRef(null);
 
   const fetchNewGame = () => {
-    // fetch('http://mikespace.xyz:9400/game/new?username=' + username,
-    fetch('http://localhost:9400/game/new?username=' + username,
+    fetch('http://mikespace.xyz:9400/game/new?username=' + username,
+    // fetch('http://localhost:9400/game/new?username=' + username,
       {
         method: 'POST',
       })
@@ -171,8 +171,8 @@ const Wordle = () => {
     }
     if (currentGuess.length > 4) {  // only register 'Enter' when there are 5 characters in guess
       if (e.key === 'Enter') {
-        // fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-        fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        // fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
           {
             method: 'POST',
           })

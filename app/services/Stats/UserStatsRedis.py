@@ -76,8 +76,10 @@ origins = [     # curl and local browser are always allowed
     "http://localhost:9100",
     "http://mikespace.xyz",
     "https://mikespace.xyz",
-    "https://localhost",
-    "http://localhost",
+    "http://mikespace.xyz:8080",
+    "https://mikespace.xyz:8080",
+    "http://mikespace.xyz:80",
+    "https://mikespace.xyz:80",
 ]
 app.add_middleware(
     CORSMiddleware,

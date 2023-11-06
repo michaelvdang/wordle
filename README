@@ -100,10 +100,15 @@ Deploy backend using Docker:
     - * * * * * /root/wordle/venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
     - run: crontab crontab.txt
 
-Deploy frontend: 
+Deploy frontend (NGINX outside Docker): 
 - Build the app on local machine: npm run build
 - SFTP to the server using FileZilla and upload the dist/ content to /var/www/html
 - The page should be viewable after a few seconds
+
+Deploy frontend (NGINX in Docker):
+- Build app on local machine: npm run build
+- SFTP to server using FileZilla and upload the dist/ content to /wordle/wordle-frontend/dist 
+- Start Docker compose
 
 Ubuntu server (Digital Ocean Droplet):
 - On local machine, create ssh key-pair, go to <user>/.ssh: ssh-keygen
