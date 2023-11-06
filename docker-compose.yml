@@ -9,20 +9,22 @@ services:
       - "6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
     volumes:
       - ./var/redis:/data     # add volume to persist data between container restarts
-      - ./redis.conf:/etc/redis.conf  # don't forget to import the config file
-    restart: always
+      - "./redis.conf:/etc/redis.conf"  # don't forget to import the config file
+      # - ${PWD}/redis.conf:/etc/redis.conf  # don't forget to import the config file
+    restart: unless-stopped
   stats:
-    build: ./app/services/Stats     # build image automatically from Dockerfile
-    # image: w-stats    # must build image manually first
+    build: ./app/services/Stats   # Either build from Dockerfile or use a prebuilt image
+    # image: w-stats              # must build image manually first
     container_name: 'stats-cont'
     ports: 
       - "9000:9000"
     volumes:
       - db:/wordle/var
-      - .env:/wordle/.env
+      - "./.env:/wordle/.env"  # because .env is a file, this needs full path or .env will become a directory
+      # - ${PWD}/.env:/wordle/.env  # ${PWD} works for linux but not windows, because .env is a file, this needs full path or .env will become a directory
     depends_on:
       - redis
-    restart: always
+    restart: unless-stopped
   wordcheck:
     build: ./app/services/WordCheck
     # image: w-check
@@ -31,7 +33,7 @@ services:
       - "9100:9100"
     volumes:
       - db:/wordle/var
-    restart: always
+    restart: unless-stopped
   wordvalidation:
     build: ./app/services/WordValidation
     # image: w-validation
@@ -40,7 +42,7 @@ services:
       - "9200:9200"
     volumes:
       - db:/wordle/var
-    restart: always
+    restart: unless-stopped
   play:
     build: ./app/services/Play
     # image: w-play
@@ -49,8 +51,9 @@ services:
       - "9300:9300"
     volumes:
       - db:/wordle/var
-      - .env:/wordle/.env
-    restart: always
+      - "./.env:/wordle/.env"
+      # - ${PWD}/.env:/wordle/.env
+    restart: unless-stopped
   orchestrator:
     build: .
     # image: w-orc
@@ -59,12 +62,29 @@ services:
       - "9400:9400"
     volumes:
       - db:/wordle/var
-      - ./.env:/wordle/.env
+      # - "./.env:/wordle/.env"
+      # - ${PWD}/.env:/wordle/.env
     depends_on:
       - stats
       - wordcheck
       - wordvalidation
       - play
-    restart: always
+    restart: unless-stopped
+  nginx:
+    build: ./wordle-frontend
+    container_name: 'nginx-cont'
+    ports:
+      - "8080:80"
+      - "443:443"
+    volumes:
+      - ./wordle-frontend/dist:/usr/share/nginx/html
+    depends_on:
+      - stats
+      - wordcheck
+      - wordvalidation
+      - play
+      - orchestrator
+      - redis
+    restart: unless-stopped
 volumes:
   db:

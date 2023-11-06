@@ -83,14 +83,14 @@ How to start the application:
 
 
 
-Deploy using Docker: 
+Deploy backend using Docker: 
 - Docker Volume NOTE: using named volume in docker compose means that the volume will be managed by Docker (it won't be in the local ./var directory, but will create new .db files in the virtual ./var directory, the local ones, if they have .db files will not reflect what happens in the app when it is running)
 - Most of the above steps are done automatically using docker compose, except for 3 things:
     - Copying the .env file (was .gitignored so git clone doesn't work)
     - Copying the redis.conf file (also .gitignored)
     - Setting up crontab for TopTen leaderboard 
         - During dev: run: python bin/TopTen.py manually from one of the containers (usually Orchestrator)
-- .env and redis.conf has passwords so they must be copied manually
+- .env and redis.conf has passwords so they must be copied manually into root folder
 - Setting up crontab (probably best done manualy since it's outside of docker)
     - create a venv: python3 -m venv venv
     - install dependencies: python3 -m pip install -r cron-requirements.txt
@@ -100,7 +100,22 @@ Deploy using Docker:
     - * * * * * /root/wordle/venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
     - run: crontab crontab.txt
 
-    
+Deploy frontend: 
+- Build the app on local machine: npm run build
+- SFTP to the server using FileZilla and upload the dist/ content to /var/www/html
+- The page should be viewable after a few seconds
+
+Ubuntu server (Digital Ocean Droplet):
+- On local machine, create ssh key-pair, go to <user>/.ssh: ssh-keygen
+- If you don't have access to server thru SSH, go to droplet's control panel and open Access>Droplet Console
+- On server, find .ssh/ folder: ls -al
+- Run: nano .ssh/authorized_keys
+- Add the public key to the file
+- Save and quit
+- Make sure .ssh/ has 700 permissions and authorized_keys has 600 permissions
+- Back to local machine, run: ssh -i <key file> <user>@<droplet IP>
+
+
 
 Project 4:
 

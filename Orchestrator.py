@@ -5,20 +5,37 @@ import random
 from models import Game
 import json
 import asyncio
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+# app = FastAPI()
 origins = [     # curl and local browser are always allowed
-    # "http://localhost:8080",
+    "http://localhost:8080",
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
     "http://localhost:9100",
+    "http://mikespace.xyz",
+    "https://mikespace.xyz",
+    "https://localhost:*",
+    "http://localhost:*",
 ]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+middleware = [
+    Middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=['*'],
+        allow_headers=['*']
+    )
+]
+
+app = FastAPI(middleware=middleware)
 
 @app.get('/')
 def test():

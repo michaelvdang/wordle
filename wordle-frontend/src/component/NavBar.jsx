@@ -46,8 +46,7 @@ export default function NavBar(props) {
                 <div className="flex flex-shrink-0 items-center">
                   <img
                     className="h-10 md:h-12 w-auto"
-                    src="logo21.png"
-                    // src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                    src="./logo21.png"
                     alt="Wordle Clone"
                   />
                 </div>

@@ -71,9 +71,12 @@ settings = Settings()
 app = FastAPI()
 
 origins = [     # curl and local browser are always allowed
-    # "http://localhost:8080",
+    "http://localhost:8080",    # must allow or CORS will block
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
     "http://localhost:9100",
+    "http://mikespace.xyz",
+    "https://mikespace.xyz",
+    "https://localhost",
     "http://localhost",
 ]
 app.add_middleware(
@@ -97,7 +100,8 @@ def store_game_result(
         result: Result, 
         g1: sqlite3.Connection = Depends(get_db1), 
         g2: sqlite3.Connection = Depends(get_db2), 
-        g3: sqlite3.Connection = Depends(get_db3)):
+        g3: sqlite3.Connection = Depends(get_db3),
+        r: redis.Redis = Depends(get_redis)):
     try:
         gamedb = (g1, g2, g3)
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
@@ -114,6 +118,7 @@ def store_game_result(
             [str(guid), user_id, game_id, finished, guesses, won]
         )
         gamedb[int(guid) % 3].commit()
+        r.delete(str(guid) + ':' + str(game_id))
         return {'Success' : 'Game recorded'}
 
     except sqlite3.IntegrityError:
