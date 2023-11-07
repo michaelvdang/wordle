@@ -14,7 +14,7 @@ export default function UsernameDialog(props) {
   const handleSetUsername = () => {
     setUsername(newUsername);
     setIsSettingUsername(false);
-    mainRef.current.focus();
+    // mainRef.current.focus();
   }
 
   const handleCancel = () => {
@@ -22,13 +22,13 @@ export default function UsernameDialog(props) {
       setAlert(true);
     } else {
       setIsSettingUsername(false);
-      mainRef.current.focus();
+      // mainRef.current.focus();
     }
   }
   
   const handleClosing = () => {
     setShowStats(false);
-    mainRef.current.focus();
+    // mainRef.current.focus();
   }
 
   return (

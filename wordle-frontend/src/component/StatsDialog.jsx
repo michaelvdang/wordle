@@ -15,7 +15,7 @@ const stats = {
 }
 
 export default function StatsDialog(props) {
-  const {setShowStats, username, user_id, mainRef} = props;
+  const {setShowStats, username, user_id, inputRef} = props;
   const [userStats, setUserStats] = useState({
     win_percentage: '',
     // user_id,
@@ -62,7 +62,8 @@ export default function StatsDialog(props) {
 
   const handleClosing = () => {
     setShowStats(false);
-    mainRef.current.focus();
+    // mainRef.current.focus();
+    // inputRef.current.focus();
   }
 
   return (

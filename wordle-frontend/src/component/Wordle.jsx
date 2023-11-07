@@ -111,12 +111,12 @@ const Wordle = () => {
     }
   }, [isNewGame])
   
-  useEffect(() => {
-    if (!showLeaderboard) {
-      // inputRef.current.focus();
-      // mainRef.current.focus();
-    }
-  }, [showLeaderboard])
+  // useEffect(() => {
+  //   if (!showStats) {
+  //     inputRef.current.focus();
+  //     // mainRef.current.focus();
+  //   }
+  // }, [showStats])
 
   const handleClick = () => {
     setGuesses([...guesses, GUESSES[guessIndex]]);
@@ -166,11 +166,6 @@ const Wordle = () => {
         // start new game?
         return;
       }
-    }
-    else {
-      console.log('guessIndex: ', guessIndex);
-      // mainRef.current.focus();
-      // inputRefs[guessIndex + 1].current.focus();
     }
   }
   
@@ -262,6 +257,7 @@ const Wordle = () => {
         username={username}
         user_id={game.user_id}
         // mainRef={mainRef}
+        inputRef={inputRef}
       />
     }
     {showLeaderboard && 
@@ -319,7 +315,8 @@ const Wordle = () => {
                   guessIndex === i &&         
                   <input 
                     ref={inputRef} 
-                    className="absolute h-1 pt-4 focus:outline-none bg-[#242424] text-[#242424] -z-10" 
+                    className='absolute -left-80'
+                    // className="absolute h-1 w-1 -left-4 focus:outline-none bg-[#242424] text-[#242424] -z-10" 
                     type="email" 
                     maxLength={5}
                     value={currentGuess} 
