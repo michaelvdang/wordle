@@ -81,8 +81,18 @@ How to start the application:
             - appendonly yes
 
 
+Deployment: 
+- Install Docker
+    - https://www.docker.com/products/docker
+- Pull from git repo
+    - git clone https://github.com/MichaelDang/wordle.git
+    - cd wordle
+    - git checkout docker
+- Copy .env, redis.conf, and crontab.txt (using FileZilla)
+- Build and copy frontend code (maybe download npm and just build it on server)
+    - place the wordle-frontend/dist/ folder in /wordle/wordle-frontend/
 
-
+Deployment details:
 Deploy backend using Docker: 
 - Docker Volume NOTE: using named volume in docker compose means that the volume will be managed by Docker (it won't be in the local ./var directory, but will create new .db files in the virtual ./var directory, the local ones, if they have .db files will not reflect what happens in the app when it is running)
 - Most of the above steps are done automatically using docker compose, except for 3 things:
@@ -120,6 +130,12 @@ Ubuntu server (Digital Ocean Droplet):
 - Make sure .ssh/ has 700 permissions and authorized_keys has 600 permissions
 - Back to local machine, run: ssh -i <key file> <user>@<droplet IP>
 
+FileZilla setup: 
+- This will use the same SSH key that is used to SSH into server
+- Edit>Settings...>SFTP: add SSH private key in 'Add key file'
+- Save and quit
+- File>New Site: enter IP or domain name, port 22
+- Connect
 
 
 Project 4:

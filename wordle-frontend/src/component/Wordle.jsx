@@ -1,4 +1,4 @@
-import React, {createRef, useEffect, useState} from 'react'
+import React, {createRef, useEffect, useState, useRef} from 'react'
 import NewGameDialog from './NewGameDialog'
 import UsernameDialog from './UsernameDialog'
 import NavBar from './NavBar'
@@ -33,6 +33,7 @@ const Wordle = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
   const [isNewGame, setIsNewGame] = useState(false);
   const [invalidWord, setInvalidWord] = useState(false);
+  const inputRef = useRef(null);
   const [game, setGame] = useState({
     game_id: '',
     username: '',
@@ -80,6 +81,9 @@ const Wordle = () => {
     setGuessIndex(0);
     setCurrentGuess('');
     // console.log('component did mount');
+    
+    window.scrollTo(-50, 0)
+
   }, [])
 
   useEffect(() => {
@@ -108,7 +112,8 @@ const Wordle = () => {
   
   useEffect(() => {
     if (!showLeaderboard) {
-      mainRef.current.focus();
+      inputRef.current.focus();
+      // mainRef.current.focus();
     }
   }, [showLeaderboard])
 
@@ -171,8 +176,8 @@ const Wordle = () => {
     }
     if (currentGuess.length > 4) {  // only register 'Enter' when there are 5 characters in guess
       if (e.key === 'Enter') {
-        fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-        // fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        // fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
           {
             method: 'POST',
           })
@@ -264,6 +269,14 @@ const Wordle = () => {
       tabIndex={0}
       ref={mainRef}
       >
+      <div>
+        <input 
+          ref={inputRef} 
+          className="hidden" 
+          type="text" 
+          value={currentGuess} 
+          onChange={(e) => setCurrentGuess(e.target.value)} />
+      </div>
       <div className='grid grid-rows-6 gap-2 mb-12 sm:mb-18 md:mb-24'>
         {[0,1,2,3,4,5].map((i) => (
           <div key={i} className='grid grid-cols-5 gap-2'>

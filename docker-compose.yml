@@ -74,7 +74,7 @@ services:
     build: ./wordle-frontend
     container_name: 'nginx-cont'
     ports:
-      - "8080:80"
+      - "80:80"
       - "443:443"
     volumes:
       - ./wordle-frontend/dist:/usr/share/nginx/html
