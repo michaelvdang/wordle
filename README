@@ -90,7 +90,7 @@ Deployment:
     - git checkout docker
 - Copy .env, redis.conf, and crontab.txt (using FileZilla)
 - Build and copy frontend code (maybe download npm and just build it on server)
-    - place the wordle-frontend/dist/ folder in /wordle/wordle-frontend/
+    - place the wordle-frontend/dist/ folder in /wordle/wordle-frontend/ (including dist/)
 
 Deployment details:
 Deploy backend using Docker: 

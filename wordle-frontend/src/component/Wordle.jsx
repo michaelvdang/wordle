@@ -33,7 +33,6 @@ const Wordle = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
   const [isNewGame, setIsNewGame] = useState(false);
   const [invalidWord, setInvalidWord] = useState(false);
-  const inputRef = useRef(null);
   const [game, setGame] = useState({
     game_id: '',
     username: '',
@@ -49,6 +48,7 @@ const Wordle = () => {
     answer: '',
   });
   const mainRef = createRef(null);
+  const inputRef = useRef(null);
 
   const fetchNewGame = () => {
     fetch('http://mikespace.xyz:9400/game/new?username=' + username,
@@ -80,6 +80,7 @@ const Wordle = () => {
     setGuesses([]);
     setGuessIndex(0);
     setCurrentGuess('');
+    mainRef.current.focus();
     // console.log('component did mount');
     
     window.scrollTo(-50, 0)
@@ -112,7 +113,7 @@ const Wordle = () => {
   
   useEffect(() => {
     if (!showLeaderboard) {
-      inputRef.current.focus();
+      // inputRef.current.focus();
       // mainRef.current.focus();
     }
   }, [showLeaderboard])
@@ -155,8 +156,10 @@ const Wordle = () => {
     setGuesses(() => [...guesses, currentGuess]);
     setGuessIndex(guessIndex + 1);
     setCurrentGuess('');
+    
     // TODO: add 'complete' to Orc API or will get error for results.length
     if (data['completed']) {
+      setGameCompleted(true);
       console.log('GAME COMPLETED: DID YOU WIN? ', data['won'])
       if (data['won']) {
         setGameWon(true);
@@ -164,7 +167,17 @@ const Wordle = () => {
         return;
       }
     }
+    else {
+      console.log('guessIndex: ', guessIndex);
+      // mainRef.current.focus();
+      // inputRefs[guessIndex + 1].current.focus();
+    }
   }
+  
+  useEffect(() => {
+    if (guessIndex < 6)
+      inputRef.current.focus();
+  }, [guessIndex])
 
   const handleKeyDown = (e) => {
     if (guesses.length > 5) return;
@@ -199,7 +212,7 @@ const Wordle = () => {
       return;
     }
     if (e.keyCode >= 65 && e.keyCode <= 90) { // only register letters
-      setCurrentGuess(currentGuess => currentGuess + e.key);
+      setCurrentGuess(currentGuess => currentGuess + e.key.toLowerCase());
     }
   }
 
@@ -230,7 +243,7 @@ const Wordle = () => {
         username={username}
         setUsername={setUsername} 
         setIsSettingUsername={setIsSettingUsername}
-        mainRef={mainRef}
+        // mainRef={mainRef}
       />
     }
     {game.completed && // problem is this is not getting the latest game object
@@ -248,7 +261,7 @@ const Wordle = () => {
         setShowStats={setShowStats}
         username={username}
         user_id={game.user_id}
-        mainRef={mainRef}
+        // mainRef={mainRef}
       />
     }
     {showLeaderboard && 
@@ -266,17 +279,10 @@ const Wordle = () => {
     <main 
       className="flex flex-col items-center justify-center outline-none mt-12" 
       onKeyDown={handleKeyDown}
+      onFocus={() => inputRef.current.focus()}
       tabIndex={0}
       ref={mainRef}
       >
-      <div>
-        <input 
-          ref={inputRef} 
-          className="hidden" 
-          type="text" 
-          value={currentGuess} 
-          onChange={(e) => setCurrentGuess(e.target.value)} />
-      </div>
       <div className='grid grid-rows-6 gap-2 mb-12 sm:mb-18 md:mb-24'>
         {[0,1,2,3,4,5].map((i) => (
           <div key={i} className='grid grid-cols-5 gap-2'>
@@ -307,47 +313,70 @@ const Wordle = () => {
                   )
                 ))
               // else: if rendering current guess
-              : (currentGuess && guessIndex === i)
-                ? (currentGuess.length === 5)      
-                  // highlight all five characters if there are 5 letters in currentGuess
-                  ? currentGuess.split('').map((letter, index) => (
+              : 
+                <>
+                  {
+                  guessIndex === i &&         
+                  <input 
+                    ref={inputRef} 
+                    className="absolute h-1 pt-4 focus:outline-none bg-[#242424] text-[#242424] -z-10" 
+                    type="email" 
+                    maxLength={5}
+                    value={currentGuess} 
+                    onChange={() => {}}
+                    />}
+                  {(currentGuess && guessIndex === i)
+                    ? (currentGuess.length === 5)      
+                      // highlight all five characters if there are 5 letters in currentGuess
+                      ? currentGuess.split('').map((letter, index) => (
+                          <div key={KEYS[i][index]} 
+                              className={`${bubbleStyle} ${regularStyle}
+                              shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500
+                              ${invalidWord && errorStyle}`} // find the column to highlight the incoming letter of current guess, style invalid words
+                            >
+                              {letter}
+                            </div> 
+                          )) 
+                      // otherwise only highlight incoming letter
+                      : currentGuess.padEnd(5, ' ').split('').map((letter, index) => (
                       <div key={KEYS[i][index]} 
                         className={`${bubbleStyle} ${regularStyle}
-                        shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500
-                        ${invalidWord && errorStyle}`} // find the column to highlight the incoming letter of current guess, style invalid words
+                        ${index === currentGuess.length 
+                          ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500' 
+                          : ''}` } // find the column to highlight the incoming letter of current guess
                       >
                         {letter}
                       </div> 
-                      )) 
-                  // otherwise only highlight incoming letter
-                  : currentGuess.padEnd(5, ' ').split('').map((letter, index) => (
-                  <div key={KEYS[i][index]} 
-                    className={`${bubbleStyle} ${regularStyle}
-                    ${index === currentGuess.length 
-                      ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500' 
-                      : ''}` } // find the column to highlight the incoming letter of current guess
-                  >
-                    {letter}
-                  </div> 
-                  ))
-                // else: not current guess, rendering blank spaces
-                : '     '.split('').map((space, index) => (
-                  <div key={KEYS[i][index]} 
-                    className={`${bubbleStyle} ${regularStyle}
-                      ${i === guesses.length && index === 0
-                        ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500'
-                        : ''} 
-                      `} // highlight first box for new guess
-                  >
-                    {space}
-                  </div>
-                  ))
-
+                      ))
+                    // else: not current guess, rendering blank spaces
+                    : '     '.split('').map((space, index) => (
+                      <div key={KEYS[i][index]} 
+                        className={`${bubbleStyle} ${regularStyle}
+                          ${i === guesses.length && index === 0
+                            ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500'
+                            : ''} 
+                          `} // highlight first box for new guess
+                      >
+                        {space}
+                      </div>
+                      ))}
+                </>
               
             }
           </div>
         ))}
       </div>
+        {/* input box to open keyboard on ios, remove outline, input-bg and text same color as container bg */}
+      {/* <div>
+        <input 
+          ref={inputRef} 
+          className="h-1 focus:outline-none bg-[#242424] text-[#242424] -z-10" 
+          type="email" 
+          maxLength={5}
+          value={currentGuess} 
+          onChange={() => {}}
+          />
+      </div> */}
       <div className='flex flex-col items-center justify-center gap-2'>
         {LETTERS.map((row) => (
           <div key={row} className='flex flex-row gap-1'>
