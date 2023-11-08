@@ -26,8 +26,8 @@ export default function LeaderboardModal(props) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://mikespace.xyz:9000/stats/top_streaks_and_winners`)
-    // fetch(`http://localhost:9000/stats/top_streaks_and_winners`)
+    // fetch(`http://mikespace.xyz:9000/stats/top_streaks_and_winners`)
+    fetch(`http://localhost:9000/stats/top_streaks_and_winners`)
       .then(res => res.json())
       .then(res => {
         // console.log(res);

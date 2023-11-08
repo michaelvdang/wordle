@@ -1,3 +1,10 @@
+Current state of the app:
+- App is deployed on a Droplet at http://mikespace.xyz
+- Things to fix: 
+    - no HTTPS yet
+    - User Stats: streaks not working for custom username
+    - Stats and Leaderboard not refocusing
+
 WordList.db 
     - all the 5 letter words in the dictionary
 stats.db - 

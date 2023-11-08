@@ -80,6 +80,7 @@ origins = [     # curl and local browser are always allowed
     "https://mikespace.xyz:8080",
     "http://mikespace.xyz:80",
     "https://mikespace.xyz:80",
+    "http://localhost",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -105,6 +106,10 @@ def store_game_result(
         g3: sqlite3.Connection = Depends(get_db3),
         r: redis.Redis = Depends(get_redis)):
     try:
+        print('username: ', username)
+        print('user_id: ', user_id)
+        print('game_id: ', game_id)
+        print('result: ', result)
         gamedb = (g1, g2, g3)
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
         print('guid: ', guid)
@@ -224,7 +229,7 @@ def get_user_stats(
         FROM Streaks 
         WHERE row_num=(SELECT MAX(row_num) FROM Streaks);
         ''', [user_id, user_id, user_id]).fetchone()
-    print('UserStatRedis.py res: ', res)
+    print('UserStatsRedis.py res: ', res)
     if res and len(res):
         stats['current_streak'] = {'streak': res[0], 'won': res[1]}
         stats['max_win_streak'] = res[2]
@@ -334,20 +339,37 @@ def create_user(username: str,
         row = udb.execute('SELECT * FROM users WHERE username=?', [username])
         existing_user = row.fetchone()
         if existing_user:
+            # print('ERROR existing user: ', existing_user)                           # Debugging
             return {'Error': 'Username already exists'}
 
         # Continue with user creation if the username is unique
-        res = udb.execute('SELECT count(*) FROM users')
-        user_id = res.fetchone()[0] + 1
+        res = udb.execute('SELECT * FROM users ORDERBY user_id DESC LIMIT 1')
+        user_id = res.fetchone()[1] + 1
+        # res = udb.execute('SELECT count(*) FROM users')
+        # user_id = res.fetchone()[0] + 1
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
-        print('GUID: ', guid)
+        # print('GUID: ', guid)                                                       # Debugging
         udb.execute('INSERT INTO users(guid, user_id, username) VALUES(?,?,?)', 
                     [str(guid), user_id, username])
         udb.commit()
+
+        # row = udb.execute('SELECT * FROM users WHERE username=?', [username])       # Debugging
+        # print('Newly created user: ', row.fetchone())
+        
         gamesdb = (g1, g2, g3)
-        gc = gamesdb[int(guid) % 3].cursor()
-        gc.execute('INSERT INTO users(guid, user_id, username) VALUES(?,?,?)',
+        gdb = gamesdb[int(guid) % 3]
+
+        # row = gdb.execute('SELECT * FROM users WHERE username=?', [username])       # Debugging
+        # print('Before inserting user: ', row.fetchone())
+        
+        gdb.execute('INSERT INTO users(guid, user_id, username) VALUES(?,?,?)',
                     [str(guid), user_id, username])
+        gdb.commit()
+
+        # row = gdb.execute('SELECT * FROM users WHERE username=?', [username])       # Debugging
+        # print('After inserting user: ', row.fetchone())
+
+        print('New user created: ', user_id)
         return {'Success' : 'User created', 
                 'user': {
                     'guid': str(guid), 

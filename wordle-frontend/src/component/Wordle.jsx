@@ -21,7 +21,7 @@ const GUESSES = [
 
 const Wordle = () => {
 
-  const [username, setUsername] = useState('ucohen');
+  const [username, setUsername] = useState('');
   const [isSettingUsername, setIsSettingUsername] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
@@ -51,8 +51,8 @@ const Wordle = () => {
   const inputRef = useRef(null);
 
   const fetchNewGame = () => {
-    fetch('http://mikespace.xyz:9400/game/new?username=' + username,
-    // fetch('http://localhost:9400/game/new?username=' + username,
+    // fetch('http://mikespace.xyz:9400/game/new?username=' + username,
+    fetch('http://localhost:9400/game/new?username=' + username,
       {
         method: 'POST',
       })
@@ -184,8 +184,8 @@ const Wordle = () => {
     }
     if (currentGuess.length > 4) {  // only register 'Enter' when there are 5 characters in guess
       if (e.key === 'Enter') {
-        fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-        // fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        // fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
           {
             method: 'POST',
           })
@@ -336,15 +336,15 @@ const Wordle = () => {
                           )) 
                       // otherwise only highlight incoming letter
                       : currentGuess.padEnd(5, ' ').split('').map((letter, index) => (
-                      <div key={KEYS[i][index]} 
-                        className={`${bubbleStyle} ${regularStyle}
-                        ${index === currentGuess.length 
-                          ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500' 
-                          : ''}` } // find the column to highlight the incoming letter of current guess
-                      >
-                        {letter}
-                      </div> 
-                      ))
+                          <div key={KEYS[i][index]} 
+                            className={`${bubbleStyle} ${regularStyle}
+                            ${index === currentGuess.length 
+                              ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500' 
+                              : ''}` } // find the column to highlight the incoming letter of current guess
+                          >
+                            {letter}
+                          </div> 
+                          ))
                     // else: not current guess, rendering blank spaces
                     : '     '.split('').map((space, index) => (
                       <div key={KEYS[i][index]} 
