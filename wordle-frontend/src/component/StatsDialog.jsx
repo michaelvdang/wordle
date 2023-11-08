@@ -32,8 +32,8 @@ export default function StatsDialog(props) {
     // console.log('usename: ', username);
     // console.log('user_id: ', user_id);
     // console.log(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username);
-    // fetch(`http://mikespace.xyz:9000/stats/users?user_id=` + user_id + '&username=' + username)
-    fetch(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username)
+    fetch(`http://mikespace.xyz:9000/stats/users?user_id=` + user_id + '&username=' + username)
+    // fetch(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username)
       .then(res => res.json())
       .then(res => {
         // console.log(res);

@@ -17,7 +17,9 @@ load_dotenv()
 
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
 def get_redis():
-    yield redis.Redis(host='redis', 
+    yield redis.Redis(
+                    # host='localhost',
+                    host='redis', 
                     port=6379, 
                     decode_responses=True, 
                     password=REDISCLI_AUTH_PASSWORD,
@@ -106,13 +108,13 @@ def store_game_result(
         g3: sqlite3.Connection = Depends(get_db3),
         r: redis.Redis = Depends(get_redis)):
     try:
-        print('username: ', username)
-        print('user_id: ', user_id)
-        print('game_id: ', game_id)
-        print('result: ', result)
+        # print('username: ', username)
+        # print('user_id: ', user_id)
+        # print('game_id: ', game_id)
+        # print('result: ', result)
         gamedb = (g1, g2, g3)
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
-        print('guid: ', guid)
+        # print('guid: ', guid)
 
         finished = datetime.date.today()
         guesses = result.guesses
@@ -165,7 +167,7 @@ def get_user_stats(
         g3: sqlite3.Connection = Depends(get_db3)):
     gamedb = (g1, g2, g3)
     guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
-    print('guid: ', guid)
+    # print('guid: ', guid)
     gc = gamedb[int(guid) % 3].cursor()
     # games = gc.execute('select * from games where user_id=?', [user_id]).fetchall()
     games = gc.execute(
@@ -185,7 +187,7 @@ def get_user_stats(
         stats['win_percentage'] = wins_count / len(games)
     else:
         stats['win_percentage'] = 0
-    print(games)
+    # print(games)
     # NOTE: this sql might not be working correctly, returnin NoneType and zeroes for current_streak and max_win_streak, avg_guesses
     res = gc.execute(
         '''
@@ -229,7 +231,7 @@ def get_user_stats(
         FROM Streaks 
         WHERE row_num=(SELECT MAX(row_num) FROM Streaks);
         ''', [user_id, user_id, user_id]).fetchone()
-    print('UserStatsRedis.py res: ', res)
+    print('UserStatRedis.py res: ', res)
     if res and len(res):
         stats['current_streak'] = {'streak': res[0], 'won': res[1]}
         stats['max_win_streak'] = res[2]
@@ -339,16 +341,14 @@ def create_user(username: str,
         row = udb.execute('SELECT * FROM users WHERE username=?', [username])
         existing_user = row.fetchone()
         if existing_user:
-            # print('ERROR existing user: ', existing_user)                           # Debugging
+            print('ERROR existing user: ', existing_user)                           # Debugging
             return {'Error': 'Username already exists'}
 
         # Continue with user creation if the username is unique
-        res = udb.execute('SELECT * FROM users ORDERBY user_id DESC LIMIT 1')
-        user_id = res.fetchone()[1] + 1
-        # res = udb.execute('SELECT count(*) FROM users')
-        # user_id = res.fetchone()[0] + 1
+        res = udb.execute('SELECT MAX(user_id) FROM users')
+        user_id = res.fetchone()[0] + 1
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
-        # print('GUID: ', guid)                                                       # Debugging
+        print('GUID: ', guid)
         udb.execute('INSERT INTO users(guid, user_id, username) VALUES(?,?,?)', 
                     [str(guid), user_id, username])
         udb.commit()
@@ -369,7 +369,6 @@ def create_user(username: str,
         # row = gdb.execute('SELECT * FROM users WHERE username=?', [username])       # Debugging
         # print('After inserting user: ', row.fetchone())
 
-        print('New user created: ', user_id)
         return {'Success' : 'User created', 
                 'user': {
                     'guid': str(guid), 

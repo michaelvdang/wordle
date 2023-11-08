@@ -32,9 +32,9 @@ How to start the application:
     - apt install python3-pip
     - venv: apt install python3.10-venv
 - Create virtual environment and use it
-    - python3 -m venv venv
-    - chmod u+rwx venv/bin/activate
-    - source venv/bin/activate
+    - python3 -m venv .venv
+    - chmod u+rwx .venv/bin/activate
+    - source .venv/bin/activate
 - Install python dependencies
     - pip install Faker
     - python redis module: pip install redis
@@ -109,12 +109,12 @@ Deploy backend using Docker:
         - During dev: run: python bin/TopTen.py manually from one of the containers (usually Orchestrator)
 - .env and redis.conf has passwords so they must be copied manually into root folder
 - Setting up crontab (probably best done manualy since it's outside of docker)
-    - create a venv: python3 -m venv venv
+    - create a venv: python3 -m venv .venv
     - install dependencies: python3 -m pip install -r cron-requirements.txt
     - create a file to store cron-fragments.txt
-    - view running cron jobs: crontab -l -e
+    - view running cron jobs: crontab -l (to list) -e (to edit)
     - put running cron jobs into crontab.txt
-    - * * * * * /root/wordle/venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
+    - * * * * * /root/wordle/.venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
     - run: crontab crontab.txt
 
 Deploy frontend (NGINX outside Docker): 

@@ -46,6 +46,7 @@ def test():
 
 @app.post('/game/new', status_code=201)
 def start_new_game(username: str):# = Body()):
+    username = username.lower()
     # find user_id
     res = httpx.get('http://stats:9000/stats/id/' + username)    # for running local
     # res = httpx.get('http://stats:9000/stats?username=' + username)    # for container
@@ -76,6 +77,7 @@ def start_new_game(username: str):# = Body()):
 
 @app.post('/game/{game_id}', status_code=201)
 def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: str):
+    username = username.lower()
     # check word is valid and has guesses_remaining
 
     async def validate_word():
