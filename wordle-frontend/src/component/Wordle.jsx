@@ -49,10 +49,11 @@ const Wordle = () => {
   });
   const mainRef = createRef(null);
   const inputRef = useRef(null);
+  const [hasFocus, setHasFocus] = useState(true);
 
   const fetchNewGame = () => {
-    fetch('http://mikespace.xyz:9400/game/new?username=' + username,
-    // fetch('http://localhost:9400/game/new?username=' + username,
+    // fetch('http://mikespace.xyz:9400/game/new?username=' + username,
+    fetch('http://localhost:9400/game/new?username=' + username,
       {
         method: 'POST',
       })
@@ -80,19 +81,24 @@ const Wordle = () => {
     setGuesses([]);
     setGuessIndex(0);
     setCurrentGuess('');
-    mainRef.current.focus();
+    mainRef.current.focus();      // focus on main when first page load
     // console.log('component did mount');
     
     window.scrollTo(-50, 0)
 
   }, [])
 
+  // find a better way to detect when new username is entered 
+  // only fetchNewGame for new username
   useEffect(() => {
-    if (username !== '') {
+    if (!isSettingUsername && username !== '') {
       setGuesses([]);
       setGuessIndex(0);
       setCurrentGuess('');
       fetchNewGame();
+      setTimeout(() => {
+        inputRef.current.focus();
+      }, 500);
     }
     // console.log('isSettingUsername updated');
   }, [isSettingUsername])
@@ -107,16 +113,21 @@ const Wordle = () => {
       setGameCompleted(false);
       setIsNewGame(false);
       fetchNewGame();
+      setTimeout(() => {
+        inputRef.current.focus();
+      }, 500);
       return;
     }
   }, [isNewGame])
   
-  // useEffect(() => {
-  //   if (!showStats) {
-  //     inputRef.current.focus();
-  //     // mainRef.current.focus();
-  //   }
-  // }, [showStats])
+  // return focus to input after closing Stats and Leaderboard
+  useEffect(() => { 
+    if (!showStats && !showLeaderboard) {
+      setTimeout(() => {
+        inputRef.current.focus();
+      }, 500);
+    }
+  }, [showStats, showLeaderboard])
 
   const handleClick = () => {
     setGuesses([...guesses, GUESSES[guessIndex]]);
@@ -169,12 +180,14 @@ const Wordle = () => {
     }
   }
   
+  // refocus to next input after submitting a guess
   useEffect(() => {
-    if (guessIndex < 6)
+    if (guessIndex < 6) // there will not be a 7th inputRef
       inputRef.current.focus();
   }, [guessIndex])
 
   const handleKeyDown = (e) => {
+    console.log('localStorage: ', localStorage)
     if (guesses.length > 5) return;
     if (e.key === 'Backspace') {
       setCurrentGuess(currentGuess.slice(0, -1));
@@ -184,8 +197,8 @@ const Wordle = () => {
     }
     if (currentGuess.length > 4) {  // only register 'Enter' when there are 5 characters in guess
       if (e.key === 'Enter') {
-        fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-        // fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        // fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
           {
             method: 'POST',
           })
@@ -199,7 +212,7 @@ const Wordle = () => {
             else
               setInvalidWord(true);
             // start new game
-            if (data.completed) 
+            if (data.completed)
               setGameCompleted(true);
           })
         return;
@@ -210,8 +223,6 @@ const Wordle = () => {
       setCurrentGuess(currentGuess => currentGuess + e.key.toLowerCase());
     }
   }
-
-  
 
   const bubbleStyle = 'flex items-center justify-center \
                         rounded-full cursor-default select-none \
@@ -226,10 +237,11 @@ const Wordle = () => {
                         md:w-10 md:h-10 md:text-sm md:pb-1 \
                         font-bold text-gray-800 font-serif';
   const errorStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-red-500 ';
-  const regularStyle = 'bg-white ';
+  const regularStyle = 'bg-white dark:bg-gray-700 ';
   const absentLetterStyle = 'bg-gray-500 ';
   const presentLetterStyle = 'bg-blue-300 ';
   const correctLetterStyle = 'bg-green-300 ';
+  const focusStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500';
 
   return (
     <>
@@ -256,8 +268,6 @@ const Wordle = () => {
         setShowStats={setShowStats}
         username={username}
         user_id={game.user_id}
-        // mainRef={mainRef}
-        inputRef={inputRef}
       />
     }
     {showLeaderboard && 
@@ -273,9 +283,10 @@ const Wordle = () => {
       setIsSettingUsername={setIsSettingUsername}
     />
     <main 
-      className="flex flex-col items-center justify-center outline-none mt-12" 
+      className="flex flex-col items-center justify-center mt-12" 
       onKeyDown={handleKeyDown}
-      onFocus={() => inputRef.current.focus()}
+      onFocus={() => {inputRef.current.focus(); setHasFocus(true);}}
+      onBlur={() => setHasFocus(false)}
       tabIndex={0}
       ref={mainRef}
       >
@@ -314,9 +325,11 @@ const Wordle = () => {
                   {
                   guessIndex === i &&         
                   <input 
-                    ref={inputRef} 
+                    id='mainId'
+                    ref={inputRef}
+                    autoComplete='off'
+                    autoCapitalize='off'
                     className='absolute -left-80'
-                    // className="absolute h-1 w-1 -left-4 focus:outline-none bg-[#242424] text-[#242424] -z-10" 
                     type="email" 
                     maxLength={5}
                     value={currentGuess} 
@@ -328,7 +341,7 @@ const Wordle = () => {
                       ? currentGuess.split('').map((letter, index) => (
                           <div key={KEYS[i][index]} 
                               className={`${bubbleStyle} ${regularStyle}
-                              shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500
+                                ${hasFocus ? focusStyle : ''}
                               ${invalidWord && errorStyle}`} // find the column to highlight the incoming letter of current guess, style invalid words
                             >
                               {letter}
@@ -338,8 +351,8 @@ const Wordle = () => {
                       : currentGuess.padEnd(5, ' ').split('').map((letter, index) => (
                           <div key={KEYS[i][index]} 
                             className={`${bubbleStyle} ${regularStyle}
-                            ${index === currentGuess.length 
-                              ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500' 
+                            ${index === currentGuess.length
+                              ? (hasFocus ? focusStyle : '') 
                               : ''}` } // find the column to highlight the incoming letter of current guess
                           >
                             {letter}
@@ -349,8 +362,8 @@ const Wordle = () => {
                     : '     '.split('').map((space, index) => (
                       <div key={KEYS[i][index]} 
                         className={`${bubbleStyle} ${regularStyle}
-                          ${i === guesses.length && index === 0
-                            ? 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500'
+                          ${i === guesses.length && index === 0 && hasFocus
+                            ? focusStyle
                             : ''} 
                           `} // highlight first box for new guess
                       >

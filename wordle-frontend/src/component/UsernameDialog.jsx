@@ -90,6 +90,8 @@ export default function UsernameDialog(props) {
                             type='text'
                             name='username'
                             id='username'
+                            autoComplete='username'
+                            autoCapitalize='none'
                             className='block w-full rounded-md border-0 py-1.5 pl-3 pr-3 font-serif
                             text-gray-300 outline-none ring-1 ring-inset ring-gray-300
                             placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-500
