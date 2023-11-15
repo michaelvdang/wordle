@@ -19,7 +19,8 @@ origins = [     # curl and local browser are always allowed
     "https://mikespace.xyz:8080",
     "http://mikespace.xyz:80",
     "https://mikespace.xyz:80",
-    "http://localhost"
+    "http://localhost",
+    "http://146.190.58.25",
 ]
 # app.add_middleware(
 #     CORSMiddleware,
@@ -48,6 +49,7 @@ def test():
 def start_new_game(username: str):# = Body()):
     username = username.lower()
     # find user_id
+    # res = httpx.get('http://localhost/stats/stats/id/' + username)    # for running local
     res = httpx.get('http://stats:9000/stats/id/' + username)    # for running local
     # res = httpx.get('http://stats:9000/stats?username=' + username)    # for container
     # res = httpx.get('http://localhost:9000/api/v1/stats?username=' + username) # for non-container
@@ -56,17 +58,20 @@ def start_new_game(username: str):# = Body()):
 
     # create new user when there wrong username is given
     if user == -1:
+        # res = httpx.post('http://localhost/stats/stats/users/new?username=' + username)
         res = httpx.post('http://stats:9000/stats/users/new?username=' + username)
         user = res.json()['user']
 
     # choose new game_id 
-    # answers = httpx.get('http://localhost:9100/answers/count')   # use localhost for non container
+    # answers = httpx.get('http://localhost/wordcheck/answers/count')   # use localhost for non container
     answers = httpx.get('http://wordcheck:9100/answers/count')   # use localhost for non container
+    # answers = httpx.get('http://localhost:9100/answers/count')   # use localhost for non container
     game_id = random.randint(100, answers.json()['count'])
     # print('new guid: ' + guid)
     # create new game
     print('new guid: ' + user['guid'])
     print('new game_id: ' + str(game_id))
+    # new_game = httpx.post('http://localhost/play/play?guid=' + (user['guid']) + 
     new_game = httpx.post('http://play:9300/play?guid=' + (user['guid']) + 
                                 '&game_id=' + str(game_id))
     return {'status' : 'new game created', 

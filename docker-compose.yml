@@ -70,21 +70,21 @@ services:
       - wordvalidation
       - play
     restart: unless-stopped
-  nginx:
-    build: ./wordle-frontend
-    container_name: 'nginx-cont'
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./wordle-frontend/dist:/usr/share/nginx/html
-    depends_on:
-      - stats
-      - wordcheck
-      - wordvalidation
-      - play
-      - orchestrator
-      - redis
-    restart: unless-stopped
+  # nginx:
+  #   build: ./wordle-frontend
+  #   container_name: 'nginx-cont'
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./wordle-frontend/dist:/usr/share/nginx/html
+  #   depends_on:
+  #     - stats
+  #     - wordcheck
+  #     - wordvalidation
+  #     - play
+  #     - orchestrator
+  #     - redis
+  #   restart: unless-stopped
 volumes:
   db:

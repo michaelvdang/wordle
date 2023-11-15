@@ -20,7 +20,7 @@ const TopWinsTable = (props) => {
                       {topWins.map((user, index) => {
                         return (
                           <tr key={index}
-                            className="border-b bg-gray-600  dark:border-neutral-500 dark:bg-gray-600">
+                            className="border-b text-gray-200 bg-gray-600  dark:border-neutral-500 dark:bg-gray-600">
                             <td className="whitespace-nowrap px-6 py-4 w-3/4">{user[0]}</td>
                             <td className="whitespace-nowrap px-6 py-4 w-1/4">
                               {user[1]}

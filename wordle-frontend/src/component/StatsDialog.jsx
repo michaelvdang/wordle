@@ -33,7 +33,8 @@ export default function StatsDialog(props) {
     // console.log('user_id: ', user_id);
     // console.log(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username);
     // fetch(`http://mikespace.xyz:9000/stats/users?user_id=` + user_id + '&username=' + username)
-    fetch(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username)
+    // fetch(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username)
+    fetch(`https://stats.api.mikespace.xyz/stats/users?user_id=` + user_id + '&username=' + username)
       .then(res => res.json())
       .then(res => {
         // console.log(res);
@@ -59,7 +60,7 @@ export default function StatsDialog(props) {
         })
       })
     return () => {
-      console.log('component will unmount');
+      // console.log('component will unmount');
       // inputRef.current.focus();
     }
   }, []);
@@ -136,7 +137,7 @@ export default function StatsDialog(props) {
                                       {Object.keys(userStats).map((key, index) => {
                                         return (
                                           <tr key={index}
-                                            className="border-b bg-gray-600  dark:border-neutral-500 dark:bg-gray-600">
+                                            className="border-b text-gray-200 bg-gray-600  dark:border-neutral-500 dark:bg-gray-600">
                                             <td className="whitespace-nowrap px-6 py-4">{stats[key]}</td>
                                             <td className="whitespace-nowrap px-6 py-4">
                                               {userStats[key]}

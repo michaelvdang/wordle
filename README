@@ -25,7 +25,81 @@ game1.db:
             streaks(user_id, streak, beginning, ending)
             wins(user_id, count(won))
 
- 
+
+START HERE:
+Deployment: 
+- Install Docker
+    - https://www.docker.com/products/docker
+- Pull from git repo
+    - git clone https://github.com/MichaelDang/wordle.git
+    - cd wordle
+    - git checkout docker
+- Copy .env, redis.conf, and crontab.txt (using FileZilla)
+- Build and copy frontend code (maybe download npm and just build it on server)
+    - place the wordle-frontend/dist/ folder in /wordle/wordle-frontend/ (including dist/)
+
+Deployment details:
+Deploy backend using Docker: 
+- Docker Volume NOTE: using named volume in docker compose means that the volume will be managed by Docker (it won't be in the local ./var directory, but will create new .db files in the virtual ./var directory, the local ones, if they have .db files will not reflect what happens in the app when it is running)
+- Most of the above steps are done automatically using docker compose, except for 3 things:
+    - Copying the .env file (was .gitignored so git clone doesn't work)
+    - Copying the redis.conf file (also .gitignored)
+    - Setting up crontab for TopTen leaderboard 
+        - During dev: run: python bin/TopTen.py manually from one of the containers (usually Orchestrator)
+- .env and redis.conf has passwords so they must be copied manually into root folder
+- Setting up crontab to update Leaderboard (probably best done manualy since it's outside of docker)
+    - Must install pip in order to install redis: apt install python3-pip
+    - Create a venv: python3 -m venv .venv
+    - bin/TopTen.py will query game1.db, game2.db, etc. to find the top 10 longest streaks and winners
+        - Find where the .db files are: docker volume ls && docker volume inspect wordle_db
+        - Make sure the path in TopTen.py matches the path in Mountpoint
+    - install dependencies: python3 -m pip install -r cron-requirements.txt
+    - create a file to store cron-fragments.txt
+    - view running cron jobs: crontab -l (to list) -e (to edit)
+    - put running cron jobs into crontab.txt
+    - * * * * * /root/wordle/.venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
+    - run: crontab crontab.txt
+    - Rotate cron.log so it doesn't become too big: https://serverfault.com/questions/703757/how-to-rotate-a-log-file-from-crontab
+
+Deploy frontend (NGINX outside Docker):
+- Configure NGINX reverse proxy so front end can talk to the APIs
+    - Copy the wordle.conf file to /etc/nginx/sites-available/
+    - Create a symlink: ln -s /etc/nginx/sites-available/wordle.conf to /etc/nginx/sites-enabled/wordle
+    - Restart NGINX to take effect: sudo systemctl restart nginx
+- The APIs are now available at http://stats.api.mikespace.xyz, etc.
+- Go to Let's Encrypt: https://letsencrypt.org/getting-started/ to get TLS certificates
+- The above steps also configured the location of the dist/ folder: /usr/share/nginx/html
+- Build the app on local machine: npm run build
+- SFTP to the server using FileZilla and upload the dist/ content to /var/www/html
+    - NOTE: for NGINX, put the dist/ content in /usr/share/nginx/html
+- The page should be viewable after a few seconds
+
+Deploy frontend (NGINX in Docker):
+- Build app on local machine: npm run build
+- SFTP to server using FileZilla and upload the dist/ content to /wordle/wordle-frontend/dist 
+- Start Docker compose
+
+Ubuntu server (Digital Ocean Droplet):
+- On local machine, create ssh key-pair, go to <user>/.ssh: ssh-keygen
+- If you don't have access to server thru SSH, go to droplet's control panel and open Access>Droplet Console
+- On server, find .ssh/ folder: ls -al
+- Run: nano .ssh/authorized_keys
+- Add the public key to the file
+- Save and quit
+- Make sure .ssh/ has 700 permissions and authorized_keys has 600 permissions
+- Back to local machine, run: ssh -i <key file> <user>@<droplet IP>
+
+FileZilla setup: 
+- This will use the same SSH key that is used to SSH into server
+- Edit>Settings...>SFTP: add SSH private key in 'Add key file'
+- Save and quit
+- File>New Site: enter IP or domain name, port 22
+- Connect
+
+
+
+
+Manual installation:
 Running on bare Linux:
 How to start the application:
 - Install all dependencies, some of the required modules are, but there could be others:
@@ -87,62 +161,6 @@ How to start the application:
         - But this way we can lose a couple minutes' worth of data in case of an outage. so use Append Only File in redis.conf:
             - appendonly yes
 
-
-Deployment: 
-- Install Docker
-    - https://www.docker.com/products/docker
-- Pull from git repo
-    - git clone https://github.com/MichaelDang/wordle.git
-    - cd wordle
-    - git checkout docker
-- Copy .env, redis.conf, and crontab.txt (using FileZilla)
-- Build and copy frontend code (maybe download npm and just build it on server)
-    - place the wordle-frontend/dist/ folder in /wordle/wordle-frontend/ (including dist/)
-
-Deployment details:
-Deploy backend using Docker: 
-- Docker Volume NOTE: using named volume in docker compose means that the volume will be managed by Docker (it won't be in the local ./var directory, but will create new .db files in the virtual ./var directory, the local ones, if they have .db files will not reflect what happens in the app when it is running)
-- Most of the above steps are done automatically using docker compose, except for 3 things:
-    - Copying the .env file (was .gitignored so git clone doesn't work)
-    - Copying the redis.conf file (also .gitignored)
-    - Setting up crontab for TopTen leaderboard 
-        - During dev: run: python bin/TopTen.py manually from one of the containers (usually Orchestrator)
-- .env and redis.conf has passwords so they must be copied manually into root folder
-- Setting up crontab (probably best done manualy since it's outside of docker)
-    - create a venv: python3 -m venv .venv
-    - install dependencies: python3 -m pip install -r cron-requirements.txt
-    - create a file to store cron-fragments.txt
-    - view running cron jobs: crontab -l (to list) -e (to edit)
-    - put running cron jobs into crontab.txt
-    - * * * * * /root/wordle/.venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
-    - run: crontab crontab.txt
-
-Deploy frontend (NGINX outside Docker): 
-- Build the app on local machine: npm run build
-- SFTP to the server using FileZilla and upload the dist/ content to /var/www/html
-- The page should be viewable after a few seconds
-
-Deploy frontend (NGINX in Docker):
-- Build app on local machine: npm run build
-- SFTP to server using FileZilla and upload the dist/ content to /wordle/wordle-frontend/dist 
-- Start Docker compose
-
-Ubuntu server (Digital Ocean Droplet):
-- On local machine, create ssh key-pair, go to <user>/.ssh: ssh-keygen
-- If you don't have access to server thru SSH, go to droplet's control panel and open Access>Droplet Console
-- On server, find .ssh/ folder: ls -al
-- Run: nano .ssh/authorized_keys
-- Add the public key to the file
-- Save and quit
-- Make sure .ssh/ has 700 permissions and authorized_keys has 600 permissions
-- Back to local machine, run: ssh -i <key file> <user>@<droplet IP>
-
-FileZilla setup: 
-- This will use the same SSH key that is used to SSH into server
-- Edit>Settings...>SFTP: add SSH private key in 'Add key file'
-- Save and quit
-- File>New Site: enter IP or domain name, port 22
-- Connect
 
 
 Project 4:

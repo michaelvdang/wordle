@@ -51,7 +51,7 @@ export default function NavBar(props) {
                   />
                 </div>
                 <div 
-                  className='px-4 flex items-center'
+                  className='px-4 flex items-center text-gray-200'
                   onClick={handleUsernameClick}
                 >
                   {username}

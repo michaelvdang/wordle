@@ -73,16 +73,17 @@ settings = Settings()
 app = FastAPI()
 
 origins = [     # curl and local browser are always allowed
-    "http://localhost:8080",    # must allow or CORS will block
-    "http://localhost:5173",    # needs this even when React App is local and Orc is remote
-    "http://localhost:9100",
-    "http://mikespace.xyz",
+    # "http://localhost:8080",    # must allow or CORS will block
+    # "http://localhost:5173",    # needs this even when React App is local and Orc is remote
+    # "http://localhost:9100",
+    # "http://mikespace.xyz",
     "https://mikespace.xyz",
-    "http://mikespace.xyz:8080",
-    "https://mikespace.xyz:8080",
-    "http://mikespace.xyz:80",
-    "https://mikespace.xyz:80",
-    "http://localhost",
+    # "http://mikespace.xyz:8080",
+    # "https://mikespace.xyz:8080",
+    # "http://mikespace.xyz:80",
+    # "https://mikespace.xyz:80",
+    # "http://localhost",
+    # "http://146.190.58.25",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -150,7 +151,7 @@ def get_top_streaks(r: redis.Redis = Depends(get_redis)):
     top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)
     return [(user_id, int(score)) for (user_id, score) in top_streaks]
 
-@app.get('/stats/top_streaks_and_winners', status_code=200)
+@app.get('/stats/top-streaks-and-winners', status_code=200)
 def get_top_streaks_and_winners(r: redis.Redis = Depends(get_redis)):
     top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
     top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)

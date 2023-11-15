@@ -26,8 +26,9 @@ export default function LeaderboardModal(props) {
 
   useEffect(() => {
     setLoading(true);
-    // fetch(`http://mikespace.xyz:9000/stats/top_streaks_and_winners`)
-    fetch(`http://localhost:9000/stats/top_streaks_and_winners`)
+    // fetch(`http://mikespace.xyz:9000/stats/top-streaks-and-winners`)
+    // fetch(`http://localhost:9000/stats/top-streaks-and-winners`)
+    fetch(`https://stats.api.mikespace.xyz/stats/top-streaks-and-winners`)
       .then(res => res.json())
       .then(res => {
         // console.log(res);
@@ -83,12 +84,12 @@ export default function LeaderboardModal(props) {
                   {viewTopWins ? (
                     (topWins.length 
                       ? <TopWinsTable topWins={topWins} loading={loading} /> 
-                      : <div className='px-4'>Data not available</div>
+                      : <div className='px-4 text-gray-200'>Data not available</div>
                     )
                   ) : (
                     (topStreaks.length
                       ? <TopStreaksTable topStreaks={topStreaks} loading={loading} /> 
-                      : <div className='px-4'>Data not available</div>
+                      : <div className='px-4 text-gray-200'>Data not available</div>
                     )
                   )}
                 </div>

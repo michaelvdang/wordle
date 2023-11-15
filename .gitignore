@@ -4,6 +4,7 @@ var/
 *.tar.gz
 __pycache__
 depr
+letsencrypt/
 
 # React frontend
 node_modules

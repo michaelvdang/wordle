@@ -4,6 +4,7 @@ import UsernameDialog from './UsernameDialog'
 import NavBar from './NavBar'
 import StatsDialog from './StatsDialog'
 import LeaderboardModal from './LeaderboardModal'
+import ErrorDialog from './ErrorDialog'
 
 const LETTERS = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -21,7 +22,7 @@ const GUESSES = [
 
 const Wordle = () => {
 
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('mdang');
   const [isSettingUsername, setIsSettingUsername] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
@@ -50,10 +51,12 @@ const Wordle = () => {
   const mainRef = createRef(null);
   const inputRef = useRef(null);
   const [hasFocus, setHasFocus] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   const fetchNewGame = () => {
     // fetch('http://mikespace.xyz:9400/game/new?username=' + username,
-    fetch('http://localhost:9400/game/new?username=' + username,
+    // fetch('http://localhost:9400/game/new?username=' + username,
+    fetch('https://orchestrator.api.mikespace.xyz/game/new?username=' + username,
       {
         method: 'POST',
       })
@@ -71,6 +74,10 @@ const Wordle = () => {
         completed: false,
         won: false,
       }))
+      .catch(err => {
+        console.log(err);
+        setHasError(true);
+      })
   }
 
   // first page load, start new game with username
@@ -171,7 +178,7 @@ const Wordle = () => {
     // TODO: add 'complete' to Orc API or will get error for results.length
     if (data['completed']) {
       setGameCompleted(true);
-      console.log('GAME COMPLETED: DID YOU WIN? ', data['won'])
+      // console.log('GAME COMPLETED: DID YOU WIN? ', data['won'])
       if (data['won']) {
         setGameWon(true);
         // start new game?
@@ -187,7 +194,7 @@ const Wordle = () => {
   }, [guessIndex])
 
   const handleKeyDown = (e) => {
-    console.log('localStorage: ', localStorage)
+    // console.log('localStorage: ', localStorage)
     if (guesses.length > 5) return;
     if (e.key === 'Backspace') {
       setCurrentGuess(currentGuess.slice(0, -1));
@@ -198,7 +205,8 @@ const Wordle = () => {
     if (currentGuess.length > 4) {  // only register 'Enter' when there are 5 characters in guess
       if (e.key === 'Enter') {
         // fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-        fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        // fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+        fetch('https://orchestrator.api.mikespace.xyz/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
           {
             method: 'POST',
           })
@@ -209,11 +217,16 @@ const Wordle = () => {
             if (data['status'] === 'success')
               handleValidWord(data);
             // word is not valid
-            else
+            else{
               setInvalidWord(true);
+            }
             // start new game
             if (data.completed)
               setGameCompleted(true);
+          })
+          .catch(err => {
+            console.log(err);
+            setHasError(true);
           })
         return;
       }
@@ -229,19 +242,42 @@ const Wordle = () => {
                         w-14 h-14 text-xl\
                         sm:w-20 sm:h-20 sm:text-3xl \
                         md:w-28 md:h-28 md:text-6xl md:pb-2 \
-                        text-gray-800 font-bold font-serif ';
+                        font-bold font-serif \
+                        ';
   const smallBubbleStyle = 'flex items-center justify-center \
                         cursor-default select-none rounded-3xl \
                         w-6 h-6 text-[10px] \
                         sm:w-8 sm:h-8 sm:text-xs \
                         md:w-10 md:h-10 md:text-sm md:pb-1 \
-                        font-bold text-gray-800 font-serif';
+                        font-bold font-serif \
+                        ';
   const errorStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-red-500 ';
-  const regularStyle = 'bg-white dark:bg-gray-700 ';
+  const regularStyle = 'text-gray-700 bg-gray-200 dark:text-gray-800 dark:bg-red ';
   const absentLetterStyle = 'bg-gray-500 ';
-  const presentLetterStyle = 'bg-blue-300 ';
+  const presentLetterStyle = 'bg-blue-300';
   const correctLetterStyle = 'bg-green-300 ';
-  const focusStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-500';
+  const focusStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-400';
+  
+  // const bubbleStyle = 'flex items-center justify-center \
+  //                       rounded-full cursor-default select-none \
+  //                       w-14 h-14 text-xl\
+  //                       sm:w-20 sm:h-20 sm:text-3xl \
+  //                       md:w-28 md:h-28 md:text-6xl md:pb-2 \
+  //                       font-bold font-serif \
+  //                       ';
+  // const smallBubbleStyle = 'flex items-center justify-center \
+  //                       cursor-default select-none rounded-3xl \
+  //                       w-6 h-6 text-[10px] \
+  //                       sm:w-8 sm:h-8 sm:text-xs \
+  //                       md:w-10 md:h-10 md:text-sm md:pb-1 \
+  //                       font-bold font-serif \
+  //                       ';
+  // const errorStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-red-500 ';
+  // const regularStyle = 'text-gray-700 bg-gray-300 dark:text-gray-800 dark:bg-white ';
+  // const absentLetterStyle = 'bg-gray-500 ';
+  // const presentLetterStyle = 'bg-blue-300';
+  // const correctLetterStyle = 'bg-green-300 ';
+  // const focusStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-400';
 
   return (
     <>
@@ -253,7 +289,7 @@ const Wordle = () => {
         // mainRef={mainRef}
       />
     }
-    {game.completed && // problem is this is not getting the latest game object
+    {(game.completed) && // problem is this is not getting the latest game object
       <NewGameDialog
         gameCompleted={gameCompleted} 
         setGameCompleted={setGameCompleted}
@@ -275,6 +311,12 @@ const Wordle = () => {
         setShowLeaderboard={setShowLeaderboard}
       />
     }
+    {hasError && 
+      <ErrorDialog
+        hasError={hasError}
+        setHasError={setHasError}
+      />
+    }
     <NavBar 
       setIsNewGame={setIsNewGame}
       setShowStats={setShowStats}
@@ -283,7 +325,7 @@ const Wordle = () => {
       setIsSettingUsername={setIsSettingUsername}
     />
     <main 
-      className="flex flex-col items-center justify-center mt-12" 
+      className="flex flex-col items-center justify-center pt-12 dark" 
       onKeyDown={handleKeyDown}
       onFocus={() => {inputRef.current.focus(); setHasFocus(true);}}
       onBlur={() => setHasFocus(false)}
@@ -323,26 +365,31 @@ const Wordle = () => {
               : 
                 <>
                   {
-                  guessIndex === i &&         
-                  <input 
-                    id='mainId'
-                    ref={inputRef}
-                    autoComplete='off'
-                    autoCapitalize='off'
-                    className='absolute -left-80'
-                    type="email" 
-                    maxLength={5}
-                    value={currentGuess} 
-                    onChange={() => {}}
-                    />}
+                    guessIndex === i &&         
+                    <input 
+                      id='mainId'
+                      ref={inputRef}
+                      autoComplete='off'
+                      autoCapitalize='off'
+                      className='absolute -left-80'
+                      type="email" 
+                      maxLength={5}
+                      value={currentGuess} 
+                      onChange={() => {}}
+                      />
+                    }
                   {(currentGuess && guessIndex === i)
                     ? (currentGuess.length === 5)      
                       // highlight all five characters if there are 5 letters in currentGuess
                       ? currentGuess.split('').map((letter, index) => (
                           <div key={KEYS[i][index]} 
                               className={`${bubbleStyle} ${regularStyle}
-                                ${hasFocus ? focusStyle : ''}
-                              ${invalidWord && errorStyle}`} // find the column to highlight the incoming letter of current guess, style invalid words
+                                ${hasFocus 
+                                  ? (invalidWord ? errorStyle : focusStyle) 
+                                  : ''}
+                              `} // find the column to highlight the incoming letter of current guess, style invalid words
+                              //   ${hasFocus ? focusStyle : ''}
+                              // ${invalidWord && errorStyle}`} // find the column to highlight the incoming letter of current guess, style invalid words
                             >
                               {letter}
                             </div> 
