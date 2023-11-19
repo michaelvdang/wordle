@@ -259,9 +259,10 @@ const Wordle = () => {
     setGuessIndex(guessIndex + 1);
   }
 
-  useEffect(() => {
-    console.log('useEffectgame: ', game);
-  }, [game])
+  // // debug only
+  // useEffect(() => {
+  //   console.log('useEffectgame: ', game);
+  // }, [game])
   
 
   const handleValidWord = (data) => {
