@@ -8,19 +8,39 @@ import asyncio
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
+## switch between running individual services or docker compose (same network)
+# APP_HOST = 'localhost'
+APP_HOST = 'docker'
+endpoints = {
+    'localhost': {
+        'stats': 'http://localhost:9000',
+        'wordcheck': 'http://localhost:9100',
+        'wordvalidation': 'http://localhost:9200',
+        'play': 'http://localhost:9300',
+        'orc': 'http://localhost:9400',
+    },
+    'docker': {
+        'stats': 'http://stats:9000',
+        'wordcheck': 'http://wordcheck:9100',
+        'wordvalidation': 'http://wordvalidation:9200',
+        'play': 'http://play:9300',
+        'orc': 'http://orc:9400',
+    }
+}
+
 # app = FastAPI()
 origins = [     # curl and local browser are always allowed
-    "http://localhost:8080",
+    # "http://localhost:8080",
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
-    "http://localhost:9100",
-    "http://mikespace.xyz",
+    # "http://localhost:9100",
+    # "http://mikespace.xyz",
     "https://mikespace.xyz",
-    "http://mikespace.xyz:8080",
-    "https://mikespace.xyz:8080",
-    "http://mikespace.xyz:80",
-    "https://mikespace.xyz:80",
-    "http://localhost",
-    "http://146.190.58.25",
+    # "http://mikespace.xyz:8080",
+    # "https://mikespace.xyz:8080",
+    # "http://mikespace.xyz:80",
+    # "https://mikespace.xyz:80",
+    # "http://localhost",
+    # "http://146.190.58.25",
 ]
 # app.add_middleware(
 #     CORSMiddleware,
@@ -49,30 +69,30 @@ def test():
 def start_new_game(username: str):# = Body()):
     username = username.lower()
     # find user_id
-    # res = httpx.get('http://localhost/stats/stats/id/' + username)    # for running local
-    res = httpx.get('http://stats:9000/stats/id/' + username)    # for running local
-    # res = httpx.get('http://stats:9000/stats?username=' + username)    # for container
-    # res = httpx.get('http://localhost:9000/api/v1/stats?username=' + username) # for non-container
-    # guid = res.json()
+    # res = httpx.get('http://localhost/stats/id/' + username)    # for running local
+    # res = httpx.get('http://stats:9000/stats/id/' + username)    # for container
+    res = httpx.get(endpoints[APP_HOST]['stats'] + '/stats/id/' + username)    # for container
     user = res.json()
 
     # create new user when there wrong username is given
     if user == -1:
         # res = httpx.post('http://localhost/stats/stats/users/new?username=' + username)
-        res = httpx.post('http://stats:9000/stats/users/new?username=' + username)
+        # res = httpx.post('http://stats:9000/stats/users/new?username=' + username)
+        res = httpx.post(endpoints[APP_HOST]['stats'] + '/stats/users/new?username=' + username)
         user = res.json()['user']
 
     # choose new game_id 
-    # answers = httpx.get('http://localhost/wordcheck/answers/count')   # use localhost for non container
-    answers = httpx.get('http://wordcheck:9100/answers/count')   # use localhost for non container
     # answers = httpx.get('http://localhost:9100/answers/count')   # use localhost for non container
+    # answers = httpx.get('http://wordcheck:9100/answers/count')   # use localhost for non container
+    answers = httpx.get(endpoints[APP_HOST]['wordcheck'] + '/answers/count')   # use localhost for non container
     game_id = random.randint(100, answers.json()['count'])
     # print('new guid: ' + guid)
     # create new game
     print('new guid: ' + user['guid'])
     print('new game_id: ' + str(game_id))
     # new_game = httpx.post('http://localhost/play/play?guid=' + (user['guid']) + 
-    new_game = httpx.post('http://play:9300/play?guid=' + (user['guid']) + 
+    # new_game = httpx.post('http://play:9300/play?guid=' + (user['guid']) + 
+    new_game = httpx.post(endpoints[APP_HOST]['play'] + '/play?guid=' + (user['guid']) + 
                                 '&game_id=' + str(game_id))
     return {'status' : 'new game created', 
             'guid' : user['guid'], 
@@ -89,14 +109,17 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
         async with httpx.AsyncClient() as client: 
             # check that guess is_valid
             # _validate_word_future = await client.get('http://localhost:9200/word/is-valid/' + guess)
-            _validate_word_future = await client.get('http://wordvalidation:9200/word/is-valid/' + guess)
+            # _validate_word_future = await client.get('http://wordvalidation:9200/word/is-valid/' + guess)
+            _validate_word_future = await client.get(endpoints[APP_HOST]['wordvalidation'] + 
+                                                     '/word/is-valid/' + guess)
             validate_word = _validate_word_future.json()
             return validate_word['is_valid_word']
 
     async def has_guesses_remaining():
         async with httpx.AsyncClient() as client:
             # check game has guesses remaining
-            _curr_game_future = await client.get('http://play:9300/play?guid=' + str(guid) + 
+            # _curr_game_future = await client.get('http://play:9300/play?guid=' + str(guid) + 
+            _curr_game_future = await client.get(endpoints[APP_HOST]['play'] + '/play?guid=' + str(guid) + 
                                         '&game_id=' + str(game_id))
             curr_game = _curr_game_future.json()
             try:
@@ -119,7 +142,8 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
     async def record_guess():
         async with httpx.AsyncClient() as client:
             # record the guess and update number of guesses remaining
-            _curr_game_future = await client.put('http://play:9300/play?guid=' + 
+            # _curr_game_future = await client.put('http://play:9300/play?guid=' + 
+            _curr_game_future = await client.put(endpoints[APP_HOST]['play'] + '/play?guid=' + 
                             str(guid) + '&game_id=' + str(game_id) + '&guess=' + guess)
             # NOTE: present_letters, absent_letters, game_progress are not used 
             # add something like: word_check_results = {'guess_results': word_check_result}
@@ -133,7 +157,8 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
             game = {'game_id' : game_id, 'word_id' : game_id-99, 'guess' : guess}
             _word_check_future = await client.post(
                             # 'http://localhost:9100/answers/check', 
-                            'http://wordcheck:9100/answers/check', 
+                            # 'http://wordcheck:9100/answers/check', 
+                            endpoints[APP_HOST]['wordcheck'] + '/answers/check', 
                             data=json.dumps(game))
             word_check = _word_check_future.json()
             print(word_check)
@@ -150,21 +175,30 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
     if word_check['results'].count(2) == 5:
         game_result = {'guesses': 6 - int(curr_game_result['remain']), 'won' : True, 'completed' : True}
         print('Orchestrator.py game_result: ', game_result)
-        httpx.post('http://stats:9000/stats/games/store-result?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
-                                                data=json.dumps(game_result)).json()
+        # httpx.post('http://stats:9000/stats/games/store-result?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
+        httpx.post(endpoints[APP_HOST]['stats'] + '/stats/games/store-result?username=' + str(username) 
+                            + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
+                   data=json.dumps(game_result)).json()
     # 2. retrieve user's score to return
-        return {'guess_results': word_check['results'], **(curr_game_result), 'won': True, 'completed' : True}
+        return {'guess_results': word_check['results'], 
+                **(curr_game_result), 
+                'won': True, 
+                'completed' : True}
 
     # LOSE: guess is incorrect and no guesses remain
     elif int(curr_game_result['remain']) == 0:
         # 1. record the loss
         game_result = {'guesses' : 6, 'won' : False, 'completed' : True}
-        httpx.post('http://stats:9000/stats/games/store-result?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
-                                                data=json.dumps(game_result)).json()
+        # httpx.post('http://stats:9000/stats/games/store-result?username=' + str(username) + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
+        httpx.post(endpoints[APP_HOST]['stats'] + '/stats/games/store-result?username=' + str(username) 
+                                    + '&user_id=' + str(user_id) + '&game_id=' + str(game_id), 
+                    data=json.dumps(game_result)).json()
         # 2. Retrieve winning word
         async def get_game_answer():
             async with httpx.AsyncClient() as client:
-                return (await client.get('http://wordcheck:9100/answers/correct?game_id=' + str(game_id))).json()
+                # return (await client.get('http://wordcheck:9100/answers/correct?game_id=' + str(game_id))).json()
+                return (await client.get(endpoints[APP_HOST]['wordcheck'] 
+                                         + '/answers/correct?game_id=' + str(game_id))).json()
         answer = asyncio.run(get_game_answer())
 
         # 3. return user's score
@@ -178,3 +212,29 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
         # they don't need to be a set because the max length is only 25
         return {'guess_results': word_check['results'], **(curr_game_result), 'won': False, 'completed' : False}
 
+@app.get('/game/restore')
+def restore_game(username: str, game_id: int):
+    '''
+    return {'result': 0} if there is no data in Redis
+    return {'result': 1, **user, **game_data} if there is data in Redis
+    '''
+    # res = httpx.get('http://stats:9000/stats/id/' + username)
+    res = httpx.get(endpoints[APP_HOST]['stats'] + '/stats/id/' + username)
+    user = res.json()
+    # user is not in DB, must be a new user
+    if user == -1:
+        return {'result': 0}
+    
+    # restore game from Play API
+    # res = httpx.get('http://play:9300/play?guid=' + (user['guid']) + '&game_id=' + str(game_id))
+    res = httpx.get(endpoints[APP_HOST]['play'] + '/play?guid=' + (user['guid']) 
+                    + '&game_id=' + str(game_id))
+    game_data = res.json()
+    # if in redis, game_data = {'remain': 3, 'guess1': 'angry', ...}
+    # if not in redis, game_data = {'status': 'success'}
+    print('user: ', user, 'game_data: ', game_data)
+    if 'remain' in game_data and int(game_data['remain']) > 0:
+        return {**user, **game_data, 'game_id': game_id, 'result': 1}
+    # if not found, start new game
+    else: 
+        return {'result': 0}

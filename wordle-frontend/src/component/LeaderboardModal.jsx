@@ -5,6 +5,17 @@ import {UserIcon} from '@heroicons/react/20/solid';
 import TopStreaksTable from './TopStreaksTable';
 import TopWinsTable from './TopWinsTable';
 
+const endpoints = {
+  'local': {
+    'stats': 'http://localhost:9000',
+    'orc': 'http://localhost:9400',
+  },
+  'remote': {
+    'stats': 'https://stats.api.mikespace.xyz',
+    'orc': 'https://orc.api.mikespace.xyz',
+  },
+}
+
 const stats = {
   user_id: 'User ID',
   username: 'Username',
@@ -17,7 +28,7 @@ const stats = {
 }
 
 export default function LeaderboardModal(props) {
-  const {setShowLeaderboard} = props;
+  const {setShowLeaderboard, APP_SERVER} = props;
   const [topStreaks, setTopStreaks] = useState([])
   const [topWins, setTopWins] = useState([])
   const [viewTopWins, setViewTopWins] = useState(true);
@@ -26,9 +37,9 @@ export default function LeaderboardModal(props) {
 
   useEffect(() => {
     setLoading(true);
-    // fetch(`http://mikespace.xyz:9000/stats/top-streaks-and-winners`)
+    fetch(endpoints[APP_SERVER]['stats'] + `/stats/top-streaks-and-winners`)
     // fetch(`http://localhost:9000/stats/top-streaks-and-winners`)
-    fetch(`https://stats.api.mikespace.xyz/stats/top-streaks-and-winners`)
+    // fetch(`https://stats.api.mikespace.xyz/stats/top-streaks-and-winners`)
       .then(res => res.json())
       .then(res => {
         // console.log(res);

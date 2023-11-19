@@ -3,6 +3,17 @@ import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import {UserIcon} from '@heroicons/react/20/solid';
 
+const endpoints = {
+  'local': {
+    'stats': 'http://localhost:9000',
+    'orc': 'http://localhost:9400',
+  },
+  'remote': {
+    'stats': 'https://stats.api.mikespace.xyz',
+    'orc': 'https://orc.api.mikespace.xyz',
+  },
+}
+
 const stats = {
   user_id: 'User ID',
   username: 'Username',
@@ -15,7 +26,7 @@ const stats = {
 }
 
 export default function StatsDialog(props) {
-  const {setShowStats, username, user_id, inputRef} = props;
+  const {setShowStats, username, user_id, APP_SERVER} = props;
   const [userStats, setUserStats] = useState({
     win_percentage: '',
     // user_id,
@@ -33,8 +44,9 @@ export default function StatsDialog(props) {
     // console.log('user_id: ', user_id);
     // console.log(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username);
     // fetch(`http://mikespace.xyz:9000/stats/users?user_id=` + user_id + '&username=' + username)
+    fetch(endpoints[APP_SERVER]['stats'] + `/stats/users?user_id=` + user_id + '&username=' + username)
     // fetch(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username)
-    fetch(`https://stats.api.mikespace.xyz/stats/users?user_id=` + user_id + '&username=' + username)
+    // fetch(`https://stats.api.mikespace.xyz/stats/users?user_id=` + user_id + '&username=' + username)
       .then(res => res.json())
       .then(res => {
         // console.log(res);
@@ -47,28 +59,15 @@ export default function StatsDialog(props) {
             ?  (res.current_streak.streak + (res.current_streak.won ? ' Wins' : ' Losses'))
             : 'N/A',
           max_win_streak: res.max_win_streak,
-          // win_percentage: (res.win_percentage ? (res.win_percentage * 100).toFixed(2).toString() + '%' : 'N/A'),
-          // // user_id: user_id,
-          // // username: username,
-          // games_played: res.games_played,
-          // games_won: res.games_won,
-          // average_guesses: (res.average_guesses ? res.average_guesses.toFixed(2) : 'N/A'),
-          // current_streak: res.current_streak 
-          //     ?  (res.current_streak.streak + (res.current_streak.won ? 'W' : 'L'))
-          //     : 'N/A',
-          // max_win_streak: res.max_win_streak ? res.max_win_streak : 'N/A',
         })
       })
     return () => {
       // console.log('component will unmount');
-      // inputRef.current.focus();
     }
   }, []);
 
   const handleClosing = () => {
     setShowStats(false);
-    // mainRef.current.focus();
-    // inputRef.current.focus();
   }
 
   return (
@@ -105,7 +104,6 @@ export default function StatsDialog(props) {
                     <div className='flex items-center justify-center'>
                       <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-slate-200 sm:mx-0 sm:h-10 sm:w-10">
                         <UserIcon className='h-5 w-5 text-gray-400' aria-hidden='true' />
-                        {/* <ExclamationTriangleIcon className="h-6 w-6 text-red-600" aria-hidden="true" /> */}
                       </div>
                     </div>
                     <div className="flex-grow mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
@@ -120,52 +118,23 @@ export default function StatsDialog(props) {
                         <div className='relative mt-2 flex flex-col flex-grow items-stretch focus-within:z-10'>
                           {/** table */}
                           <div className="flex flex-col  overflow-x-auto sm:-mx-6 lg:-mx-8  min-w-full py-2 sm:px-6 lg:px-8">
-                            {/* <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                              <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8"> */}
-                                <div className="overflow-hidden">
-                                  <table className="min-w-full text-left text-sm font-light">
-                                    {/* <thead
-                                      class="border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600">
-                                      <tr>
-                                        <th scope="col" class="px-6 py-4">#</th>
-                                        <th scope="col" class="px-6 py-4">First</th>
-                                        <th scope="col" class="px-6 py-4">Last</th>
-                                        <th scope="col" class="px-6 py-4">Handle</th>
-                                      </tr>
-                                    </thead> */}
-                                    <tbody>
-                                      {Object.keys(userStats).map((key, index) => {
-                                        return (
-                                          <tr key={index}
-                                            className="border-b text-gray-200 bg-gray-600  dark:border-neutral-500 dark:bg-gray-600">
-                                            <td className="whitespace-nowrap px-6 py-4">{stats[key]}</td>
-                                            <td className="whitespace-nowrap px-6 py-4">
-                                              {userStats[key]}
-                                              {/* {userStats[key]
-                                                ? userStats[key]
-                                                : 'N/A'} */}
-                                            </td>
-                                          </tr>
-                                        )
-                                      })}
-                                      {/* <tr
-                                        class="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700">
-                                        <td class="whitespace-nowrap px-6 py-4">Win Percentage</td>
-                                        <td class="whitespace-nowrap px-6 py-4">{userStats.win_percentage}%</td>
-                                      </tr>
-                                      <tr
-                                        class="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700">
-                                        <td
-                                          colspan="2"
-                                          class="whitespace-nowrap px-6 py-4 text-center">
-                                          Larry the Bird
+                            <div className="overflow-hidden">
+                              <table className="min-w-full text-left text-sm font-light">
+                                <tbody>
+                                  {Object.keys(userStats).map((key, index) => {
+                                    return (
+                                      <tr key={index}
+                                        className="border-b text-gray-200 bg-gray-600  dark:border-neutral-500 dark:bg-gray-600">
+                                        <td className="whitespace-nowrap px-6 py-4">{stats[key]}</td>
+                                        <td className="whitespace-nowrap px-6 py-4">
+                                          {userStats[key]}
                                         </td>
-                                      </tr> */}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              {/* </div>
-                            </div> */}
+                                      </tr>
+                                    )
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                         </div>
                       </div>

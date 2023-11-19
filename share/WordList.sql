@@ -3337,6 +3337,7 @@ INSERT INTO ValidWords VALUES('saved');
 INSERT INTO ValidWords VALUES('saver');
 INSERT INTO ValidWords VALUES('saves');
 INSERT INTO ValidWords VALUES('savor');
+INSERT INTO ValidWords VALUES('savoy');
 INSERT INTO ValidWords VALUES('savvy');
 INSERT INTO ValidWords VALUES('sawed');
 INSERT INTO ValidWords VALUES('saxes');

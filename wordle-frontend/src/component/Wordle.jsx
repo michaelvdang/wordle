@@ -1,10 +1,24 @@
-import React, {createRef, useEffect, useState, useRef} from 'react'
+import React, {createRef, useEffect, useState, useRef, useCallback} from 'react'
 import NewGameDialog from './NewGameDialog'
 import UsernameDialog from './UsernameDialog'
 import NavBar from './NavBar'
 import StatsDialog from './StatsDialog'
 import LeaderboardModal from './LeaderboardModal'
 import ErrorDialog from './ErrorDialog'
+import AboutModal from './AboutModal'
+
+const APP_SERVER = 'local'
+// APP_SERVER = 'remote'
+const endpoints = {
+  'local': {
+    'stats': 'http://localhost:9000',
+    'orc': 'http://localhost:9400',
+  },
+  'remote': {
+    'stats': 'https://stats.api.mikespace.xyz',
+    'orc': 'https://orc.api.mikespace.xyz',
+  },
+}
 
 const LETTERS = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -22,8 +36,9 @@ const GUESSES = [
 
 const Wordle = () => {
 
-  const [username, setUsername] = useState('mdang');
+  const [username, setUsername] = useState('');
   const [isSettingUsername, setIsSettingUsername] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [guesses, setGuesses] = useState([]);       // array of made guesses
@@ -34,6 +49,7 @@ const Wordle = () => {
   const [gameCompleted, setGameCompleted] = useState(false);
   const [isNewGame, setIsNewGame] = useState(false);
   const [invalidWord, setInvalidWord] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [game, setGame] = useState({
     game_id: '',
     username: '',
@@ -41,9 +57,9 @@ const Wordle = () => {
     user_id: '',
     remain: 0,
     guesses: [],
-    absent_letters: [],
-    present_letters: [],
-    correct_letters: '',
+    absent_letters: '',
+    present_letters: '',
+    correct_letters: '*****',
     completed: false,
     won: false,
     answer: '',
@@ -53,15 +69,25 @@ const Wordle = () => {
   const [hasFocus, setHasFocus] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const fetchNewGame = () => {
-    // fetch('http://mikespace.xyz:9400/game/new?username=' + username,
+  const clearLocalStorage = () => {
+    localStorage.game_id = '';
+    localStorage.guesses = '';
+    localStorage.correct_letters = '*****';
+    localStorage.absent_letters = '';
+    localStorage.present_letters = '';
+  }
+  
+  const fetchNewGame = (_username = username) => {
+    clearLocalStorage();
+    fetch(endpoints[APP_SERVER]['orc'] + '/game/new?username=' + _username,
     // fetch('http://localhost:9400/game/new?username=' + username,
-    fetch('https://orchestrator.api.mikespace.xyz/game/new?username=' + username,
+    // fetch('https://orchestrator.api.mikespace.xyz/game/new?username=' + username,
       {
         method: 'POST',
       })
-      .then(response => response.json())
-      .then(data => setGame({
+    .then(response => response.json())
+    .then(data => {
+      setGame({
         game_id: data.game_id,
         username: username,
         guid: data.guid,
@@ -73,36 +99,128 @@ const Wordle = () => {
         correct_letters: '*****',
         completed: false,
         won: false,
-      }))
-      .catch(err => {
-        console.log(err);
-        setHasError(true);
-      })
+      });
+      localStorage.game_id = data.game_id;
+    })
+    .catch(err => {
+      console.log(err);
+      setHasError(true);
+    })
   }
+
+  const restoreFromLocalStorage = (async () => {
+    /**
+     * Restore game from DB using data from LocalStorage
+     * return: true if game is found
+     * false if game is not found
+     */
+    
+    if (!localStorage.game_id){
+      console.log('failed to restore from local storage');
+      console.log('LocalStorage game_id: ' + localStorage.game_id);
+      fetchNewGame(localStorage.username);
+      return false;
+    }
+    // try to load unfinished game from Orc API using username and game_id from local storage
+    // Orc API will call Play API to check if the game is still in Redis (gamme_id expires 24 hours after set in Redis)
+    // we will also load present, absent, and correct letters from local storage
+    // and guesses
+
+    const res = await fetch(endpoints[APP_SERVER]['orc'] + '/game/restore?username=' + localStorage.username
+    // fetch('http://localhost:9400/game?username=' + localStorage.username
+    // fetch('https://orchestrator.api.mikespace.xyz/game?username=' + localStorage.username
+            + '&game_id=' + localStorage.game_id)
+
+    .then(response => response.json())
+    .then(data => {
+      console.log('Data from game/restore: ', data);
+      console.log('!data["result"]: ', !data['result']);
+      if (!data['result']) { // No game found
+        console.log('Returning false from restoreFromLocalStorage');
+        console.log('failed to restore from local storage');
+        console.log('LocalStorage game_id: ' + localStorage.game_id);
+        fetchNewGame(localStorage.username);
+        return false;
+      }
+      else {  // unfinished game found
+        console.log('Returning true from restoreFromLocalStorage');
+        let guesses = localStorage.guesses ? JSON.parse(localStorage.guesses) : [];
+        setGuesses(guesses);
+        setGuessIndex(guesses.length);
+        setGame(() => ({
+          ...game,
+          game_id: data['game_id'],
+          username: data['username'],
+          guid: data['guid'],
+          user_id: data['user_id'],
+          remain: parseInt(data['remain']),
+          guesses: guesses,
+          absent_letters: localStorage.absent_letters,
+          present_letters: localStorage.present_letters,
+          correct_letters: localStorage.correct_letters,
+        }));
+        return true;
+      }
+    })
+  })
 
   // first page load, start new game with username
   useEffect(() => {
-    if (username === '') {
-      setIsSettingUsername(true);
-    }
-    setGuesses([]);
-    setGuessIndex(0);
-    setCurrentGuess('');
-    mainRef.current.focus();      // focus on main when first page load
-    // console.log('component did mount');
-    
-    window.scrollTo(-50, 0)
+    if (!username) {  // not necessary? username should be empty on first load 
+      // if username is still in local storage, we might have an unfinished game
+      if (localStorage.username) {
+        setUsername(localStorage.username);
+        // if we cannot restore from local storage, then fetch new game
+// NOTE: issue is this one is async and we have to await
+        let restore_promise = restoreFromLocalStorage();
+        // // will not work because we have to await for restorefromlocalStorage, but we cannot do that in useEffect because it is not async
+        // console.log('restore_promise: ', (restore_promise));
+        // // restore_promise.then(isRestored => {
+        //   if (restore_promise)
+        //     return;
+        //   else {
+        //     console.log('failed to restore from local storage');
+        //     console.log('LocalStorage game_id: ' + localStorage.game_id);
+        //     fetchNewGame(localStorage.username);
+        //   }
+        // // })
 
+        // restoreFromLocalStorage().then(isRestored => { 
+        //   console.log('isRestored: ', (isRestored));
+        //   if (isRestored)
+        //     return;
+        //   else {
+        //     console.log('failed to restore from local storage');
+        //     console.log('LocalStorage game_id: ' + localStorage.game_id);
+        //     fetchNewGame(localStorage.username);
+        //   }
+        // })
+      }
+      // otherwise prompt user to enter username
+      else {
+        setIsSettingUsername(true);
+        return;
+      }
+    }
+
+    mainRef.current.focus();      // focus on main on first page load
+    // console.log('component did mount');
+    window.scrollTo(-50, 0)
   }, [])
 
   // find a better way to detect when new username is entered 
   // only fetchNewGame for new username
   useEffect(() => {
+    // done setting username
     if (!isSettingUsername && username !== '') {
-      setGuesses([]);
-      setGuessIndex(0);
-      setCurrentGuess('');
-      fetchNewGame();
+      // if username is changed to a new one, then fetch new game
+      if (localStorage.username && localStorage.username !== username) {
+        setGuesses([]);
+        setGuessIndex(0);
+        setCurrentGuess('');
+        localStorage.username = username;
+        fetchNewGame();
+      }
       setTimeout(() => {
         inputRef.current.focus();
       }, 500);
@@ -129,23 +247,23 @@ const Wordle = () => {
   
   // return focus to input after closing Stats and Leaderboard
   useEffect(() => { 
-    if (!showStats && !showLeaderboard) {
+    if (!showAbout && !showStats && !showLeaderboard) {
       setTimeout(() => {
         inputRef.current.focus();
       }, 500);
     }
-  }, [showStats, showLeaderboard])
+  }, [showAbout, showStats, showLeaderboard, hasError])
 
   const handleClick = () => {
     setGuesses([...guesses, GUESSES[guessIndex]]);
     setGuessIndex(guessIndex + 1);
   }
 
-  // useEffect(() => {
-  //   console.log('game: ', game);
-  // }, [game])
+  useEffect(() => {
+    console.log('useEffectgame: ', game);
+  }, [game])
   
-  
+
   const handleValidWord = (data) => {
     // update game
     // update correct, present, and absent letters
@@ -157,7 +275,8 @@ const Wordle = () => {
       // update absent, present, and correct letters in game object
       if (results[i] === 0 && !absent_letters.includes(currentGuess[i])) absent_letters += currentGuess[i];
       if (results[i] >= 1 && !present_letters.includes(currentGuess[i])) present_letters += currentGuess[i];
-      if (results[i] === 2 && game.correct_letters[i] === '*') correct_letters += currentGuess[i];
+      if (results[i] === 2) correct_letters += currentGuess[i];
+      // if (results[i] === 2 && game.correct_letters[i] === '*') correct_letters += currentGuess[i];
       else correct_letters += game.correct_letters[i];
     }
     setGame({
@@ -174,16 +293,19 @@ const Wordle = () => {
     setGuesses(() => [...guesses, currentGuess]);
     setGuessIndex(guessIndex + 1);
     setCurrentGuess('');
-    
-    // TODO: add 'complete' to Orc API or will get error for results.length
+    localStorage.correct_letters = correct_letters;
+    localStorage.absent_letters = absent_letters;
+    localStorage.present_letters = present_letters;
+    localStorage.guesses = JSON.stringify([...guesses, currentGuess]);
+    // if game is completed, return
     if (data['completed']) {
       setGameCompleted(true);
-      // console.log('GAME COMPLETED: DID YOU WIN? ', data['won'])
+      clearLocalStorage();
+      console.log('GAME COMPLETED: DID YOU WIN? ', data['won'])
       if (data['won']) {
-        setGameWon(true);
-        // start new game?
-        return;
+        setGameWon(true); // for game completed dialog
       }
+      return
     }
   }
   
@@ -191,11 +313,13 @@ const Wordle = () => {
   useEffect(() => {
     if (guessIndex < 6) // there will not be a 7th inputRef
       inputRef.current.focus();
+      
+    // setIsLoading(false);
   }, [guessIndex])
 
   const handleKeyDown = (e) => {
     // console.log('localStorage: ', localStorage)
-    if (guesses.length > 5) return;
+    if (guesses.length > 5 || game.game_id === '') return;
     if (e.key === 'Backspace') {
       setCurrentGuess(currentGuess.slice(0, -1));
       setInvalidWord(false); // remove error style highlight
@@ -204,12 +328,16 @@ const Wordle = () => {
     }
     if (currentGuess.length > 4) {  // only register 'Enter' when there are 5 characters in guess
       if (e.key === 'Enter') {
-        // fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-        // fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-        fetch('https://orchestrator.api.mikespace.xyz/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-          {
-            method: 'POST',
-          })
+        if (!isLoading) {
+          
+          setIsLoading(true);
+          // fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+          fetch(endpoints[APP_SERVER]['orc'] + '/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+          // fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+          // fetch('https://orchestrator.api.mikespace.xyz/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+            {
+              method: 'POST',
+            })
           .then(response => response.json())
           .then(data => {
             // console.log('data: ', data);
@@ -220,15 +348,18 @@ const Wordle = () => {
             else{
               setInvalidWord(true);
             }
-            // start new game
-            if (data.completed)
-              setGameCompleted(true);
+            // // start new game
+            // if (data.completed)
+            //   setGameCompleted(true);
+            setIsLoading(false);
           })
           .catch(err => {
             console.log(err);
+            setIsLoading(false);
             setHasError(true);
           })
-        return;
+          return;
+        }
       }
       return;
     }
@@ -299,16 +430,23 @@ const Wordle = () => {
         numGuesses={guessIndex}
       />
     }
+    {showAbout && 
+      <AboutModal 
+        setShowAbout={setShowAbout}
+      />
+    }
     {showStats && 
       <StatsDialog 
         setShowStats={setShowStats}
         username={username}
         user_id={game.user_id}
-      />
-    }
+        APP_SERVER={APP_SERVER}
+        />
+      }
     {showLeaderboard && 
       <LeaderboardModal 
         setShowLeaderboard={setShowLeaderboard}
+        APP_SERVER={APP_SERVER}
       />
     }
     {hasError && 
@@ -319,6 +457,7 @@ const Wordle = () => {
     }
     <NavBar 
       setIsNewGame={setIsNewGame}
+      setShowAbout={setShowAbout}
       setShowStats={setShowStats}
       setShowLeaderboard={setShowLeaderboard}
       username={username}

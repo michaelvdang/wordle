@@ -8,7 +8,7 @@ function classNames(...classes) {
 }
 
 export default function NavBar(props) {
-  const { setIsNewGame, setShowStats, setShowLeaderboard, username, setIsSettingUsername } = props
+  const { setIsNewGame, setShowAbout, setShowStats, setShowLeaderboard, username, setIsSettingUsername } = props
   const handleUsernameClick = () => {
     setIsSettingUsername(true);
   }
@@ -16,6 +16,7 @@ export default function NavBar(props) {
 
   
   const navigation = [
+    { name: 'About', href: '#', current: false, onClick: () => setShowAbout(true) },
     { name: 'User Stats', href: '#', current: false, onClick: () => setShowStats(true) },
     { name: 'Leaderboard', href: '#', current: false, onClick: () => setShowLeaderboard(true) },
     { name: 'New Game', href: '#', current: false, onClick: () => setIsNewGame(true) },
