@@ -7,8 +7,8 @@ import LeaderboardModal from './LeaderboardModal'
 import ErrorDialog from './ErrorDialog'
 import AboutModal from './AboutModal'
 
-const APP_SERVER = 'local'
-// APP_SERVER = 'remote'
+// const APP_SERVER = 'local'
+const APP_SERVER = 'remote'
 const endpoints = {
   'local': {
     'stats': 'http://localhost:9000',
@@ -16,7 +16,7 @@ const endpoints = {
   },
   'remote': {
     'stats': 'https://stats.api.mikespace.xyz',
-    'orc': 'https://orc.api.mikespace.xyz',
+    'orc': 'https://orchestrator.api.mikespace.xyz',
   },
 }
 
@@ -81,7 +81,7 @@ const Wordle = () => {
     clearLocalStorage();
     fetch(endpoints[APP_SERVER]['orc'] + '/game/new?username=' + _username,
     // fetch('http://localhost:9400/game/new?username=' + username,
-    // fetch('https://orchestrator.api.mikespace.xyz/game/new?username=' + username,
+    // fetch('https://orchestrator.api.mikespace.xyz/game/new?username=' + _username,
       {
         method: 'POST',
       })
@@ -89,7 +89,7 @@ const Wordle = () => {
     .then(data => {
       setGame({
         game_id: data.game_id,
-        username: username,
+        username: _username,
         guid: data.guid,
         user_id: data.user_id,
         remain: parseInt(data.remain),
@@ -127,13 +127,13 @@ const Wordle = () => {
     // and guesses
 
     const res = await fetch(endpoints[APP_SERVER]['orc'] + '/game/restore?username=' + localStorage.username
-    // fetch('http://localhost:9400/game?username=' + localStorage.username
-    // fetch('https://orchestrator.api.mikespace.xyz/game?username=' + localStorage.username
+    // fetch('http://localhost:9400/game/restore?username=' + localStorage.username
+    // fetch('https://orchestrator.api.mikespace.xyz/game/restore?username=' + localStorage.username
             + '&game_id=' + localStorage.game_id)
 
     .then(response => response.json())
     .then(data => {
-      console.log('Data from game/restore: ', data);
+      // console.log('Data from game/restore: ', data);
       console.log('!data["result"]: ', !data['result']);
       if (!data['result']) { // No game found
         console.log('Returning false from restoreFromLocalStorage');
@@ -171,7 +171,8 @@ const Wordle = () => {
       if (localStorage.username) {
         setUsername(localStorage.username);
         // if we cannot restore from local storage, then fetch new game
-// NOTE: issue is this one is async and we have to await
+
+        // NOTE: issue is this one is async and we have to await
         let restore_promise = restoreFromLocalStorage();
         // // will not work because we have to await for restorefromlocalStorage, but we cannot do that in useEffect because it is not async
         // console.log('restore_promise: ', (restore_promise));
@@ -203,6 +204,7 @@ const Wordle = () => {
       }
     }
 
+
     mainRef.current.focus();      // focus on main on first page load
     // console.log('component did mount');
     window.scrollTo(-50, 0)
@@ -211,16 +213,17 @@ const Wordle = () => {
   // find a better way to detect when new username is entered 
   // only fetchNewGame for new username
   useEffect(() => {
+    console.log('done setting username: ', !isSettingUsername);
     // done setting username
     if (!isSettingUsername && username !== '') {
       // if username is changed to a new one, then fetch new game
-      if (localStorage.username && localStorage.username !== username) {
+      // if (localStorage.username && localStorage.username !== username) {
         setGuesses([]);
         setGuessIndex(0);
         setCurrentGuess('');
-        localStorage.username = username;
         fetchNewGame();
-      }
+      // }
+      localStorage.username = username;
       setTimeout(() => {
         inputRef.current.focus();
       }, 500);
@@ -320,7 +323,7 @@ const Wordle = () => {
 
   const handleKeyDown = (e) => {
     // console.log('localStorage: ', localStorage)
-    if (guesses.length > 5 || game.game_id === '') return;
+    if (guesses.length > 5) return;
     if (e.key === 'Backspace') {
       setCurrentGuess(currentGuess.slice(0, -1));
       setInvalidWord(false); // remove error style highlight
