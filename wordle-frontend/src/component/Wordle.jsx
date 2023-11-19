@@ -116,8 +116,8 @@ const Wordle = () => {
      */
     
     if (!localStorage.game_id){
-      console.log('failed to restore from local storage');
-      console.log('LocalStorage game_id: ' + localStorage.game_id);
+      // console.log('failed to restore from local storage');
+      // console.log('LocalStorage game_id: ' + localStorage.game_id);
       fetchNewGame(localStorage.username);
       return false;
     }
@@ -136,14 +136,14 @@ const Wordle = () => {
       // console.log('Data from game/restore: ', data);
       console.log('!data["result"]: ', !data['result']);
       if (!data['result']) { // No game found
-        console.log('Returning false from restoreFromLocalStorage');
-        console.log('failed to restore from local storage');
-        console.log('LocalStorage game_id: ' + localStorage.game_id);
+        // console.log('Returning false from restoreFromLocalStorage');
+        // console.log('failed to restore from local storage');
+        // console.log('LocalStorage game_id: ' + localStorage.game_id);
         fetchNewGame(localStorage.username);
         return false;
       }
       else {  // unfinished game found
-        console.log('Returning true from restoreFromLocalStorage');
+        // console.log('Returning true from restoreFromLocalStorage');
         let guesses = localStorage.guesses ? JSON.parse(localStorage.guesses) : [];
         setGuesses(guesses);
         setGuessIndex(guesses.length);
@@ -213,7 +213,6 @@ const Wordle = () => {
   // find a better way to detect when new username is entered 
   // only fetchNewGame for new username
   useEffect(() => {
-    console.log('done setting username: ', !isSettingUsername);
     // done setting username
     if (!isSettingUsername && username !== '') {
       // if username is changed to a new one, then fetch new game
@@ -577,7 +576,7 @@ const Wordle = () => {
           onChange={() => {}}
           />
       </div> */}
-      <div className='flex flex-col items-center justify-center gap-2'>
+      <div className='flex flex-col items-center justify-center gap-2 pb-12'>
         {LETTERS.map((row) => (
           <div key={row} className='flex flex-row gap-1'>
             {row.map((i) => (
