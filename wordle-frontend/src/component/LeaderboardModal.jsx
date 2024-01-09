@@ -94,7 +94,7 @@ export default function LeaderboardModal(props) {
                         Last Updated
                       </Dialog.Title> */}
                     <div className='px-6 py-1 text-xs text-gray-400 flex justify-center'>
-                      Next update in {5 - Math.floor((Date.now() - 1704840300000) / 60000) % 5} minutes
+                      Next update in {5 - Math.floor((Date.now() - 1704840300000) / 60000) % 5} minute(s)
                     </div>
                   </div>
 
