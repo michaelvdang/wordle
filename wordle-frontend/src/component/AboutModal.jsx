@@ -1,7 +1,5 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import {UserIcon} from '@heroicons/react/20/solid';
 
 export default function AboutModal(props) {
   const {setShowAbout} = props;

@@ -1,9 +1,7 @@
 Current state of the app:
-- App is deployed on a Droplet at http://mikespace.xyz
+- App is deployed on a Droplet at https://mikespace.xyz
 - Things to fix: 
-    - no HTTPS yet
-    - User Stats: streaks not working for custom username
-    - Stats and Leaderboard not refocusing
+    - none
 
 WordList.db 
     - all the 5 letter words in the dictionary
@@ -27,11 +25,19 @@ game1.db:
 
 
 START HERE:
+Hardware: 
+- Get a server with static IP and Ubuntu
+- See Ubuntu server section for further instructions
+- Setup non-root user for security: https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04
+- Setup basic firewall to limit access to server
+    - This should be done after we've set up the backend so we can see how the firewall works
+    - Networking>Firewall
+    - Enable: SSH, HTTP, HTTPS
 Deployment: 
 - Install Docker
-    - https://www.docker.com/products/docker
+    - https://www.docker.com/products/docker or https://docs.docker.com/engine/install/ubuntu/
 - Pull from git repo
-    - git clone https://github.com/MichaelDang/wordle.git
+    - git clone https://github.com/michaelvdang/wordle.git
     - cd wordle
     - git checkout docker
 - Copy .env, redis.conf, and crontab.txt (using FileZilla)
@@ -50,6 +56,7 @@ Deploy backend using Docker:
 - Setting up crontab to update Leaderboard (probably best done manualy since it's outside of docker)
     - Must install pip in order to install redis: apt install python3-pip
     - Create a venv: python3 -m venv .venv
+    - Activate the venv: source .venv/bin/activate
     - bin/TopTen.py will query game1.db, game2.db, etc. to find the top 10 longest streaks and winners
         - Find where the .db files are: docker volume ls && docker volume inspect wordle_db
         - Make sure the path in TopTen.py matches the path in Mountpoint
@@ -60,13 +67,27 @@ Deploy backend using Docker:
     - * * * * * /root/wordle/.venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
     - run: crontab crontab.txt
     - Rotate cron.log so it doesn't become too big: https://serverfault.com/questions/703757/how-to-rotate-a-log-file-from-crontab
+- You can now access the server at http://<IP_ADDRESS>:<PORT#> where <PORT#> can be any of the 9000, 9100, 9200, 9300, 9400
+- However, the frontend is unlikely to work because its origin is a public IP address
+    - We'll need to go to the front end Wordle component and note the APP_SERVER value (either 'local' or 'remote')
+    - 'local' allows the front end to work locally during development, both React and the Docker backend must be on the same machine
+    - 'remote' uses HTTPS, which means we must make the API public, meaning we'll need the following:
+        - Create an A record that points orchestrator.api.mikespace.dev to the server
+        - Configure NGINX to proxy requests to orchestrator.api.mikespace.dev to <SERVER_IP>:9400
+        - Get the SSL certificate: https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04
+        - Finally, rebuild the front end and make sure APP_SERVER is on 'remote' with the correct API links, place in the path specified by the root line from NGINX config file
+            - 'orc': 'https://orchestrator.api.mikespace.dev'
+            - 'stats': 'https://stats.api.mikespace.dev'
 
-Deploy frontend (NGINX outside Docker):
+Deploy frontend (NGINX outside Docker): (follow this guide - https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04)
 - Configure NGINX reverse proxy so front end can talk to the APIs
-    - Copy the wordle.conf file to /etc/nginx/sites-available/
-    - Create a symlink: ln -s /etc/nginx/sites-available/wordle.conf to /etc/nginx/sites-enabled/wordle
-    - Restart NGINX to take effect: sudo systemctl restart nginx
-- The APIs are now available at http://stats.api.mikespace.xyz, etc.
+    - Copy the NGINX <website-name>.conf file to /etc/nginx/sites-available/
+    - Create a symlink: ln -s /etc/nginx/sites-available/mikespace.dev.conf /etc/nginx/sites-enabled/mikespace.dev
+    - Restart NGINX to take effect: sudo systemctl restart nginx OR sudo nginx -s reload
+- Not necessary but you can see how DNS works by adding an A record in Networking>Domains
+    - have stats.api.mikespace.xyz point to the server
+    - configure NGINX to proxy requeststo stats.api.mikespace.xyz to <SERVER_IP>:9000
+    - The APIs are now available at http://stats.api.mikespace.xyz, etc.
 - Go to Let's Encrypt: https://letsencrypt.org/getting-started/ to get TLS certificates
 - The above steps also configured the location of the dist/ folder: /usr/share/nginx/html
 - Build the app on local machine: npm run build
@@ -93,7 +114,11 @@ FileZilla setup:
 - This will use the same SSH key that is used to SSH into server
 - Edit>Settings...>SFTP: add SSH private key in 'Add key file'
 - Save and quit
-- File>New Site: enter IP or domain name, port 22
+- File>Site Manager>New site:
+    - Protocol: SFTP
+    - Host: (IP or domain name) 
+    - Logon Type: Interactive
+    - User: root
 - Connect
 
 

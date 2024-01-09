@@ -15,8 +15,8 @@ const endpoints = {
     'orc': 'http://localhost:9400',
   },
   'remote': {
-    'stats': 'https://stats.api.mikespace.xyz',
-    'orc': 'https://orchestrator.api.mikespace.xyz',
+    'stats': 'https://stats.api.mikespace.dev', // also change links in StatsDialog and LeaderboardModal
+    'orc': 'https://orchestrator.api.mikespace.dev',
   },
 }
 
@@ -134,7 +134,7 @@ const Wordle = () => {
     .then(response => response.json())
     .then(data => {
       // console.log('Data from game/restore: ', data);
-      console.log('!data["result"]: ', !data['result']);
+      // console.log('!data["result"]: ', !data['result']);
       if (!data['result']) { // No game found
         // console.log('Returning false from restoreFromLocalStorage');
         // console.log('failed to restore from local storage');
@@ -392,27 +392,6 @@ const Wordle = () => {
   const correctLetterStyle = 'bg-green-300 ';
   const focusStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-400';
   
-  // const bubbleStyle = 'flex items-center justify-center \
-  //                       rounded-full cursor-default select-none \
-  //                       w-14 h-14 text-xl\
-  //                       sm:w-20 sm:h-20 sm:text-3xl \
-  //                       md:w-28 md:h-28 md:text-6xl md:pb-2 \
-  //                       font-bold font-serif \
-  //                       ';
-  // const smallBubbleStyle = 'flex items-center justify-center \
-  //                       cursor-default select-none rounded-3xl \
-  //                       w-6 h-6 text-[10px] \
-  //                       sm:w-8 sm:h-8 sm:text-xs \
-  //                       md:w-10 md:h-10 md:text-sm md:pb-1 \
-  //                       font-bold font-serif \
-  //                       ';
-  // const errorStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-red-500 ';
-  // const regularStyle = 'text-gray-700 bg-gray-300 dark:text-gray-800 dark:bg-white ';
-  // const absentLetterStyle = 'bg-gray-500 ';
-  // const presentLetterStyle = 'bg-blue-300';
-  // const correctLetterStyle = 'bg-green-300 ';
-  // const focusStyle = 'shadow-[0_0_5px_7px_rgba(0,0,0,0.3)] shadow-gray-400';
-
   return (
     <>
     {isSettingUsername && 
@@ -565,17 +544,6 @@ const Wordle = () => {
           </div>
         ))}
       </div>
-        {/* input box to open keyboard on ios, remove outline, input-bg and text same color as container bg */}
-      {/* <div>
-        <input 
-          ref={inputRef} 
-          className="h-1 focus:outline-none bg-[#242424] text-[#242424] -z-10" 
-          type="email" 
-          maxLength={5}
-          value={currentGuess} 
-          onChange={() => {}}
-          />
-      </div> */}
       <div className='flex flex-col items-center justify-center gap-2 pb-12'>
         {LETTERS.map((row) => (
           <div key={row} className='flex flex-row gap-1'>
@@ -598,16 +566,6 @@ const Wordle = () => {
                   )
                 )
               )
-              // // used to work and then it didn't for some reason
-              // <div key={i} className={`flex items-center justify-center bg-white 
-              // cursor-default select-none rounded-3xl
-              // text-gray-800 w-10 h-10 font-bold text-sm pb-1 font-serif
-              // ${game.absent_letters.includes(i.toLowerCase()) ? absentLetterStyle : ''}
-              // ${game.present_letters.includes(i.toLowerCase()) ? presentLetterStyle : ''}
-              // ${game.correct_letters.includes(i.toLowerCase()) ? correctLetterStyle : ''}
-              // `}>
-              //   {i}
-              // </div>
             ))}
           </div>
         ))}

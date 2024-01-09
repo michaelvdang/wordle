@@ -1,0 +1,1 @@
+* * * * * /root/wordle/.venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1

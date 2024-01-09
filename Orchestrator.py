@@ -35,6 +35,7 @@ origins = [     # curl and local browser are always allowed
     # "http://localhost:9100",
     # "http://mikespace.xyz",
     "https://mikespace.xyz",
+    "https://mikespace.dev", # DO NOT USE backslash (/)
     # "http://mikespace.xyz:8080",
     # "https://mikespace.xyz:8080",
     # "http://mikespace.xyz:80",
