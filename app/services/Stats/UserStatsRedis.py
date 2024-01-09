@@ -73,16 +73,9 @@ settings = Settings()
 app = FastAPI()
 
 origins = [     # curl and local browser are always allowed
-    # "http://localhost:8080",    # must allow or CORS will block
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
-    # "http://localhost:9100",
-    # "http://mikespace.xyz",
     "https://mikespace.xyz",
-    # "http://mikespace.xyz:8080",
-    # "https://mikespace.xyz:8080",
-    # "http://mikespace.xyz:80",
-    # "https://mikespace.xyz:80",
-    # "http://localhost",
+    "https://mikespace.dev",
     # "http://146.190.58.25",
 ]
 app.add_middleware(
