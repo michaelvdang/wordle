@@ -54,6 +54,7 @@ Deploy backend using Docker:
         - During dev: run: python bin/TopTen.py manually from one of the containers (usually Orchestrator)
 - .env and redis.conf has passwords so they must be copied manually into root folder
 - Setting up crontab to update Leaderboard (probably best done manualy since it's outside of docker)
+    - NOTE: run as root to get permissions to the docker volumes
     - Must install pip in order to install redis: apt install python3-pip
     - Create a venv: python3 -m venv .venv
     - Activate the venv: source .venv/bin/activate
@@ -64,7 +65,8 @@ Deploy backend using Docker:
     - create a file to store cron-fragments.txt
     - view running cron jobs: crontab -l (to list) -e (to edit)
     - put running cron jobs into crontab.txt
-    - * * * * * /root/wordle/.venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
+    - * * * * * /home/<USER>/wordle/.venv/bin/python /home/<USER>/wordle/bin/TopTen.py >> /home/<USER>/wordle/cron.log 2>&1
+    - Use the correct username for line above, also note if python's dependencies are installed in a virtual environment
     - run: crontab crontab.txt
     - Rotate cron.log so it doesn't become too big: https://serverfault.com/questions/703757/how-to-rotate-a-log-file-from-crontab
 - You can now access the server at http://<IP_ADDRESS>:<PORT#> where <PORT#> can be any of the 9000, 9100, 9200, 9300, 9400
@@ -160,10 +162,12 @@ How to start the application:
         - foreman start -m 'stats=3,check=1,validate=1,play=1,orchestratorb=1,traefik=1' 
 
 - Add a cronjob to update Redis every 10 minutes - needs patience because it quietly fails (doesn't print to the current terminal):
+    - NOTE: Run crontab as root because of permissions to the docker volumes
     - run: crontab -e
-    - Enter: '*/10 * * * *  /usr/bin/python3 /{path to project folder}/bin/TopTen.py >> /{Path to project folder}/cron.log 2>&1'
-    - NOTE: in DO Ubuntu Droplet, the 'Home' directory is /root, 
+    - Enter: '*/10 * * * *  /home/<USER>/wordle/.venv/bin/python3 /home/michael/wordle/bin/TopTen.py >> /home/<USER>/wordle/cron.log 2>&1'
+    - NOTE: in DO Ubuntu Droplet, the 'Home' directory is /root for the root user, 
         so the full file path for this is /root/wordle/bin/TopTen.py
+    - NOTE: python's dependencies might be install within a virtual environment, be sure to include it in the path to call python3
     - Also: chmod 744 bin/TopTen.py (has been added to Dockerfile for Orchestrator)
     - Save and quit editor
 

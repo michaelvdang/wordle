@@ -84,11 +84,17 @@ export default function LeaderboardModal(props) {
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-gray-600 
                 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                  <div className="sm:flex sm:items-start">
+                  <div className="sm:flex sm:items-start sm:justify-between">
                     <div className="flex-grow mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                       <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-200">
                         {viewTopWins ? 'Top Wins' : 'Top Streaks'}
                       </Dialog.Title>
+                    </div>
+                                          {/* <Dialog.Title as="h3" className="text-base font-semibold leading-6 text-gray-200">
+                        Last Updated
+                      </Dialog.Title> */}
+                    <div className='px-6 py-1 text-xs text-gray-400 flex justify-center'>
+                      Next update in {5 - Math.floor((Date.now() - 1704840300000) / 60000) % 5} minutes
                     </div>
                   </div>
 
@@ -108,7 +114,7 @@ export default function LeaderboardModal(props) {
                   {viewTopWins ? (
                     <button
                       type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 
+                      className="m-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 
                       text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
                       hover:bg-gray-50 sm:mt-0 sm:w-auto"
                       onClick={() => setViewTopWins(!viewTopWins)}
@@ -118,7 +124,7 @@ export default function LeaderboardModal(props) {
                   ) : (
                     <button
                       type="button"
-                      className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 
+                      className="m-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 
                       text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 
                       hover:bg-gray-50 sm:mt-0 sm:w-auto"
                       onClick={() => setViewTopWins(!viewTopWins)}

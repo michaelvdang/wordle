@@ -16,6 +16,7 @@ export default function NavBar(props) {
 
   
   const navigation = [
+    { name: 'Home', href: 'https://mikespace.dev/', current: false, onClick: null },
     { name: 'About', href: '#', current: false, onClick: () => setShowAbout(true) },
     { name: 'User Stats', href: '#', current: false, onClick: () => setShowStats(true) },
     { name: 'Leaderboard', href: '#', current: false, onClick: () => setShowLeaderboard(true) },
@@ -45,17 +46,32 @@ export default function NavBar(props) {
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
-                  <img
-                    className="h-10 md:h-12 w-auto"
-                    src="./logo21.png"
-                    alt="Wordle Clone"
-                  />
+                  <a href="https://mikespace.dev/">
+                    <img
+                      className="h-10 md:h-12 w-auto"
+                      src="./logo21.png"
+                      alt="Wordle Clone"
+                      />
+                  </a>
                 </div>
                 <div 
                   className='px-4 flex items-center text-gray-200'
-                  onClick={handleUsernameClick}
+                  // onClick={handleUsernameClick}
                 >
                   {username}
+                </div>
+                <div className='py-4 items-center'>
+                  {/* <div className="hidden sm:ml-6 sm:block"> */}
+                    {/* <div className="flex"> */}
+                      <a
+                        href="#"
+                        className='text-slate-400 h-6 rounded-md p-2 text-xs border border-slate-500 hover:text-green-300'
+                        onClick={handleUsernameClick}
+                        >
+                        Change
+                      </a>
+                    {/* </div> */}
+                  {/* </div> */}
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -74,7 +90,7 @@ export default function NavBar(props) {
                         key={item.name}
                         href={item.href}
                         className={classNames(
-                          item.current ? 'bg-gray-900 text-white' : 'text-slate-900 hover:bg-green-500 hover:text-white',
+                          item.current ? 'text-white' : 'text-slate-900 hover:bg-green-500 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium bg-green-400'
                         )}
                         aria-current={item.current ? 'page' : undefined}
