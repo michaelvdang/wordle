@@ -11,8 +11,8 @@ const endpoints = {
     'orc': 'http://localhost:9400',
   },
   'remote': {
-    'stats': 'https://stats.api.mikespace.dev',
-    'orc': 'https://orchestrator.api.mikespace.dev',
+    'stats': 'https://stats.api.michaeldang.dev',
+    'orc': 'https://orchestrator.api.michaeldang.dev',
   },
 }
 

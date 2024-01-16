@@ -26,7 +26,7 @@ game1.db:
 
 START HERE:
 Hardware: 
-- Get a server with static IP and Ubuntu
+- Get a server with static IP and Ubuntu 22.04 LTS
 - See Ubuntu server section for further instructions
 - Setup non-root user for security: https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04
 - Setup basic firewall to limit access to server
@@ -54,7 +54,7 @@ Deploy backend using Docker:
         - During dev: run: python bin/TopTen.py manually from one of the containers (usually Orchestrator)
 - .env and redis.conf has passwords so they must be copied manually into root folder
 - Setting up crontab to update Leaderboard (probably best done manualy since it's outside of docker)
-    - NOTE: run as root to get permissions to the docker volumes
+    - NOTE: RUN AS ROOT to get permissions to the docker volumes
     - Must install pip in order to install redis: apt install python3-pip
     - Create a venv: python3 -m venv .venv
     - Activate the venv: source .venv/bin/activate
@@ -76,7 +76,9 @@ Deploy backend using Docker:
     - 'remote' uses HTTPS, which means we must make the API public, meaning we'll need the following:
         - Create an A record that points orchestrator.api.mikespace.dev to the server
         - Configure NGINX to proxy requests to orchestrator.api.mikespace.dev to <SERVER_IP>:9400
-        - Get the SSL certificate: https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04
+        - Get the SSL certificate:
+            - Link: https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/
+            - Link: https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04
         - Finally, rebuild the front end and make sure APP_SERVER is on 'remote' with the correct API links, place in the path specified by the root line from NGINX config file
             - 'orc': 'https://orchestrator.api.mikespace.dev'
             - 'stats': 'https://stats.api.mikespace.dev'

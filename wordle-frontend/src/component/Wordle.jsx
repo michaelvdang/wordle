@@ -15,8 +15,8 @@ const endpoints = {
     'orc': 'http://localhost:9400',
   },
   'remote': {
-    'stats': 'https://stats.api.mikespace.dev', // also change links in StatsDialog and LeaderboardModal
-    'orc': 'https://orchestrator.api.mikespace.dev',
+    'stats': 'https://stats.api.michaeldang.dev', // also change links in StatsDialog and LeaderboardModal
+    'orc': 'https://orchestrator.api.michaeldang.dev',
   },
 }
 
