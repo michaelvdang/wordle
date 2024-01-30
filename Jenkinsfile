@@ -20,11 +20,9 @@ pipeline {
           pwd
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
+          cat .env
           ls -al
           whoami
-        '''
-        sh '''
-
         '''
       }
       
