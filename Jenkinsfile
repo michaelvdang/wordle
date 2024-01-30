@@ -8,7 +8,8 @@ pipeline {
     stage("build") {
 
       environment {
-        SECRET_FILE_CONTENT = credentials('wordle-env-file')
+        ENV_FILE_CONTENT = credentials('wordle-env-file')
+        REDIS_CONF_CONTENT = credentials('redis-conf')
       }
 
       steps {
@@ -16,10 +17,10 @@ pipeline {
         echo 'building the application..'
         sh '''
           pwd
-          echo ${SECRET_FILE_CONTENT} > ./.env
-          ls
+          echo ${ENV_FILE_CONTENT} > ./.env
+          echo ${REDIS_CONF_CONTENT} > ./redis.conf
+          ls -l
           cat ./.env
-
         '''
       }
       
