@@ -23,6 +23,7 @@ pipeline {
           cat .env
           ls -al
           whoami
+          docker compose up -d
         '''
       }
       
