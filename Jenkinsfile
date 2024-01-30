@@ -9,7 +9,6 @@ pipeline {
       steps {
         echo 'building the application..'
         dir
-        echo hi
       }
       
     }
