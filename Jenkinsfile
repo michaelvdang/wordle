@@ -23,10 +23,7 @@ pipeline {
           cat .env
           ls -al
           whoami
-          groups jenkins root
-          groupadd docker
-          usermod -aG docker jenkins
-          id -Gn
+
         '''
       }
       
