@@ -8,6 +8,12 @@ pipeline {
 
       steps {
         echo 'building the application..'
+        bat '''
+          cd 
+          dir 
+          echo hi
+
+        '''
       }
       
     }
