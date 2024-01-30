@@ -17,6 +17,8 @@ pipeline {
         sh '''
           pwd
           echo ${SECRET_FILE_CONTENT} > ./.env
+          ls
+          cat ./.env
 
         '''
       }
