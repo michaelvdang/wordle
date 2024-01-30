@@ -22,6 +22,7 @@ pipeline {
           ls -al
           
           whoami
+          
         '''
       }
       
@@ -32,6 +33,8 @@ pipeline {
       steps {
         echo 'testing the application..'
         sh '''
+          curl google.com
+          sudo -s
           curl localhost:9000
           curl localhost:9100
           curl localhost:9200
