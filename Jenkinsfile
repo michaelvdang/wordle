@@ -20,6 +20,7 @@ pipeline {
           pwd
           ls 
           echo hi
+          echo ${SECRET_FILE_CONTENT}
 
         '''
       }
