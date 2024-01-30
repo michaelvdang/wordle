@@ -1,8 +1,8 @@
 pipeline {
 
   // agent { label "linux" }
-  agent any
-  // agent { dockerfile True }
+  // agent any
+  agent { dockerfile true }
 
   stages {
 
@@ -14,7 +14,7 @@ pipeline {
       }
 
       steps {
-        sh 'printenv'
+        // sh 'printenv'
         echo 'building the application..'
         sh '''
           pwd
@@ -28,16 +28,6 @@ pipeline {
         '''
       }
       
-    }
-
-    stage("build 2") {
-      steps {
-        agent { dockerfile true }
-        steps {
-          sh 'curl google.com'
-          sh 'curl localhost:9400'
-        }
-      }
     }
 
     stage("test") {
