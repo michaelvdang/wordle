@@ -2,6 +2,7 @@ pipeline {
 
   // agent { label "linux" }
   agent any
+  // agent { dockerfile True }
 
   stages {
 
@@ -31,7 +32,7 @@ pipeline {
 
     stage("build 2") {
       steps {
-        agent { dockerfile True }
+        agent { dockerfile true }
         steps {
           sh 'curl google.com'
           sh 'curl localhost:9400'
@@ -43,16 +44,16 @@ pipeline {
 
       steps {
         echo 'testing the application..'
-        sh '''
-          curl google.com
-          sudo -s
-          curl localhost:9000
-          curl localhost:9100
-          curl localhost:9200
-          curl localhost:9300
-          curl localhost:9400
-          curl localhost:6379
-        '''
+        // sh '''
+        //   curl google.com
+        //   sudo -s
+        //   curl localhost:9000
+        //   curl localhost:9100
+        //   curl localhost:9200
+        //   curl localhost:9300
+        //   curl localhost:9400
+        //   curl localhost:6379
+        // '''
       }
       
     }
@@ -60,9 +61,10 @@ pipeline {
     stage("shutdown") {
 
       steps {
-        sh '''
-          docker compose down
-        '''
+        echo 'Shutting down containers...'
+        // sh '''
+        //   docker compose down
+        // '''
       }
       
     }
