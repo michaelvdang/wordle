@@ -26,6 +26,7 @@ pipeline {
           groups jenkins root
           group add docker
           usermod -aG docker jenkins
+          id -Gn
         '''
       }
       
