@@ -1,12 +1,17 @@
 pipeline {
 
-  agent any
+  agent { label "linux" }
 
   stages {
 
     stage("build") {
 
+      environment {
+        SECRET_FILE_CONTENT = credentials('wordle-env-file')
+      }
+
       steps {
+        sh 'printenv'
         echo 'building the application..'
         sh '''
           pwd

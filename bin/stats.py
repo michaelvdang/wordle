@@ -10,9 +10,12 @@ import faker
 DATABASE = './var/stats.db'
 SCHEMA = './share/stats.sql'
 
-NUM_STATS = 1_000
-NUM_USERS = 100
-YEAR = 2022
+NUM_STATS = 500
+NUM_USERS = 50
+YEAR = 2024
+# NUM_STATS = 1_000
+# NUM_USERS = 100
+# YEAR = 2022
 
 random.seed(YEAR)
 fake = faker.Faker()

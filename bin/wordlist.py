@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+'''
+Add words from WordList.sql to WordList.db
+'''
 import contextlib
 import sqlite3
 
