@@ -16,11 +16,7 @@ pipeline {
         echo 'building the application..'
         sh '''
           pwd
-          cd 
-          pwd
-          ls 
-          echo hi
-          echo ${SECRET_FILE_CONTENT}
+          echo ${SECRET_FILE_CONTENT} > ./.env
 
         '''
       }
