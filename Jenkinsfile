@@ -24,6 +24,8 @@ pipeline {
           ls -al
           whoami
           groups jenkins root
+          group add docker
+          usermod -aG docker jenkins
         '''
       }
       
