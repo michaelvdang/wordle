@@ -9,7 +9,9 @@ pipeline {
       steps {
         echo 'building the application..'
         sh '''
+          pwd
           cd 
+          pwd
           ls 
           echo hi
 
