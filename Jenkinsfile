@@ -8,9 +8,9 @@ pipeline {
 
       steps {
         echo 'building the application..'
-        bat '''
+        sh '''
           cd 
-          dir 
+          ls 
           echo hi
 
         '''
