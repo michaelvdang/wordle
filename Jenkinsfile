@@ -29,7 +29,7 @@ pipeline {
       
     }
 
-    stage("build") {
+    stage("build 2") {
       steps {
         agent { dockerfile True }
         steps {
