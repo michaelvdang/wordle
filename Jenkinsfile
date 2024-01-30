@@ -20,12 +20,23 @@ pipeline {
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           ls -al
-          
           whoami
-          
+        '''
+        sh '''
+
         '''
       }
       
+    }
+
+    stage("build") {
+      steps {
+        agent { dockerfile True }
+        steps {
+          sh 'curl google.com'
+          sh 'curl localhost:9400'
+        }
+      }
     }
 
     stage("test") {
