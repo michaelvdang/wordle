@@ -21,6 +21,7 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           ls -l
           cat ./.env
+          cat ./.blah
         '''
       }
       
