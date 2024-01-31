@@ -23,15 +23,15 @@ pipeline {
       steps {
         // sh 'printenv'
         echo 'building the application..'
-        sh '''
-          pwd
-          echo ${ENV_FILE_CONTENT} > ./.env
-          echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          cat .env
-          ls -al
-          whoami
-          python3 --version
-        '''
+        // sh '''
+        //   pwd
+        //   echo ${ENV_FILE_CONTENT} > ./.env
+        //   echo ${REDIS_CONF_CONTENT} > ./redis.conf
+        //   cat .env
+        //   ls -al
+        //   whoami
+        //   python3 --version
+        // '''
       }
       
     }
