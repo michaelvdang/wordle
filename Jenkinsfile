@@ -11,8 +11,12 @@ pipeline {
 
     stage("build") {
       agent { 
-        dockerfile true 
-        // reuseNode true
+        dockerfile {
+          filename 'Dockerfile'
+          dir './'
+           
+          reuseNode true
+        }
       }
 
       environment {
