@@ -14,7 +14,7 @@ pipeline {
         dockerfile {
           filename 'Dockerfile'
           dir './'
-           
+          args '-v /var/jenkins_home/workspace/wordle_docker-jenkins:/var/jenkins_home/workspace/wordle_docker-jenkins:rw,z -v /var/jenkins_home/workspace/wordle_docker-jenkins@tmp:/var/jenkins_home/workspace/wordle_docker-jenkins@tmp:rw,z'
           reuseNode true
         }
       }
