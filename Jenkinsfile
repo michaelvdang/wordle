@@ -1,19 +1,19 @@
 pipeline {
 
   // agent { label "linux" }
-  // agent any
-  agent { 
-    dockerfile true 
-    // reuseNode true
-  }
+  agent any
+  // agent { 
+  //   dockerfile true 
+  //   // reuseNode true
+  // }
 
   stages {
 
     stage("build") {
-      // agent { 
-      //   dockerfile true 
-      //   // reuseNode true
-      // }
+      agent { 
+        dockerfile true 
+        // reuseNode true
+      }
 
       environment {
         ENV_FILE_CONTENT = credentials('wordle-env-file')
