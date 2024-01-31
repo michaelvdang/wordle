@@ -15,6 +15,7 @@ RUN mkdir -p /wordle/var
 RUN chmod 544 ./bin/docker-init-db.sh
 RUN chmod 544 ./bin/TopTen.py
 RUN ./bin/docker-init-db.sh
+RUN python3 --version
 
 # multiple calls to uvicorn doesn't work
 ## build each image separately, uncomment each one to build, then run docker compose
