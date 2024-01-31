@@ -14,7 +14,7 @@ pipeline {
         dockerfile {
           filename 'Dockerfile'
           dir './'
-          args '--volumes-from 579e8eeef04764044d775baacb9d58a1d03bb528 -v /var/jenkins_home/workspace/wordle_docker-jenkins:/var/jenkins_home/workspace/wordle_docker-jenkins:rw,z -v /var/jenkins_home/workspace/wordle_docker-jenkins@tmp:/var/jenkins_home/workspace/wordle_docker-jenkins@tmp:rw,z -w /var/jenkins_home/workspace/wordle_docker-jenkins'
+          args '--volumes-from db079cc9888d74d020f35c70a0ff1be8859dfa6416d1d4c14d09abfdff6e9602 -v /var/jenkins_home/workspace/wordle_docker-jenkins:/var/jenkins_home/workspace/wordle_docker-jenkins:rw,z -v /var/jenkins_home/workspace/wordle_docker-jenkins@tmp:/var/jenkins_home/workspace/wordle_docker-jenkins@tmp:rw,z -w /var/jenkins_home/workspace/wordle_docker-jenkins'
           reuseNode true
         }
       }
