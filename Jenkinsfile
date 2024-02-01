@@ -34,7 +34,6 @@ pipeline {
           cat .env
           ls -al
           whoami
-          python3 --version
         '''
       }
       
