@@ -33,29 +33,33 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           cat .env
           ls -al
-          echo 'finished'
         '''
       }
       
     }
 
-    // stage("test") {
+    stage("test") {
 
-    //   steps {
-    //     echo 'testing the application..'
-    //     // sh '''
-    //     //   curl google.com
-    //     //   sudo -s
-    //     //   curl localhost:9000
-    //     //   curl localhost:9100
-    //     //   curl localhost:9200
-    //     //   curl localhost:9300
-    //     //   curl localhost:9400
-    //     //   curl localhost:6379
-    //     // '''
-    //   }
+      steps {
+        echo 'testing the application..'
+        sh '''
+          curl google.com
+          curl localhost:9400
+
+        '''
+        // sh '''
+        //   curl google.com
+        //   sudo -s
+        //   curl localhost:9000
+        //   curl localhost:9100
+        //   curl localhost:9200
+        //   curl localhost:9300
+        //   curl localhost:9400
+        //   curl localhost:6379
+        // '''
+      }
       
-    // }
+    }
     
     // stage("shutdown") {
 
