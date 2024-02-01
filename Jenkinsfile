@@ -33,7 +33,6 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           cat .env
           ls -al
-          whoami
           echo 'finished'
         '''
       }
