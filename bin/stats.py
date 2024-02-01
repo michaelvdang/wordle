@@ -10,7 +10,7 @@ import faker
 DATABASE = './var/stats.db'
 SCHEMA = './share/stats.sql'
 
-NUM_STATS = 500
+NUM_STATS = 200
 NUM_USERS = 50
 YEAR = 2024
 # NUM_STATS = 1_000
