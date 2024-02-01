@@ -34,12 +34,14 @@ Hardware:
     - Networking>Firewall
     - Enable: SSH, HTTP, HTTPS
 Deployment: 
-- Install Docker
-    - https://www.docker.com/products/docker or https://docs.docker.com/engine/install/ubuntu/
 - Pull from git repo
     - git clone https://github.com/michaelvdang/wordle.git
     - cd wordle
     - git checkout docker
+- Install Docker
+    - https://www.docker.com/products/docker or https://docs.docker.com/engine/install/ubuntu/
+- Install npm 
+    - sudo apt install npm
 - Copy .env, redis.conf, and crontab.txt (using FileZilla)
 - Build and copy frontend code (maybe download npm and just build it on server)
     - place the wordle-frontend/dist/ folder in /wordle/wordle-frontend/ (including dist/)
