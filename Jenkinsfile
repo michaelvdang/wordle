@@ -34,6 +34,7 @@ pipeline {
           cat .env
           ls -al
           whoami
+          echo 'finished'
         '''
       }
       
