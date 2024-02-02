@@ -24,8 +24,8 @@ sudo usermod -aG docker ${USER}
 sudo service docker restart
 
 ### Frontend, when you want to build the front end on the server
-## installing npm
-sudo apt -y install npm 
+# ## installing npm
+# sudo apt -y install npm 
 
 ## copy credentials files with scp-secret.bat on windows
 until [ -f ./.env ]
@@ -50,3 +50,66 @@ sudo python3 -m pip install -r cron-requirements.txt
 
 ## start the services
 sudo docker compose up -d
+
+## install NGINX
+sudo apt update
+sudo apt -y install nginx
+
+sudo ufw allow 'Nginx HTTP'
+# extras
+echo ufw status:
+sudo ufw status
+
+curl -4 icanhazip.com
+# end extras
+
+## configure NGINX
+  # get env variables
+source .env
+
+  # remove carriage return from $SERVER_IP
+SERVER_IP=`echo $SERVER_IP | tr -d "\r" | cat -v`
+DOMAIN_NAME=`echo $DOMAIN_NAME | tr -d "\r" | cat -v`
+
+  # copy template to new file
+sudo cat nginx-template.conf > $DOMAIN_NAME.conf
+  # replace <SERVER_IP> in config file with SERVER_IP from .env
+sed -i "s/<SERVER_IP>/$SERVER_IP/g" $DOMAIN_NAME.conf
+sed -i "s/<DOMAIN_NAME>/$DOMAIN_NAME/g" $DOMAIN_NAME.conf
+  # move config file and create soft link
+sudo mv $DOMAIN_NAME.conf /etc/nginx/sites-available
+  # remove old links
+sudo rm /etc/nginx/sites-enabled/$DOMAIN_NAME
+sudo ln -s /etc/nginx/sites-available/$DOMAIN_NAME.conf /etc/nginx/sites-enabled/$DOMAIN_NAME
+
+sudo nginx -s reload
+
+## make NGINX static files directory
+sudo mkdir -p /var/www/$DOMAIN_NAME
+sudo mkdir -p /var/www/$DOMAIN_NAME/wordle
+
+## METHOD 1: build the app ON server
+cd /home/$USER/wordle/wordle-frontend
+## installing node and npm
+# fix broken install 
+  # sudo rm /etc/apt/sources.list
+  # sudo apt --fix-broken install
+  # sudo apt update
+  # sudo apt remove nodejs
+  # sudo apt remove nodejs-doc
+# end fix
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install -y curl
+sudo dpkg -i --force-overwrite /var/cache/apt/archives/nodejs_20.11.0-1nodesource1_amd64.deb
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install nodejs -y
+sudo apt -y install npm 
+npm i
+npm run build
+
+## METHOD 2: build app LOCALLY
+read -p "In case not building the app on server, make sure to run scp-wordle-html.bat to copy html assets to server. Press ENTER to continue..."
+sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
+
+sudo mv /home/$USER/wordle/wordle-frontend/dist/* /var/www/$DOMAIN_NAME/wordle

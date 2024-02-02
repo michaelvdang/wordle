@@ -64,12 +64,12 @@ Deploy backend using Docker:
         - Find where the .db files are: docker volume ls && docker volume inspect wordle_db
         - Make sure the path in TopTen.py matches the path in Mountpoint
     - install dependencies: python3 -m pip install -r cron-requirements.txt
-    - create a file to store cron-fragments.txt
+    - create a file to store cron-fragments.txt (not necessary)
     - view running cron jobs: crontab -l (to list) -e (to edit)
     - put running cron jobs into crontab.txt
     - * * * * * /home/<USER>/wordle/.venv/bin/python /home/<USER>/wordle/bin/TopTen.py >> /home/<USER>/wordle/cron.log 2>&1
     - Use the correct username for line above, also note if python's dependencies are installed in a virtual environment
-    - run: crontab crontab.txt
+    - run: sudo crontab crontab.txt (sudo to put crontab into root)
     - Rotate cron.log so it doesn't become too big: https://serverfault.com/questions/703757/how-to-rotate-a-log-file-from-crontab
 - You can now access the server at http://<IP_ADDRESS>:<PORT#> where <PORT#> can be any of the 9000, 9100, 9200, 9300, 9400
 - However, the frontend is unlikely to work because its origin is a public IP address
