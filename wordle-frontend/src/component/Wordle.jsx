@@ -7,8 +7,21 @@ import LeaderboardModal from './LeaderboardModal'
 import ErrorDialog from './ErrorDialog'
 import AboutModal from './AboutModal'
 
+// let APP_SERVER = '';
+let STATS_URL = ''
+let ORC_URL = ''
+// no-domain also uses local backend
+if (import.meta.env.VITE_BACK_END_TYPE === 'localhost') {
+  STATS_URL = 'http://localhost:9000'
+  ORC_URL = 'http://localhost:9400'
+}
+else {
+  STATS_URL = 'https://stats.api.' + import.meta.env.VITE_DOMAIN_NAME
+  ORC_URL = 'https://orchestrator.api.' + import.meta.env.VITE_DOMAIN_NAME
+}
 // const APP_SERVER = 'local'
 const APP_SERVER = 'remote'
+
 const endpoints = {
   'local': {
     'stats': 'http://localhost:9000',
@@ -34,7 +47,10 @@ const GUESSES = [
   'angry', 'happy', 'cloud', 'viper', 'sheer', 'house'
 ]
 
-const Wordle = () => {
+// import.meta.env.VITE_ENVIRONMENT;
+// import { defineConfig, loadEnv } from 'vite';
+
+const Wordle = ({mode}) => {
 
   const [username, setUsername] = useState('');
   const [isSettingUsername, setIsSettingUsername] = useState(false);
@@ -79,9 +95,8 @@ const Wordle = () => {
   
   const fetchNewGame = (_username = username) => {
     clearLocalStorage();
-    fetch(endpoints[APP_SERVER]['orc'] + '/game/new?username=' + _username,
-    // fetch('http://localhost:9400/game/new?username=' + username,
-    // fetch('https://orchestrator.api.mikespace.xyz/game/new?username=' + _username,
+    fetch(ORC_URL + '/game/new?username=' + _username,
+    // fetch(endpoints[APP_SERVER]['orc'] + '/game/new?username=' + _username,
       {
         method: 'POST',
       })
@@ -126,9 +141,8 @@ const Wordle = () => {
     // we will also load present, absent, and correct letters from local storage
     // and guesses
 
-    const res = await fetch(endpoints[APP_SERVER]['orc'] + '/game/restore?username=' + localStorage.username
-    // fetch('http://localhost:9400/game/restore?username=' + localStorage.username
-    // fetch('https://orchestrator.api.mikespace.xyz/game/restore?username=' + localStorage.username
+    const res = await fetch(ORC_URL + '/game/restore?username=' + localStorage.username
+    // const res = await fetch(endpoints[APP_SERVER]['orc'] + '/game/restore?username=' + localStorage.username
             + '&game_id=' + localStorage.game_id)
 
     .then(response => response.json())
@@ -334,10 +348,8 @@ const Wordle = () => {
         if (!isLoading) {
           
           setIsLoading(true);
-          // fetch('http://mikespace.xyz:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-          fetch(endpoints[APP_SERVER]['orc'] + '/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-          // fetch('http://localhost:9400/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
-          // fetch('https://orchestrator.api.mikespace.xyz/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+          fetch(ORC_URL + '/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
+          // fetch(endpoints[APP_SERVER]['orc'] + '/game/' + game.game_id + '?username=' + username + '&guid=' + game.guid + '&user_id=' + game.user_id + '&guess=' + currentGuess,
             {
               method: 'POST',
             })
@@ -394,6 +406,7 @@ const Wordle = () => {
   
   return (
     <>
+    {/* <h1 className='text-white'>{new String(import.meta.env.VITE_BACK_END_TYPE === 'local')}</h1> */}
     {isSettingUsername && 
       <UsernameDialog 
         username={username}
@@ -422,13 +435,15 @@ const Wordle = () => {
         setShowStats={setShowStats}
         username={username}
         user_id={game.user_id}
-        APP_SERVER={APP_SERVER}
+        // APP_SERVER={APP_SERVER}
+        STATS_URL={STATS_URL}
         />
       }
     {showLeaderboard && 
       <LeaderboardModal 
         setShowLeaderboard={setShowLeaderboard}
-        APP_SERVER={APP_SERVER}
+        // APP_SERVER={APP_SERVER}
+        STATS_URL={STATS_URL}
       />
     }
     {hasError && 

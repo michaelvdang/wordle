@@ -28,7 +28,7 @@ const stats = {
 }
 
 export default function LeaderboardModal(props) {
-  const {setShowLeaderboard, APP_SERVER} = props;
+  const {setShowLeaderboard, STATS_URL} = props;
   const [topStreaks, setTopStreaks] = useState([])
   const [topWins, setTopWins] = useState([])
   const [viewTopWins, setViewTopWins] = useState(true);
@@ -37,9 +37,8 @@ export default function LeaderboardModal(props) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(endpoints[APP_SERVER]['stats'] + `/stats/top-streaks-and-winners`)
-    // fetch(`http://localhost:9000/stats/top-streaks-and-winners`)
-    // fetch(`https://stats.api.mikespace.xyz/stats/top-streaks-and-winners`)
+    fetch(STATS_URL + `/stats/top-streaks-and-winners`)
+    // fetch(endpoints[APP_SERVER]['stats'] + `/stats/top-streaks-and-winners`)
       .then(res => res.json())
       .then(res => {
         // console.log(res);
