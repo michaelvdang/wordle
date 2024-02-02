@@ -10,14 +10,15 @@ import AboutModal from './AboutModal'
 // let APP_SERVER = '';
 let STATS_URL = ''
 let ORC_URL = ''
+const DOMAIN_NAME = 'no-domain' // 'michaeldang.dev'
 // no-domain also uses local backend
-if (import.meta.env.VITE_BACK_END_TYPE === 'localhost') {
+if (import.meta.env.DEV || DOMAIN_NAME === 'no-domain') { 
   STATS_URL = 'http://localhost:9000'
   ORC_URL = 'http://localhost:9400'
 }
 else {
-  STATS_URL = 'https://stats.api.' + import.meta.env.VITE_DOMAIN_NAME
-  ORC_URL = 'https://orchestrator.api.' + import.meta.env.VITE_DOMAIN_NAME
+  STATS_URL = 'https://stats.api.' + DOMAIN_NAME
+  ORC_URL = 'https://orchestrator.api.' + DOMAIN_NAME
 }
 // const APP_SERVER = 'local'
 const APP_SERVER = 'remote'
@@ -406,7 +407,6 @@ const Wordle = ({mode}) => {
   
   return (
     <>
-    {/* <h1 className='text-white'>{new String(import.meta.env.VITE_BACK_END_TYPE === 'local')}</h1> */}
     {isSettingUsername && 
       <UsernameDialog 
         username={username}

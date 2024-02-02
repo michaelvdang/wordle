@@ -112,4 +112,5 @@ npm run build
 read -p "In case not building the app on server, make sure to run scp-wordle-html.bat to copy html assets to server. Press ENTER to continue..."
 sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
 
-sudo mv /home/$USER/wordle/wordle-frontend/dist/* /var/www/$DOMAIN_NAME/wordle
+sudo mv -u /home/$USER/wordle/wordle-frontend/dist/assets/* /var/www/$DOMAIN_NAME/assets
+sudo mv -u /home/$USER/wordle/wordle-frontend/dist/* /var/www/$DOMAIN_NAME/wordle
