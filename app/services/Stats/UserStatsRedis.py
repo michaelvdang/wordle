@@ -16,6 +16,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
+SERVER_IP = os.environ.get('SERVER_IP')
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
 def get_redis():
     yield redis.Redis(
                     # host='localhost',
@@ -76,6 +78,8 @@ origins = [     # curl and local browser are always allowed
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
     "https://mikespace.xyz",
     "https://mikespace.dev",
+    "http://" + SERVER_IP,
+    "https://" + DOMAIN_NAME
     # "http://146.190.58.25",
 ]
 app.add_middleware(

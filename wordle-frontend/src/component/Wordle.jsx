@@ -7,18 +7,20 @@ import LeaderboardModal from './LeaderboardModal'
 import ErrorDialog from './ErrorDialog'
 import AboutModal from './AboutModal'
 
-// let APP_SERVER = '';
 let STATS_URL = ''
 let ORC_URL = ''
-const DOMAIN_NAME = 'no-domain' // 'michaeldang.dev'
-// no-domain also uses local backend
-if (import.meta.env.DEV || DOMAIN_NAME === 'no-domain') { 
-  STATS_URL = 'http://localhost:9000'
-  ORC_URL = 'http://localhost:9400'
+if (import.meta.env.VITE_DOMAIN_NAME === undefined) {
+  throw new Error('Missing env file or env variables');
 }
-else {
+const DOMAIN_NAME = import.meta.env.VITE_DOMAIN_NAME // 'michaeldang.dev'
+// check if a real domain name is supplied
+if (DOMAIN_NAME.includes('.')) {
   STATS_URL = 'https://stats.api.' + DOMAIN_NAME
   ORC_URL = 'https://orchestrator.api.' + DOMAIN_NAME
+}
+else {
+  STATS_URL = 'http://localhost:9000'
+  ORC_URL = 'http://localhost:9400'
 }
 // const APP_SERVER = 'local'
 const APP_SERVER = 'remote'
@@ -48,11 +50,7 @@ const GUESSES = [
   'angry', 'happy', 'cloud', 'viper', 'sheer', 'house'
 ]
 
-// import.meta.env.VITE_ENVIRONMENT;
-// import { defineConfig, loadEnv } from 'vite';
-
 const Wordle = ({mode}) => {
-
   const [username, setUsername] = useState('');
   const [isSettingUsername, setIsSettingUsername] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -407,6 +405,7 @@ const Wordle = ({mode}) => {
   
   return (
     <>
+    {/* <h1 className='text-white'>VITE_DOMAIN_NAME: {new String(import.meta.env.VITE_DOMAIN_NAME)}</h1> */}
     {isSettingUsername && 
       <UsernameDialog 
         username={username}

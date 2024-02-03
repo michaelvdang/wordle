@@ -7,7 +7,14 @@ import json
 import asyncio
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
+SERVER_IP = os.environ.get('SERVER_IP')
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
 ## switch between running individual services or docker compose (same network)
 # APP_HOST = 'localhost'
 APP_HOST = 'docker'
@@ -33,6 +40,9 @@ origins = [     # curl and local browser are always allowed
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
     "https://mikespace.xyz",
     "https://mikespace.dev", # DO NOT USE backslash (/)
+    "http://" + SERVER_IP,
+    "https://" + DOMAIN_NAME
+    
     # "http://146.190.58.25",
 ]
 # app.add_middleware(

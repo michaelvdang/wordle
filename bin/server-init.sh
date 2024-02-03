@@ -109,8 +109,7 @@ npm i
 npm run build
 
 ## METHOD 2: build app LOCALLY
-read -p "In case not building the app on server, make sure to run scp-wordle-html.bat to copy html assets to server. Press ENTER to continue..."
+read -p "Before movign on, if we are not building the app on server, make sure to run scp-fe-build.bat with the correct SERVER_IP to copy html assets to server. Press ENTER to continue..."
 sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
 
-sudo mv -u /home/$USER/wordle/wordle-frontend/dist/assets/* /var/www/$DOMAIN_NAME/assets
-sudo mv -u /home/$USER/wordle/wordle-frontend/dist/* /var/www/$DOMAIN_NAME/wordle
+sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/no-domain/wordle/
