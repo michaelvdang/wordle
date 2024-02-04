@@ -16,11 +16,19 @@ pipeline {
           cat .env
           ls -al
         '''
-        sh'''
-          docker build -t w-stats ./app/services/Stats
-          docker run --name stats-cont w-stats
-          curl localhost:9000
-        '''
+        // sh'''
+        //   docker build -t w-stats ./app/services/Stats
+        //   docker run --name stats-cont w-stats
+        //   curl localhost:9000
+        //   docker build -t w-wordcheck ./app/services/WordCheck
+        //   docker build -t w-wordvalidation ./app/services/WordValidation
+        //   docker build -t w-play ./app/services/Play
+        //   docker build -t w-orc .
+        //   docker run --name wordcheck-cont w-wordcheck
+        //   docker run --name wordvalidation-cont w-wordvalidation
+        //   docker run --name play-cont w-play
+        //   docker run --name orc-cont w-orc
+        // '''
       }
       
     }
