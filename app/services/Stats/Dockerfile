@@ -6,6 +6,7 @@ WORKDIR /wordle
 RUN ls
 COPY requirements.txt /wordle/requirements.txt
 COPY ./.env /wordle/.env
+RUN cat .env
 
 RUN python3 -m pip install --no-cache-dir --upgrade -r /wordle/requirements.txt
 
