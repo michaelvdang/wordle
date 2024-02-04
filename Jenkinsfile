@@ -54,7 +54,7 @@ pipeline {
     stage("test") {
       steps {
         echo 'testing the env files..'
-        sh'sleep 30'
+        sh'sleep 120'
         sh '''
           pwd
           echo ${ENV_FILE_CONTENT} > ./.env
