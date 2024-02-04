@@ -58,21 +58,21 @@ pipeline {
       }
     }
 
-    // stage("test") {
-    //   steps {
-    //     echo 'testing the env files..'
-    //     sh '''
-    //       pwd
-    //       echo ${ENV_FILE_CONTENT} > ./.env
-    //       echo ${REDIS_CONF_CONTENT} > ./redis.conf
-    //       docker ps -a
-    //     '''
-    //     // sh '''
-    //     //   curl google.com
-    //     //   curl localhost:9400
-    //     // '''
-    //   }
-    // }
+    stage("test") {
+      steps {
+        echo 'testing the env files..'
+        sh '''
+          pwd
+          echo ${ENV_FILE_CONTENT} > ./.env
+          echo ${REDIS_CONF_CONTENT} > ./redis.conf
+          docker ps -a
+        '''
+        sh '''
+          curl google.com
+          curl localhost:9400
+        '''
+      }
+    }
     
     stage("shutdown") {
 
