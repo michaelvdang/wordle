@@ -21,7 +21,7 @@ pipeline {
         sh'''
           docker ps
           docker ps -a
-          docker rm -stats-cont
+          docker rm stats-cont
           docker ps -a
         '''
         // sh '''
