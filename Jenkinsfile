@@ -60,6 +60,7 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           docker ps -a
         '''
+        sh'sleep 30'
         sh'curl localhost:9000'
         // sh '''
         //   curl google.com
