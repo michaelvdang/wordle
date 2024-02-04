@@ -3,6 +3,7 @@ FROM python:alpine3.19
 
 WORKDIR /wordle
 
+RUN ls
 COPY requirements.txt /wordle/requirements.txt
 COPY ./.env /wordle/.env
 
