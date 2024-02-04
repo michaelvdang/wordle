@@ -14,13 +14,13 @@ if (import.meta.env.VITE_DOMAIN_NAME === undefined) {
 }
 const DOMAIN_NAME = import.meta.env.VITE_DOMAIN_NAME // 'michaeldang.dev'
 // check if a real domain name is supplied
-if (DOMAIN_NAME.includes('.')) {
-  STATS_URL = 'https://stats.api.' + DOMAIN_NAME
-  ORC_URL = 'https://orchestrator.api.' + DOMAIN_NAME
-}
-else {
+if (import.meta.env.DEV || DOMAIN_NAME == 'no-domain') {
   STATS_URL = 'http://localhost:9000'
   ORC_URL = 'http://localhost:9400'
+}
+else {
+  STATS_URL = 'https://stats.api.' + DOMAIN_NAME
+  ORC_URL = 'https://orchestrator.api.' + DOMAIN_NAME
 }
 // const APP_SERVER = 'local'
 const APP_SERVER = 'remote'

@@ -79,6 +79,7 @@ origins = [     # curl and local browser are always allowed
     "https://mikespace.xyz",
     "https://mikespace.dev",
     "http://" + SERVER_IP,
+    "http://" + DOMAIN_NAME,
     "https://" + DOMAIN_NAME
     # "http://146.190.58.25",
 ]

@@ -10,15 +10,6 @@ pipeline {
   stages {
 
     stage("build") {
-      agent { 
-        dockerfile {
-          filename 'Dockerfile'
-          dir './'
-          // args '--volumes-from db079cc9888d74d020f35c70a0ff1be8859dfa6416d1d4c14d09abfdff6e9602 -v /var/jenkins_home/workspace/wordle_docker-jenkins:/var/jenkins_home/workspace/wordle_docker-jenkins:rw,z -v /var/jenkins_home/workspace/wordle_docker-jenkins@tmp:/var/jenkins_home/workspace/wordle_docker-jenkins@tmp:rw,z -w /var/jenkins_home/workspace/wordle_docker-jenkins'
-          reuseNode true
-        }
-      }
-
       environment {
         ENV_FILE_CONTENT = credentials('wordle-env-file')
         REDIS_CONF_CONTENT = credentials('redis-conf')
@@ -43,11 +34,11 @@ pipeline {
 
       steps {
         echo 'testing the application..'
-        sh '''
-          curl google.com
-          curl localhost:9400
+        // sh '''
+        //   curl google.com
+        //   curl localhost:9400
 
-        '''
+        // '''
         // sh '''
         //   curl google.com
         //   sudo -s

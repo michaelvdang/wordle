@@ -1,4 +1,8 @@
 #!/bin/bash
+#### Run this script in an EC2 Ubuntu instance from the project root
+####  this will install the entire application that can be accessed at
+####  SERVER_IP of the EC2 instance. You'll need to get a domain name
+####  and point DNS to SERVER_IP, if needed, run certbot
 ### Backend
 ## installing Docker
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
@@ -64,7 +68,7 @@ curl -4 icanhazip.com
 # end extras
 
 ## configure NGINX
-  # get env variables
+  # get env variables, including: DOMAIN_NAME
 source .env
 
   # remove carriage return from $SERVER_IP
@@ -112,4 +116,4 @@ npm run build
 read -p "Before movign on, if we are not building the app on server, make sure to run scp-fe-build.bat with the correct SERVER_IP to copy html assets to server. Press ENTER to continue..."
 sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
 
-sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/no-domain/wordle/
+sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/$DOMAIN_NAME/wordle/
