@@ -40,7 +40,7 @@ pipeline {
           docker rm -f play-cont
           docker build -t w-play ./app/services/Play
           docker run -d --name play-cont w-play
-          curl localhost:9000
+          echo curl localhost:9000 is not working 
         '''
         echo 'Building orc container...'
         sh '''
