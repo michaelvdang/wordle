@@ -18,16 +18,12 @@ pipeline {
           ls -al app/services/Stats/
           ls -al
         '''
-        sh'''
-          docker ps
-          docker ps -a
-          docker rm stats-cont
-          docker ps -a
+        sh '''
+          docker build -t w-stats ./app/services/Stats
+          docker run --name stats-cont w-stats
+          docker stop stats-cont
+          docker rm stats-conts
         '''
-        // sh '''
-        //   docker build -t w-stats ./app/services/Stats
-        //   docker run --name stats-cont w-stats
-        // '''
         // sh'''
         //   docker build -t w-stats ./app/services/Stats
         //   docker run --name stats-cont w-stats
