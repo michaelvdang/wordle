@@ -4,7 +4,7 @@ FROM python:alpine3.19
 WORKDIR /wordle
 
 COPY requirements.txt /wordle/requirements.txt
-COPY ../../../.env /wordle/.env
+COPY ./.env /wordle/.env
 
 RUN python3 -m pip install --no-cache-dir --upgrade -r /wordle/requirements.txt
 
