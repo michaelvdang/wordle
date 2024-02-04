@@ -8,7 +8,7 @@ pipeline {
     stage("build") {
       steps {
         // sh 'printenv'
-        echo 'building the application..'
+        echo 'building Stats container..'
         sh '''
           pwd
           echo ${ENV_FILE_CONTENT} > ./.env
@@ -22,65 +22,81 @@ pipeline {
           docker rm -f stats-cont
           docker build -t w-stats ./app/services/Stats
           docker run -d --name stats-cont w-stats
-          docker stop stats-cont
-          docker rm stats-cont
         '''
-        // sh'''
-        //   docker build -t w-stats ./app/services/Stats
-        //   docker run --name stats-cont w-stats
-        //   curl localhost:9000
-        //   docker build -t w-wordcheck ./app/services/WordCheck
-        //   docker build -t w-wordvalidation ./app/services/WordValidation
-        //   docker build -t w-play ./app/services/Play
-        //   docker build -t w-orc .
-        //   docker run --name wordcheck-cont w-wordcheck
-        //   docker run --name wordvalidation-cont w-wordvalidation
-        //   docker run --name play-cont w-play
-        //   docker run --name orc-cont w-orc
-        // '''
       }
-      
-    }
-
-    stage("test") {
-
       steps {
-        echo 'testing the env files..'
+        echo 'Building WordCheck container...'
         sh '''
-          pwd
-          echo ${ENV_FILE_CONTENT} > ./.env
-          echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          docker ps -a
+          docker rm -f wordcheck-cont
+          docker build -t w-wordcheck ./app/services/WordCheck
+          docker run -d --name wordcheck-cont w-wordcheck
         '''
-        // sh '''
-        //   curl google.com
-        //   curl localhost:9400
-
-        // '''
-        // sh '''
-        //   curl google.com
-        //   sudo -s
-        //   curl localhost:9000
-        //   curl localhost:9100
-        //   curl localhost:9200
-        //   curl localhost:9300
-        //   curl localhost:9400
-        //   curl localhost:6379
-        // '''
       }
-      
+      steps {
+        echo 'Building WordValidation container...'
+        sh '''
+          docker rm -f wordvalidation-cont
+          docker build -t w-wordvalidation ./app/services/WordValidation
+          docker run -d --name wordvalidation-cont w-wordvalidation
+        '''
+      }
+      steps {
+        echo 'Building play container...'
+        sh '''
+          docker rm -f play-cont
+          docker build -t w-play ./app/services/Play
+          docker run -d --name play-cont w-play
+        '''
+      }
+      steps {
+        echo 'Building orc container...'
+        sh '''
+          docker rm -f orc-cont
+          docker build -t w-orc .
+          docker run -d --name orc-cont w-orc
+        '''
+      }
     }
-    
-    // stage("shutdown") {
 
+    // stage("test") {
     //   steps {
-    //     echo 'Shutting down containers...'
+    //     echo 'testing the env files..'
+    //     sh '''
+    //       pwd
+    //       echo ${ENV_FILE_CONTENT} > ./.env
+    //       echo ${REDIS_CONF_CONTENT} > ./redis.conf
+    //       docker ps -a
+    //     '''
     //     // sh '''
-    //     //   docker compose down
+    //     //   curl google.com
+    //     //   curl localhost:9400
     //     // '''
     //   }
-      
     // }
+    
+    stage("shutdown") {
+
+      steps {
+        echo 'Shutting down containers...'
+        sh '''
+          docker ps
+          docker ps -a
+          docker stop stats-cont
+          docker rm stats-cont
+          docker stop wordcheck-cont
+          docker rm wordcheck-cont
+          docker stop wordvalidation-cont
+          docker rm wordvalidation-cont
+          docker stop play-cont
+          docker rm play-cont
+          docker stop orc-cont
+          docker rm orc-cont
+          docker ps 
+          docker ps -a
+        '''
+      }
+      
+    }
     
   }
 
