@@ -93,7 +93,9 @@ app.add_middleware(
 
 @app.get("/")
 def hello():
-    return {"message": "hello world", "message2": "UserStatsRedis.py"}
+    return {"message": "hello world", 
+            "message2": "UserStatsRedis.py",
+            }
 
 # insert finished game into the correct shard based on guid for storage
 @app.post("/stats/games/store-result", status_code=201)
