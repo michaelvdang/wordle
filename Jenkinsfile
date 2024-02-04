@@ -40,6 +40,7 @@ pipeline {
           docker rm -f play-cont
           docker build -t w-play ./app/services/Play
           docker run -d --name play-cont w-play
+          curl localhost:9000
         '''
         echo 'Building orc container...'
         sh '''
@@ -59,14 +60,14 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           docker ps -a
         '''
-        sh '''
-          curl google.com
-          curl localhost:9000
-          curl localhost:9100
-          curl localhost:9200
-          curl localhost:9300
-          curl localhost:9400
-        '''
+        // sh '''
+        //   curl google.com
+        //   curl localhost:9000
+        //   curl localhost:9100
+        //   curl localhost:9200
+        //   curl localhost:9300
+        //   curl localhost:9400
+        // '''
       }
     }
     
