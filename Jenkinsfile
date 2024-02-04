@@ -69,6 +69,10 @@ pipeline {
         '''
         sh '''
           curl google.com
+          curl localhost:9000
+          curl localhost:9100
+          curl localhost:9200
+          curl localhost:9300
           curl localhost:9400
         '''
       }
