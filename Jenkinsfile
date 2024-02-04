@@ -1,9 +1,9 @@
 pipeline {
   agent any
-      environment {
-        ENV_FILE_CONTENT = credentials('wordle-env-file')
-        REDIS_CONF_CONTENT = credentials('redis-conf')
-      }
+  environment {
+    ENV_FILE_CONTENT = credentials('wordle-env-file')
+    REDIS_CONF_CONTENT = credentials('redis-conf')
+  }
   stages {
     stage("build") {
       steps {
@@ -15,7 +15,6 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           cat .env
           ls -al
-          echo 'finished building'
         '''
       }
       
@@ -24,7 +23,13 @@ pipeline {
     stage("test") {
 
       steps {
-        echo 'testing the application..'
+        echo 'testing the env files..'
+        sh '''
+          pwd
+          echo ${ENV_FILE_CONTENT} > ./.env
+          echo ${REDIS_CONF_CONTENT} > ./redis.conf
+          docker ps -a
+        '''
         // sh '''
         //   curl google.com
         //   curl localhost:9400
