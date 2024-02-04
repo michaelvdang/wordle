@@ -16,6 +16,11 @@ pipeline {
           cat .env
           ls -al
         '''
+        sh'''
+          docker build -t w-stats ./app/services/Stats
+          docker run --name stats-cont w-stats
+          curl localhost:9000
+        '''
       }
       
     }
