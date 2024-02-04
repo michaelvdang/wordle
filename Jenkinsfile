@@ -1,20 +1,11 @@
 pipeline {
-
-  // agent { label "linux" }
   agent any
-  // agent { 
-  //   dockerfile true 
-  //   // reuseNode true
-  // }
-
-  stages {
-
-    stage("build") {
       environment {
         ENV_FILE_CONTENT = credentials('wordle-env-file')
         REDIS_CONF_CONTENT = credentials('redis-conf')
       }
-
+  stages {
+    stage("build") {
       steps {
         // sh 'printenv'
         echo 'building the application..'
