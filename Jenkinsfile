@@ -23,32 +23,24 @@ pipeline {
           docker build -t w-stats ./app/services/Stats
           docker run -d --name stats-cont w-stats
         '''
-      }
-      steps {
         echo 'Building WordCheck container...'
         sh '''
           docker rm -f wordcheck-cont
           docker build -t w-wordcheck ./app/services/WordCheck
           docker run -d --name wordcheck-cont w-wordcheck
         '''
-      }
-      steps {
         echo 'Building WordValidation container...'
         sh '''
           docker rm -f wordvalidation-cont
           docker build -t w-wordvalidation ./app/services/WordValidation
           docker run -d --name wordvalidation-cont w-wordvalidation
         '''
-      }
-      steps {
         echo 'Building play container...'
         sh '''
           docker rm -f play-cont
           docker build -t w-play ./app/services/Play
           docker run -d --name play-cont w-play
         '''
-      }
-      steps {
         echo 'Building orc container...'
         sh '''
           docker rm -f orc-cont
