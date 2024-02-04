@@ -23,7 +23,7 @@ pipeline {
           docker build -t w-stats ./app/services/Stats
           docker run -d --name stats-cont w-stats
           docker stop stats-cont
-          docker rm stats-conts
+          docker rm stats-cont
         '''
         // sh'''
         //   docker build -t w-stats ./app/services/Stats
