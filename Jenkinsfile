@@ -41,24 +41,24 @@ pipeline {
         //   docker build -t wordvalidation-image ./app/services/WordValidation
         //   docker run -d --rm --name wordvalidation -p 9200:9200 -h localhost --network test-network wordvalidation-image
         // '''
-        echo 'Building play container...'
-        sh '''
-          docker rm -f play
-          docker rmi -f play-image
-          docker build -t play-image ./app/services/Play
-          docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
-        '''
-        echo 'Building orc container...'
-        sh '''
-          docker rm -f orc
-          docker rmi -f orc-image
-          docker build -t orc-image .
-          docker run -d --rm --name orc -p 9400:9400 -h localhost --network test-network orc-image
-        '''
-        sh 'docker build -t ubuntu-image ./jenkins-docker/'
-        sh '''
-          docker run -d --rm --name ubuntu-tester --network test-network ubuntu-image
-        '''
+        // echo 'Building play container...'
+        // sh '''
+        //   docker rm -f play
+        //   docker rmi -f play-image
+        //   docker build -t play-image ./app/services/Play
+        //   docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
+        // '''
+        // echo 'Building orc container...'
+        // sh '''
+        //   docker rm -f orc
+        //   docker rmi -f orc-image
+        //   docker build -t orc-image .
+        //   docker run -d --rm --name orc -p 9400:9400 -h localhost --network test-network orc-image
+        // '''
+        // sh 'docker build -t ubuntu-image ./jenkins-docker/'
+        // sh '''
+        //   docker run -d --rm --name ubuntu-tester --network test-network ubuntu-image
+        // '''
       }
     }
 
@@ -72,19 +72,6 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           docker ps -a
         '''
-        // sh'curl 127.0.0.1:9000'
-        // sh'curl -s localhost:9000'
-        // sh'curl -s stats-cont:9000'
-        // sh'curl -s dde366b98c3e:9000'
-        // sh'curl -s 127.0.0.1:9000'
-        // sh '''
-        //   curl google.com
-        //   curl localhost:9000
-        //   curl localhost:9100
-        //   curl localhost:9200
-        //   curl localhost:9300
-        //   curl localhost:9400
-        // '''
       }
     }
     
