@@ -1,17 +1,17 @@
 version: '3'
 services:
-  redis:
-    image: redis:alpine
-    container_name: 'redis-cont'
-    # command: ash -c "redis-server --appendonly yes --requirepass password"
-    command: redis-server /etc/redis.conf # this file has password and other configs
-    ports:
-      - "6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
-    volumes:
-      - ./var/redis:/data     # add volume to persist data between container restarts
-      - "./redis.conf:/etc/redis.conf"  # don't forget to import the config file
-      # - ${PWD}/redis.conf:/etc/redis.conf  # don't forget to import the config file
-    restart: unless-stopped
+  # redis:
+  #   image: redis:alpine
+  #   container_name: 'redis-cont'
+  #   # command: ash -c "redis-server --appendonly yes --requirepass password"
+  #   command: redis-server /etc/redis.conf # this file has password and other configs
+  #   ports:
+  #     - "6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
+  #   volumes:
+  #     - ./var/redis:/data     # add volume to persist data between container restarts
+  #     - "./redis.conf:/etc/redis.conf"  # don't forget to import the config file
+  #     # - ${PWD}/redis.conf:/etc/redis.conf  # don't forget to import the config file
+  #   restart: unless-stopped
   stats:
     build: ./app/services/Stats   # Either build from Dockerfile or use a prebuilt image
     # image: w-stats              # must build image manually first
