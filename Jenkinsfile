@@ -54,14 +54,14 @@ pipeline {
     stage("test") {
       steps {
         echo 'testing the env files..'
-        sh'sleep 120'
+        sh'sleep 5'
         sh '''
           pwd
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           docker ps -a
         '''
-        sh'curl 127.0.0.1:9000'
+        // sh'curl 127.0.0.1:9000'
         sh'curl localhost:9000'
         // sh '''
         //   curl google.com
