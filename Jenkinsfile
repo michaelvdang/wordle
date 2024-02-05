@@ -55,7 +55,7 @@ pipeline {
           docker build -t orc-image .
           docker run -d --rm --name orc -p 9400:9400 -h localhost --network test-network orc-image
         '''
-        // sh 'docker build -t ubuntu-image ./jenkins-docker/'
+        sh 'docker build -t ubuntu-image ./jenkins-docker/'
         sh '''
           docker run -d --rm --name ubuntu-tester --network test-network ubuntu-image
         '''
