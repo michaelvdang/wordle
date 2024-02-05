@@ -19,9 +19,6 @@ pipeline {
           ls -al app/services/Stats/
           ls -al
         '''
-        sh'''
-          docker network create test-network
-        '''
         sh '''
           docker rm -f stats-cont
           docker rmi -f w-stats
