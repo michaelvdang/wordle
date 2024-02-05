@@ -9,6 +9,6 @@ RUN cat integration-test.sh
 
 RUN sh /integration-test.sh
 RUN cat google.txt
-RUN cat orc.txt
+RUN cat app.txt
 
 CMD sh /integration-test.sh
