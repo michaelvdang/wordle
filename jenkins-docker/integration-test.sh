@@ -4,4 +4,4 @@ pwd
 # curl wordvalidation:9200
 curl google.com > google.txt
 # curl play:9300
-# curl orc:9400  > orc.txt
+curl orc:9400  > orc.txt
