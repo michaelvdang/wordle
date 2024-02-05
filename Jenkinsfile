@@ -21,6 +21,7 @@ pipeline {
         '''
         sh '''
           docker rm -f stats-cont
+          docker rmi -f w-stats
           docker build -t w-stats ./app/services/Stats
           docker run -d --name stats-cont -p 9000:9000 -h localhost w-stats
         '''
