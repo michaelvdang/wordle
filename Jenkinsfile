@@ -72,6 +72,7 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           docker ps -a
           docker images
+          docker rmi 8f505f4bae41 b32f0c9b815c
         '''
       }
     }
@@ -83,6 +84,11 @@ pipeline {
         sh '''
           docker ps
           docker ps -a
+          docker stop stats
+          docker stop wordcheck
+          docker stop wordvalidation
+          docker stop play
+          docker stop orc
           docker ps 
           docker ps -a
           docker images
