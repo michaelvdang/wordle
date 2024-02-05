@@ -11,6 +11,7 @@ pipeline {
         echo 'building Stats container..'
         sh '''
           pwd
+          ls -al app/services/Stats
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           cat .env
@@ -21,7 +22,7 @@ pipeline {
         sh '''
           docker rm -f stats-cont
           docker build -t w-stats ./app/services/Stats
-          docker run -d --name stats-cont w-stats
+          docker run --name stats-cont w-stats
         '''
         echo 'Building WordCheck container...'
         sh '''
