@@ -8,7 +8,7 @@ pipeline {
     stage("build") {
       steps {
         // sh 'printenv'
-        // echo 'building Stats container..'
+        echo 'building Stats container..'
         // sh '''
         //   pwd
         //   ls -al app/services/Stats
