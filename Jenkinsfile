@@ -3,7 +3,6 @@ pipeline {
   environment {
     ENV_FILE_CONTENT = credentials('wordle-env-file')
     REDIS_CONF_CONTENT = credentials('redis-conf')
-    a = 'abc'
   }
   stages {
     stage("build") {
@@ -13,7 +12,6 @@ pipeline {
         sh '''
           pwd
           ls -al app/services/Stats
-          echo $a
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           cat .env | base64 
@@ -23,15 +21,14 @@ pipeline {
           ls -al
         '''
         sh '''
-          docker rm -f stats-cont
-          docker rmi -f w-stats
+          docker rmi -f stats-image
           docker build -t stats-image ./app/services/Stats
-          docker run -d -rm --name stats -p 9000:9000 -h localhost --network test-network stats-image
+          docker run -d --rm --name stats -p 9000:9000 -h localhost --network test-network stats-image
           docker inspect stats
         '''
         sh '''
           docker build -t ubuntu-image ./jenkins-docker/
-          docker run -rm --network test-network ubuntu-image
+          docker run --rm --network test-network ubuntu-image
         '''
         // echo 'Building WordCheck container...'
         // sh '''
