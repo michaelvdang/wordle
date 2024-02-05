@@ -22,35 +22,32 @@ pipeline {
         sh '''
           docker rm -f stats-cont
           docker build -t w-stats ./app/services/Stats
-          docker run -d --name stats-cont w-stats
-          docker inspect stats-cont
-          curl stats-cont:9000
+          docker run -d --name stats-cont -p 9000:9000 -h localhost w-stats
         '''
-        echo 'Building WordCheck container...'
-        sh '''
-          docker rm -f wordcheck-cont
-          docker build -t w-wordcheck ./app/services/WordCheck
-          docker run -d --name wordcheck-cont w-wordcheck
-        '''
-        echo 'Building WordValidation container...'
-        sh '''
-          docker rm -f wordvalidation-cont
-          docker build -t w-wordvalidation ./app/services/WordValidation
-          docker run -d --name wordvalidation-cont w-wordvalidation
-        '''
-        echo 'Building play container...'
-        sh '''
-          docker rm -f play-cont
-          docker build -t w-play ./app/services/Play
-          docker run -d --name play-cont w-play
-          echo curl localhost:9000 is not working 
-        '''
-        echo 'Building orc container...'
-        sh '''
-          docker rm -f orc-cont
-          docker build -t w-orc .
-          docker run -d --name orc-cont w-orc
-        '''
+        // echo 'Building WordCheck container...'
+        // sh '''
+        //   docker rm -f wordcheck-cont
+        //   docker build -t w-wordcheck ./app/services/WordCheck
+        //   docker run -d --name wordcheck-cont -p 9100:9100 -h localhost  w-wordcheck
+        // '''
+        // echo 'Building WordValidation container...'
+        // sh '''
+        //   docker rm -f wordvalidation-cont
+        //   docker build -t w-wordvalidation ./app/services/WordValidation
+        //   docker run -d --name wordvalidation-cont -p 9200:9200 -h localhost w-wordvalidation
+        // '''
+        // echo 'Building play container...'
+        // sh '''
+        //   docker rm -f play-cont
+        //   docker build -t w-play ./app/services/Play
+        //   docker run -d --name play-cont -p 9300:9300 -h localhost w-play
+        // '''
+        // echo 'Building orc container...'
+        // sh '''
+        //   docker rm -f orc-cont
+        //   docker build -t w-orc .
+        //   docker run -d --name orc-cont -p 9400:9400 -h localhost w-orc
+        // '''
       }
     }
 
@@ -65,6 +62,7 @@ pipeline {
           docker ps -a
         '''
         sh'curl 127.0.0.1:9000'
+        sh'curl localhost:9000'
         // sh '''
         //   curl google.com
         //   curl localhost:9000
