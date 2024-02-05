@@ -21,6 +21,7 @@ pipeline {
           ls -al
         '''
         sh '''
+          docker rm -f stats
           docker rmi -f stats-image
           docker build -t stats-image ./app/services/Stats
           docker run -d --rm --name stats -p 9000:9000 -h localhost --network test-network stats-image
