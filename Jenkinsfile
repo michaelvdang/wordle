@@ -72,6 +72,8 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           docker ps -a
           docker images
+          docker images -f dangling=true
+          docker images
         '''
       }
     }
