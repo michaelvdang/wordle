@@ -84,11 +84,6 @@ pipeline {
         sh '''
           docker ps
           docker ps -a
-          docker stop stats
-          docker stop wordcheck
-          docker stop wordvalidation
-          docker stop play
-          docker stop orc
           docker ps 
           docker ps -a
           docker images
