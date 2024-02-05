@@ -17,4 +17,4 @@ COPY ./ /wordle/app/services/Stats
 # RUN mkdir -p /wordle/var
 # RUN ./bin/init-docker.sh
 
-CMD ["uvicorn", "app.services.Stats.UserStatsRedis:app", "--host", "0.0.0.0", "--port", "9000"]
+CMD ["uvicorn", "app.services.Stats.UserStatsRedis:app", "--host", "0.0.0.0", "--port", "9002"]

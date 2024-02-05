@@ -22,7 +22,9 @@ pipeline {
         sh '''
           docker rm -f stats-cont
           docker build -t w-stats ./app/services/Stats
-          docker run --name stats-cont w-stats
+          docker run -d --name stats-cont w-stats
+          docker inspect stats-cont
+          curl http://stats-cont:9000
         '''
         echo 'Building WordCheck container...'
         sh '''
