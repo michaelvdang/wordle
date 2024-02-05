@@ -20,6 +20,7 @@ pipeline {
           cp .env app/services/Stats/.env
           ls -al app/services/Stats/
           docker ps
+          docker network inspect test-network
         '''
         sh '''
           docker rm -f stats  # containers don't get removed when there's a crash
