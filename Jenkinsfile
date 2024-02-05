@@ -20,12 +20,16 @@ pipeline {
           ls -al
         '''
         sh '''
-          docker rm -f stats-cont
-          docker rmi -f w-stats
-          docker build -t w-stats ./app/services/Stats
-          docker run -d --name stats-cont -p 9000:9000 -h localhost --network test-network w-stats
-          docker inspect stats-cont
+          docker compose up -d
+          docker compose down
         '''
+        // sh '''
+        //   docker rm -f stats-cont
+        //   docker rmi -f w-stats
+        //   docker build -t w-stats ./app/services/Stats
+        //   docker run -d --name stats-cont -p 9000:9000 -h localhost --network test-network w-stats
+        //   docker inspect stats-cont
+        // '''
         // echo 'Building WordCheck container...'
         // sh '''
         //   docker rm -f wordcheck-cont
@@ -65,9 +69,9 @@ pipeline {
         '''
         // sh'curl 127.0.0.1:9000'
         // sh'curl -s localhost:9000'
-        sh'curl -s stats-cont:9000'
-        sh'curl -s dde366b98c3e:9000'
-        sh'curl -s 127.0.0.1:9000'
+        // sh'curl -s stats-cont:9000'
+        // sh'curl -s dde366b98c3e:9000'
+        // sh'curl -s 127.0.0.1:9000'
         // sh '''
         //   curl google.com
         //   curl localhost:9000
