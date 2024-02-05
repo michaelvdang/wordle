@@ -15,6 +15,7 @@ pipeline {
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           cat .env
+          ls -al app/services/Stats/
           cp .env app/services/Stats/.env
           ls -al app/services/Stats/
           ls -al
