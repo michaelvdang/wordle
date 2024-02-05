@@ -52,6 +52,8 @@ pipeline {
         sh '''
           docker rm -f orc
           docker rmi -f orc-image
+          docker images
+          docker ps
           docker build -t orc-image .
           docker run -d --rm --name orc -p 9400:9400 -h localhost --network test-network orc-image
         '''
@@ -85,17 +87,17 @@ pipeline {
           docker ps -a
         '''
         // sh 'docker stop stats'
-        // sh 'docker rmi stats-image'
+        // sh 'docker rmi -f stats-image'
         // sh 'docker stop wordcheck'
-        // sh 'docker rmi wordcheck-image'
+        // sh 'docker rmi -f wordcheck-image'
         // sh 'docker stop wordvalidation'
-        // sh 'docker rmi wordvalidation-image'
+        // sh 'docker rmi -f wordvalidation-image'
         // sh 'docker stop play'
-        // sh 'docker rmi play-image'
+        // sh 'docker rmi -f play-image'
         sh 'docker stop orc'
-        sh 'docker rmi orc-image'
+        sh 'docker rmi -f orc-image'
         sh 'docker stop ubuntu-tester'
-        sh 'docker rmi ubuntu-image'
+        sh 'docker rmi -f ubuntu-image'
         sh '''
           docker ps 
           docker ps -a
