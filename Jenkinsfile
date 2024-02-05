@@ -26,9 +26,9 @@ pipeline {
           docker rmi -f stats-image
           docker build -t stats-image ./app/services/Stats
           docker run -d --rm --name stats -p 9000:9000 -h localhost --network test-network stats-image
-          docker inspect stats | grep status
+          docker inspect stats | grep Status
           sleep 5
-          docker inspect stats | grep status
+          docker inspect stats | grep Status
         '''
         // echo 'Building WordCheck container...'
         // sh '''
