@@ -21,40 +21,44 @@ pipeline {
           ls -al
         '''
         sh '''
-          docker rm -f stats
+          docker rm -f stats  # containers don't get removed when there's a crash
           docker rmi -f stats-image
           docker build -t stats-image ./app/services/Stats
           docker run -d --rm --name stats -p 9000:9000 -h localhost --network test-network stats-image
           docker inspect stats
         '''
+        echo 'Building WordCheck container...'
+        sh '''
+          docker rm -f wordcheck
+          docker rmi -f wordcheck-image
+          docker build -t wordcheck-image ./app/services/WordCheck
+          docker run -d --rm --name wordcheck -p 9100:9100 -h localhost --network test-network  wordcheck-image
+        '''
+        echo 'Building WordValidation container...'
+        sh '''
+          docker rm -f wordvalidation
+          docker rmi -f wordvalidation-image
+          docker build -t wordvalidation-image ./app/services/WordValidation
+          docker run -d --rm --name wordvalidation -p 9200:9200 -h localhost --network test-network wordvalidation-image
+        '''
+        echo 'Building play container...'
+        sh '''
+          docker rm -f play
+          docker rmi -f play-image
+          docker build -t play-image ./app/services/Play
+          docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
+        '''
+        echo 'Building orc container...'
+        sh '''
+          docker rm -f orc
+          docker rmi -f orc-image
+          docker build -t orc-image .
+          docker run -d --rm --name orc -p 9400:9400 -h localhost --network test-network orc-image
+        '''
         sh '''
           docker build -t ubuntu-image ./jenkins-docker/
           docker run --rm --network test-network ubuntu-image
         '''
-        // echo 'Building WordCheck container...'
-        // sh '''
-        //   docker rm -f wordcheck-cont
-        //   docker build -t w-wordcheck ./app/services/WordCheck
-        //   docker run -d -rm --name wordcheck-cont -p 9100:9100 -h localhost  w-wordcheck
-        // '''
-        // echo 'Building WordValidation container...'
-        // sh '''
-        //   docker rm -f wordvalidation-cont
-        //   docker build -t w-wordvalidation ./app/services/WordValidation
-        //   docker run -d -rm --name wordvalidation-cont -p 9200:9200 -h localhost w-wordvalidation
-        // '''
-        // echo 'Building play container...'
-        // sh '''
-        //   docker rm -f play-cont
-        //   docker build -t w-play ./app/services/Play
-        //   docker run -d -rm --name play-cont -p 9300:9300 -h localhost w-play
-        // '''
-        // echo 'Building orc container...'
-        // sh '''
-        //   docker rm -f orc-cont
-        //   docker build -t w-orc .
-        //   docker run -d -rm --name orc-cont -p 9400:9400 -h localhost w-orc
-        // '''
       }
     }
 
@@ -91,11 +95,11 @@ pipeline {
         sh '''
           docker ps
           docker ps -a
-          docker stop stats-cont
-          docker stop wordcheck-cont
-          docker stop wordvalidation-cont
-          docker stop play-cont
-          docker stop orc-cont
+          docker stop stats
+          docker stop wordcheck
+          docker stop wordvalidation
+          docker stop play
+          docker stop orc
           docker ps 
           docker ps -a
           docker images
