@@ -5,7 +5,8 @@ WORKDIR /wordle
 
 COPY requirements.txt /requirements.txt
 
-RUN python3 -m pip install --no-cache-dir --upgrade -r /requirements.txt
+RUN python3 -m pip install --upgrade -r /requirements.txt
+# RUN python3 -m pip install --no-cache-dir --upgrade -r /requirements.txt
 
 COPY ./ /wordle
 

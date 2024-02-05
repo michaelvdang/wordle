@@ -9,17 +9,17 @@ pipeline {
       steps {
         // sh 'printenv'
         echo 'building Stats container..'
-        // sh '''
-        //   pwd
-        //   ls -al app/services/Stats
-        //   echo ${ENV_FILE_CONTENT} > ./.env
-        //   echo ${REDIS_CONF_CONTENT} > ./redis.conf
-        //   cat .env | base64 
-        //   ls -al app/services/Stats/
-        //   cp .env app/services/Stats/.env
-        //   ls -al app/services/Stats/
-        //   ls -al
-        // '''
+        sh '''
+          pwd
+          ls -al
+          echo ${ENV_FILE_CONTENT} > ./.env
+          echo ${REDIS_CONF_CONTENT} > ./redis.conf
+          ls -al
+          cat .env | base64 
+          ls -al app/services/Stats/
+          cp .env app/services/Stats/.env
+          ls -al app/services/Stats/
+        '''
         // sh '''
         //   docker rm -f stats  # containers don't get removed when there's a crash
         //   docker rmi -f stats-image
