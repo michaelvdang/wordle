@@ -3,6 +3,7 @@ pipeline {
   environment {
     ENV_FILE_CONTENT = credentials('wordle-env-file')
     REDIS_CONF_CONTENT = credentials('redis-conf')
+    a = 'abc'
   }
   stages {
     stage("build") {
@@ -12,10 +13,10 @@ pipeline {
         sh '''
           pwd
           ls -al app/services/Stats
+          echo $a
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          cat .env | base64 > test.txt
-          cat test.txt | base64 --decode
+          cat .env | base64 
           ls -al app/services/Stats/
           cp .env app/services/Stats/.env
           ls -al app/services/Stats/
