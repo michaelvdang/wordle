@@ -23,17 +23,12 @@ pipeline {
           ls -al
         '''
         sh '''
-          docker compose version 
-          docker compose up
-          docker compose down
+          docker rm -f stats-cont
+          docker rmi -f w-stats
+          docker build -t w-stats ./app/services/Stats
+          docker run -d --name stats-cont -p 9000:9000 -h localhost --network test-network w-stats
+          docker inspect stats-cont
         '''
-        // sh '''
-        //   docker rm -f stats-cont
-        //   docker rmi -f w-stats
-        //   docker build -t w-stats ./app/services/Stats
-        //   docker run -d --name stats-cont -p 9000:9000 -h localhost --network test-network w-stats
-        //   docker inspect stats-cont
-        // '''
         // echo 'Building WordCheck container...'
         // sh '''
         //   docker rm -f wordcheck-cont
