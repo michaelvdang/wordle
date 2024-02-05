@@ -24,7 +24,7 @@ pipeline {
           docker build -t w-stats ./app/services/Stats
           docker run -d --name stats-cont w-stats
           docker inspect stats-cont
-          curl http://stats-cont:9000
+          curl stats-cont:9000
         '''
         echo 'Building WordCheck container...'
         sh '''
