@@ -64,7 +64,7 @@ pipeline {
           docker ps -a
         '''
         // sh'curl 127.0.0.1:9000'
-        sh'curl -s localhost:9000'
+        // sh'curl -s localhost:9000'
         sh'curl -s stats-cont:9000'
         sh'curl -s dde366b98c3e:9000'
         sh'curl -s 127.0.0.1:9000'
