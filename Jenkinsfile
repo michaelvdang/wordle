@@ -8,7 +8,7 @@ pipeline {
     stage("build") {
       steps {
         // sh 'printenv'
-        echo 'building Stats container..'
+        // echo 'building Stats container..'
         // sh '''
         //   pwd
         //   ls -al app/services/Stats
@@ -41,13 +41,13 @@ pipeline {
         //   docker build -t wordvalidation-image ./app/services/WordValidation
         //   docker run -d --rm --name wordvalidation -p 9200:9200 -h localhost --network test-network wordvalidation-image
         // '''
-        // echo 'Building play container...'
-        // sh '''
-        //   docker rm -f play
-        //   docker rmi -f play-image
-        //   docker build -t play-image ./app/services/Play
-        //   docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
-        // '''
+        echo 'Building play container...'
+        sh '''
+          docker rm -f play
+          docker rmi -f play-image
+          docker build -t play-image ./app/services/Play
+          docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
+        '''
         echo 'Building orc container...'
         sh '''
           docker rm -f orc
