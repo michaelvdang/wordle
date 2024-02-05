@@ -20,13 +20,13 @@ pipeline {
           cp .env app/services/Stats/.env
           ls -al app/services/Stats/
         '''
-        // sh '''
-        //   docker rm -f stats  # containers don't get removed when there's a crash
-        //   docker rmi -f stats-image
-        //   docker build -t stats-image ./app/services/Stats
-        //   docker run -d --rm --name stats -p 9000:9000 -h localhost --network test-network stats-image
-        //   docker inspect stats
-        // '''
+        sh '''
+          docker rm -f stats  # containers don't get removed when there's a crash
+          docker rmi -f stats-image
+          docker build -t stats-image ./app/services/Stats
+          docker run -d --rm --name stats -p 9000:9000 -h localhost --network test-network stats-image
+          docker inspect stats
+        '''
         // echo 'Building WordCheck container...'
         // sh '''
         //   docker rm -f wordcheck

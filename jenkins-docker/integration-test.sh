@@ -1,5 +1,5 @@
 pwd
-# curl stats:9000 > app.txt
+curl stats:9000 > app.txt
 # curl wordcheck:9100 > app.txt
 # curl wordvalidation:9200 > app.txt
 curl google.com > google.txt
