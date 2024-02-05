@@ -72,9 +72,7 @@ pipeline {
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           docker ps -a
           docker images
-          docker images -f dangling=true
-          docker image prune -f
-          docker images
+          docker rmi w-orc w-play w-wordvalidation w-wordcheck
         '''
       }
     }
@@ -94,6 +92,15 @@ pipeline {
           docker ps 
           docker ps -a
           docker images
+          docker images -f dangling=true
+          docker image prune -f
+          docker images
+          docker rmi stats-image
+          docker rmi wordcheck-image
+          docker rmi wordvalidation-image
+          docker rmi play-image
+          docker rmi orc-image
+          docker rmi ubuntu-image
         '''
       }
       
