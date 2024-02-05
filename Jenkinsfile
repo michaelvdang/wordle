@@ -14,7 +14,7 @@ pipeline {
           ls -al app/services/Stats
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          cat .env
+          cat .env | base64
           ls -al app/services/Stats/
           cp .env app/services/Stats/.env
           ls -al app/services/Stats/
