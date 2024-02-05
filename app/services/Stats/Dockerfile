@@ -6,7 +6,6 @@ WORKDIR /wordle
 RUN ls
 COPY requirements.txt /wordle/requirements.txt
 COPY ./.env /wordle/.env
-RUN cat .env
 
 RUN python3 -m pip install --no-cache-dir --upgrade -r /wordle/requirements.txt
 
@@ -17,4 +16,4 @@ COPY ./ /wordle/app/services/Stats
 # RUN mkdir -p /wordle/var
 # RUN ./bin/init-docker.sh
 
-CMD ["uvicorn", "app.services.Stats.UserStatsRedis:app", "--host", "0.0.0.0", "--port", "9002"]
+CMD ["uvicorn", "app.services.Stats.UserStatsRedis:app", "--host", "0.0.0.0", "--port", "9000"]
