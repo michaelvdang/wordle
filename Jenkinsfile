@@ -21,8 +21,8 @@ pipeline {
           ls -al
         '''
         sh '''
-          docker compose up -d
-          docker compose down
+          docker-compose up -d
+          docker-compose down
         '''
         // sh '''
         //   docker rm -f stats-cont
