@@ -73,6 +73,7 @@ pipeline {
           docker ps -a
           docker images
           docker images -f dangling=true
+          docker image prune
           docker images
         '''
       }
