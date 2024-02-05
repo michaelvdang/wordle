@@ -1,5 +1,4 @@
 pwd
-curl google.com
 curl stats:9000
 curl wordcheck:9100
 curl wordvalidation:9200
