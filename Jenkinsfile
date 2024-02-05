@@ -49,16 +49,16 @@ pipeline {
         //   docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
         // '''
         // echo 'Building orc container...'
-        // sh '''
-        //   docker rm -f orc
-        //   docker rmi -f orc-image
-        //   docker build -t orc-image .
-        //   docker run -d --rm --name orc -p 9400:9400 -h localhost --network test-network orc-image
-        // '''
-        // sh 'docker build -t ubuntu-image ./jenkins-docker/'
-        // sh '''
-        //   docker run -d --rm --name ubuntu-tester --network test-network ubuntu-image
-        // '''
+        sh '''
+          docker rm -f orc
+          docker rmi -f orc-image
+          docker build -t orc-image .
+          docker run -d --rm --name orc -p 9400:9400 -h localhost --network test-network orc-image
+        '''
+        sh 'docker build -t ubuntu-image ./jenkins-docker/'
+        sh '''
+          docker run -d --rm --name ubuntu-tester --network test-network ubuntu-image
+        '''
       }
     }
 
@@ -71,8 +71,6 @@ pipeline {
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
           docker ps -a
-          docker images
-          docker rmi 8f505f4bae41 b32f0c9b815c
         '''
       }
     }
@@ -82,26 +80,31 @@ pipeline {
       steps {
         echo 'Shutting down containers...'
         sh '''
+          docker images
           docker ps
           docker ps -a
-          docker stop stats
-          docker stop wordcheck
-          docker stop wordvalidation
-          docker stop play
-          docker stop orc
+        '''
+        // sh 'docker stop stats'
+        // sh 'docker rmi stats-image'
+        // sh 'docker stop wordcheck'
+        // sh 'docker rmi wordcheck-image'
+        // sh 'docker stop wordvalidation'
+        // sh 'docker rmi wordvalidation-image'
+        // sh 'docker stop play'
+        // sh 'docker rmi play-image'
+        sh 'docker stop orc'
+        sh 'docker rmi orc-image'
+        sh 'docker stop ubuntu-tester'
+        sh 'docker rmi ubuntu-image'
+        sh '''
           docker ps 
           docker ps -a
           docker images
           docker images -f dangling=true
           docker image prune -f
           docker images
-          docker rmi stats-image
-          docker rmi wordcheck-image
-          docker rmi wordvalidation-image
-          docker rmi play-image
-          docker rmi orc-image
-          docker rmi ubuntu-image
         '''
+
       }
       
     }
