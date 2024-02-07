@@ -80,6 +80,7 @@ pipeline {
         '''
         sh 'sleep 5'
         sh 'docker network inspect test-network'
+        sh 'docker logs orc'
         sh '''
           docker rm -f ubuntu-tester
           docker rmi -f ubuntu-image 095e68df905a
