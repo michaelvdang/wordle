@@ -24,20 +24,21 @@ docker rmi -f wordcheck-image
 docker rmi -f wordvalidation-image
 docker rmi -f play-image
 docker rmi -f orc-image
-docker rmi -f ubuntu-image
+docker rmi -f wordle-status-check-image
+docker rmi -f wordle-api-tester-image
 echo ''
-echo 'Log from ubuntu-curler'
-docker logs ubuntu-curler
+echo 'Log from wordle-status-check'
+docker logs wordle-status-check
 echo ''
 echo ''
-echo 'Log from ubuntu-tester'
-docker logs ubuntu-tester
+echo 'Log from wordle-api-tester'
+docker logs wordle-api-tester
 echo ''
 echo 'Stopping and removing the last container, image, and network'
-docker stop ubuntu-curler
-docker rm -f ubuntu-curler
-docker stop ubuntu-tester
-docker rm -f ubuntu-tester
+docker stop wordle-status-check
+docker rm -f wordle-status-check
+docker stop wordle-api-tester
+docker rm -f wordle-api-tester
 docker network rm wordle-network
 docker ps 
 docker ps -a

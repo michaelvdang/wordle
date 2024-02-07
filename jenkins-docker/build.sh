@@ -1,3 +1,6 @@
+docker images
+docker ps
+docker ps -a
 docker network create wordle-network
 echo 'building Stats container..'
 docker build    -t stats-image ./app/services/Stats
@@ -19,9 +22,14 @@ echo 'Building orc container...'
 docker build    -t orc-image .
 docker run -d --name orc -p 9400:9400    --network wordle-network orc-image
 
-echo 'Buidling ubuntu-curler...'
-docker build    -t ubuntu-image ./jenkins-docker/
-docker run -d --name ubuntu-curler --network wordle-network ubuntu-image
+echo 'Buidling wordle-status-check...'
+docker build    -t wordle-status-check-image ./jenkins-docker/
+docker run -d --name wordle-status-check --network wordle-network wordle-status-check-image
+
+echo 'Buidling wordle-api-tester...'
+docker build    -t wordle-api-tester-image ./jenkins-docker/
+docker run -d --name wordle-api-tester --network wordle-network wordle-api-tester-image
+
 
 docker logs orc
 echo 'Containers in wordle-network:'
