@@ -39,20 +39,20 @@ pipeline {
           docker build    -t wordcheck-image ./app/services/WordCheck
           docker run -d --name wordcheck -p 9100:9100 -h localhost --network wordle-network  wordcheck-image
         '''
-        // echo 'Building WordValidation container...'
-        // sh '''
-        //   docker rm -f wordvalidation
-        //   docker rmi -f wordvalidation-image
-        //   docker build    -t wordvalidation-image ./app/services/WordValidation
-        //   docker run -d --name wordvalidation -p 9200:9200 -h localhost --network wordle-network wordvalidation-image
-        // '''
-        // echo 'Building play container...'
-        // sh '''
-        //   docker rm -f play
-        //   docker rmi -f play-image
-        //   docker build    -t play-image ./app/services/Play
-        //   docker run -d --name play -p 9300:9300 -h localhost --network wordle-network play-image
-        // '''
+        echo 'Building WordValidation container...'
+        sh '''
+          docker rm -f wordvalidation
+          docker rmi -f wordvalidation-image
+          docker build    -t wordvalidation-image ./app/services/WordValidation
+          docker run -d --name wordvalidation -p 9200:9200 -h localhost --network wordle-network wordvalidation-image
+        '''
+        echo 'Building play container...'
+        sh '''
+          docker rm -f play
+          docker rmi -f play-image
+          docker build    -t play-image ./app/services/Play
+          docker run -d --name play -p 9300:9300 -h localhost --network wordle-network play-image
+        '''
         echo 'Building orc container...'
         sh '''
           docker rm -f orc
@@ -69,7 +69,6 @@ pipeline {
           docker build    -t ubuntu-image ./jenkins-docker/
           docker run -d --name ubuntu-tester --network wordle-network ubuntu-image
         '''
-        sh 'docker logs ubuntu-tester'
       }
     }
 
