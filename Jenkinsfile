@@ -42,7 +42,7 @@ pipeline {
         sh '''
           docker rm -f stats  # containers don't get removed when there's a crash
           docker rmi -f stats-image
-          docker build -t stats-image ./app/services/Stats
+          docker build --no-cache -t stats-image ./app/services/Stats
           docker run -d --rm --name stats -p 9000:9000 --network test-network stats-image
           docker inspect stats | grep Status
           sleep 5
@@ -52,21 +52,21 @@ pipeline {
         sh '''
           docker rm -f wordcheck
           docker rmi -f wordcheck-image
-          docker build -t wordcheck-image ./app/services/WordCheck
+          docker build --no-cache -t wordcheck-image ./app/services/WordCheck
           docker run -d --rm --name wordcheck -p 9100:9100 -h localhost --network test-network  wordcheck-image
         '''
         echo 'Building WordValidation container...'
         sh '''
           docker rm -f wordvalidation
           docker rmi -f wordvalidation-image
-          docker build -t wordvalidation-image ./app/services/WordValidation
+          docker build --no-cache -t wordvalidation-image ./app/services/WordValidation
           docker run -d --rm --name wordvalidation -p 9200:9200 -h localhost --network test-network wordvalidation-image
         '''
         echo 'Building play container...'
         sh '''
           docker rm -f play
           docker rmi -f play-image
-          docker build -t play-image ./app/services/Play
+          docker build --no-cache -t play-image ./app/services/Play
           docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
         '''
         echo 'Building orc container...'
@@ -75,7 +75,7 @@ pipeline {
           docker rmi -f orc-image
           docker images
           docker ps
-          docker build -t orc-image .
+          docker build --no-cache -t orc-image .
           docker run -d --rm --name orc -p 9400:9400 -h localhost --network test-network orc-image
         '''
         sh 'docker network inspect test-network'
