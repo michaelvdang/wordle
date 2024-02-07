@@ -21,6 +21,8 @@ pipeline {
           ls -al app/services/Stats/
           docker ps
           docker ps -a
+          docker network inspect test-network
+          docker network disconnect test-network stats wordcheck wordvalidation play
           docker network rm test-network
           docker network create test-network
           docker network inspect test-network
