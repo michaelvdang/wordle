@@ -5,10 +5,8 @@ pipeline {
     REDIS_CONF_CONTENT = credentials('redis-conf')
   }
   stages {
-    stage("build") {
+    stage("precheck") {
       steps {
-        // sh 'printenv'
-        echo 'building Stats container..'
         sh '''
           pwd
           ls -al
@@ -19,15 +17,23 @@ pipeline {
           ls -al app/services/Stats/
           cp .env app/services/Stats/.env
           ls -al app/services/Stats/
+        '''
+      }
+    }
+    stage("build") {
+      steps {
+        // sh 'printenv'
+        echo 'building Stats container..'
+        sh '''
           docker ps
           docker ps -a
           docker network inspect test-network
-          docker network disconnect test-network stats 
-          docker network disconnect test-network wordcheck 
-          docker network disconnect test-network wordvalidation 
-          docker network disconnect test-network play
-          docker network disconnect test-network orc
-          docker network rm test-network
+          docker network disconnect -f test-network stats 
+          docker network disconnect -f test-network wordcheck 
+          docker network disconnect -f test-network wordvalidation 
+          docker network disconnect -f test-network play
+          docker network disconnect -f test-network orc
+          docker network rm -f test-network
           docker network create test-network
           docker network inspect test-network
         '''
