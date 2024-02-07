@@ -76,8 +76,9 @@ pipeline {
           docker images
           docker ps
           docker build --no-cache -t orc-image .
-          docker run -d --name orc -p 9400:9400 -h localhost --network test-network orc-image
+          docker run -d --name orc -p 9400:9400    --network test-network orc-image
         '''
+        sh 'sleep 5'
         sh 'docker network inspect test-network'
         sh '''
           docker rm -f ubuntu-tester
