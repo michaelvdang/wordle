@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install --yes curl
 
 COPY curl-all.sh /curl-all.sh
 RUN cat /curl-all.sh
-CMD sh /curl-all.sh
+CMD sh /curl-all.sh && cat /output.txt
 
 # COPY ping-all.sh /ping-all.sh
 # RUN cat /ping-all.sh
