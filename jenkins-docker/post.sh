@@ -1,5 +1,5 @@
 echo Containers on wordle-network:
-docker network inspect --format='{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}' wordle-network
+docker network inspect --format="{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}" wordle-network
 docker ps 
 docker ps -a
 docker images
@@ -28,6 +28,7 @@ docker rmi -f ubuntu-image 095e68df905a
 
 echo -e \nLog from ubuntu-tester\n
 docker logs ubuntu-tester
+echo -e \nStopping and removing the last container, image, and network\n
 docker stop ubuntu-tester
 docker rm -f ubuntu-tester
 docker network rm wordle-network

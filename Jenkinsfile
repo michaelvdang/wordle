@@ -8,21 +8,16 @@ pipeline {
     stage("precheck") {
       steps {
         sh '''
-          pwd
-          ls -al
+          echo Putting .env content from Credentials into files for containers to use...
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          ls -al
-          cat .env | base64 
-          ls -al app/services/Stats/
-          cp .env app/services/Stats/.env
-          ls -al app/services/Stats/
+          echo DONE.
         '''
+        // sh 'printenv'
       }
     }
     stage("build") {
       steps {
-        sh 'printenv'
         sh 'docker network create wordle-network'
         echo 'building Stats container..'
         sh '''
@@ -54,7 +49,8 @@ pipeline {
           docker run -d --name ubuntu-tester --network wordle-network ubuntu-image
         '''
         sh 'docker logs orc'
-        sh 'docker network inspect wordle-network'
+        echo 'Containers in wordle-network:'
+        sh 'docker network inspect --format="{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}" wordle-network'
       }
     }
 
