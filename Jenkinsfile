@@ -9,8 +9,12 @@ pipeline {
       steps {
         sh '''
           echo Putting .env content from Credentials into files for containers to use...
+          pwd | grep .env
+          pwd | grep redis.conf
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
+          pwd | grep .env
+          pwd | grep redis.conf
           echo DONE.
         '''
         // sh 'printenv'

@@ -50,3 +50,5 @@ docker network rm wordle-network
 docker ps 
 docker ps -a
 docker images
+rm .env
+rm redis.conf
