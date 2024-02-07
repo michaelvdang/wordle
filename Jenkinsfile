@@ -38,37 +38,37 @@ pipeline {
           docker network create test-network
           docker network inspect test-network
         '''
-        echo 'building Stats container..'
-        sh '''
-          docker rm -f stats  # containers don't get removed when there's a crash
-          docker rmi -f stats-image
-          docker build --no-cache -t stats-image ./app/services/Stats
-          docker run -d --rm --name stats -p 9000:9000 --network test-network stats-image
-          docker inspect stats | grep Status
-          sleep 5
-          docker inspect stats | grep Status
-        '''
-        echo 'Building WordCheck container...'
-        sh '''
-          docker rm -f wordcheck
-          docker rmi -f wordcheck-image
-          docker build --no-cache -t wordcheck-image ./app/services/WordCheck
-          docker run -d --rm --name wordcheck -p 9100:9100 -h localhost --network test-network  wordcheck-image
-        '''
-        echo 'Building WordValidation container...'
-        sh '''
-          docker rm -f wordvalidation
-          docker rmi -f wordvalidation-image
-          docker build --no-cache -t wordvalidation-image ./app/services/WordValidation
-          docker run -d --rm --name wordvalidation -p 9200:9200 -h localhost --network test-network wordvalidation-image
-        '''
-        echo 'Building play container...'
-        sh '''
-          docker rm -f play
-          docker rmi -f play-image
-          docker build --no-cache -t play-image ./app/services/Play
-          docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
-        '''
+        // echo 'building Stats container..'
+        // sh '''
+        //   docker rm -f stats  # containers don't get removed when there's a crash
+        //   docker rmi -f stats-image
+        //   docker build --no-cache -t stats-image ./app/services/Stats
+        //   docker run -d --rm --name stats -p 9000:9000 --network test-network stats-image
+        //   docker inspect stats | grep Status
+        //   sleep 5
+        //   docker inspect stats | grep Status
+        // '''
+        // echo 'Building WordCheck container...'
+        // sh '''
+        //   docker rm -f wordcheck
+        //   docker rmi -f wordcheck-image
+        //   docker build --no-cache -t wordcheck-image ./app/services/WordCheck
+        //   docker run -d --rm --name wordcheck -p 9100:9100 -h localhost --network test-network  wordcheck-image
+        // '''
+        // echo 'Building WordValidation container...'
+        // sh '''
+        //   docker rm -f wordvalidation
+        //   docker rmi -f wordvalidation-image
+        //   docker build --no-cache -t wordvalidation-image ./app/services/WordValidation
+        //   docker run -d --rm --name wordvalidation -p 9200:9200 -h localhost --network test-network wordvalidation-image
+        // '''
+        // echo 'Building play container...'
+        // sh '''
+        //   docker rm -f play
+        //   docker rmi -f play-image
+        //   docker build --no-cache -t play-image ./app/services/Play
+        //   docker run -d --rm --name play -p 9300:9300 -h localhost --network test-network play-image
+        // '''
         echo 'Building orc container...'
         sh '''
           docker rm -f orc
