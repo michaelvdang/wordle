@@ -23,16 +23,22 @@ pipeline {
     stage("build") {
       steps {
         // sh 'printenv'
-        echo 'building Stats container..'
+        sh 'docker network inspect test-network'
+        sh '''
+          docker network disconnect -f test-network stats 
+          docker network disconnect -f test-network wordcheck 
+          docker network disconnect -f test-network wordvalidation 
+          docker network disconnect -f test-network play
+          docker network disconnect -f test-network orc
+        '''
         sh '''
           docker ps
           docker ps -a
-          docker network inspect test-network
-
           docker network rm -f test-network
           docker network create test-network
           docker network inspect test-network
         '''
+        echo 'building Stats container..'
         sh '''
           docker rm -f stats  # containers don't get removed when there's a crash
           docker rmi -f stats-image
@@ -77,7 +83,7 @@ pipeline {
           docker rm -f ubuntu-tester
           docker rmi -f ubuntu-image 095e68df905a
           docker build -t ubuntu-image ./jenkins-docker/
-          docker run -d  --name ubuntu-tester --network test-network ubuntu-image
+          docker run -d --no-cache --name ubuntu-tester --network test-network ubuntu-image
         '''
       }
     }
