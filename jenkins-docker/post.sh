@@ -1,4 +1,4 @@
-docker network inspect wordle-network
+docker network inspect {{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}' wordle-network
 docker ps 
 docker ps -a
 docker images
