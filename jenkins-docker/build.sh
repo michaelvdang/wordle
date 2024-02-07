@@ -27,6 +27,7 @@ echo 'Build and run wordle-status-check...'
 docker build    -t wordle-status-check-image ./jenkins-docker/
 docker run -d --name wordle-status-check --network wordle-network wordle-status-check-image
 
+
 echo 'Log from orc container: '
 docker logs orc
 echo 'Containers in wordle-network:'
