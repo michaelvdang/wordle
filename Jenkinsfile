@@ -18,6 +18,7 @@ pipeline {
     }
     stage("build") {
       steps {
+        sh 'chmod u+x -R ./jenkins-docker'
         sh './jenkins-docker/build.sh'
       }
     }
@@ -36,7 +37,7 @@ pipeline {
   }
   post {
     always {
-      sh 'chmod u+x jenkins-docker/post.sh'
+      // sh 'chmod u+x jenkins-docker/post.sh'
       sh './jenkins-docker/post.sh'
     }
     // failure {
