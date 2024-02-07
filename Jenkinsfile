@@ -144,6 +144,7 @@ pipeline {
   }
   post {
     always {
+      sh 'chmod u+x jenkins-docker/post.sh'
       sh './jenkins-docker/post.sh'
     }
     // failure {
