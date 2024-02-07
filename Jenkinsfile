@@ -11,12 +11,10 @@ pipeline {
         sh '''
           echo Putting .env content from Credentials into files for containers to use...
           pwd
-          ls | grep .env
-          ls | grep redis.conf
+          ls
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          ls | grep .env
-          ls | grep redis.conf
+          ls
           echo DONE.
           cat .env
           cat redis.conf
