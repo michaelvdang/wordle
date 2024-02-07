@@ -83,6 +83,7 @@ pipeline {
           docker rm -f ubuntu-tester
           docker rmi -f ubuntu-image 095e68df905a
           docker build --no-cache -t ubuntu-image ./jenkins-docker/
+          docker run -d --name ubuntu-tester --network test-network ubuntu-image
         '''
         script {
           def output = sh(
@@ -91,6 +92,7 @@ pipeline {
           )
           echo "Output: ${output}"
         }
+        sh 'docker logs ubuntu-tester'
       }
     }
 
