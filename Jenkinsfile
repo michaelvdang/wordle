@@ -24,29 +24,12 @@ pipeline {
       steps {
         // sh 'printenv'
         sh 'docker network inspect test-network'
-        // sh '''
-        //   docker network disconnect -f test-network stats 
-        //   docker network disconnect -f test-network wordcheck 
-        //   docker network disconnect -f test-network wordvalidation 
-        //   docker network disconnect -f test-network play
-        // '''
-        // sh 'docker network disconnect -f test-network orc'
-        // sh '''
-        //   docker ps
-        //   docker ps -a
-        //   docker network rm -f test-network
-        //   docker network create test-network
-        //   docker network inspect test-network
-        // '''
         echo 'building Stats container..'
         sh '''
           docker rm -f stats  # containers don't get removed when there's a crash
           docker rmi -f stats-image
           docker build    -t stats-image ./app/services/Stats
           docker run -d --name stats -p 9000:9000 --network test-network stats-image
-          docker inspect stats | grep Status
-          sleep 5
-          docker inspect stats | grep Status
         '''
         echo 'Building WordCheck container...'
         sh '''
@@ -62,19 +45,17 @@ pipeline {
           docker build    -t wordvalidation-image ./app/services/WordValidation
           docker run -d --name wordvalidation -p 9200:9200 -h localhost --network test-network wordvalidation-image
         '''
-        // echo 'Building play container...'
-        // sh '''
-        //   docker rm -f play
-        //   docker rmi -f play-image
-        //   docker build    -t play-image ./app/services/Play
-        //   docker run -d --name play -p 9300:9300 -h localhost --network test-network play-image
-        // '''
+        echo 'Building play container...'
+        sh '''
+          docker rm -f play
+          docker rmi -f play-image
+          docker build    -t play-image ./app/services/Play
+          docker run -d --name play -p 9300:9300 -h localhost --network test-network play-image
+        '''
         echo 'Building orc container...'
         sh '''
           docker rm -f orc
           docker rmi -f orc-image
-          docker images
-          docker ps
           docker build    -t orc-image .
           docker run -d --name orc -p 9400:9400    --network test-network orc-image
         '''
@@ -87,13 +68,6 @@ pipeline {
           docker build    -t ubuntu-image ./jenkins-docker/
           docker run -d --name ubuntu-tester --network test-network ubuntu-image
         '''
-        // script {
-        //   def output = sh(
-        //     script: "docker run -d --name ubuntu-tester --network test-network ubuntu-image",
-        //     returnStdout: true
-        //   )
-        //   echo "Output: ${output}"
-        // }
         sh 'docker logs ubuntu-tester'
       }
     }
@@ -109,38 +83,36 @@ pipeline {
       }
     }
     
-    stage("shutdown") {
-
-      steps {
-        echo 'Shutting down containers...'
-        sh '''
-          docker network inspect test-network
-          docker images
-          docker ps
-          docker ps -a
-        '''
-        // sh 'docker stop stats'
-        // sh 'docker rmi -f stats-image'
-        // sh 'docker stop wordcheck'
-        // sh 'docker rmi -f wordcheck-image'
-        // sh 'docker stop wordvalidation'
-        // sh 'docker rmi -f wordvalidation-image'
-        // sh 'docker stop play'
-        // sh 'docker rmi -f play-image'
-        // sh 'docker stop orc'
-        // sh 'docker rmi -f orc-image'
-        // sh 'docker stop ubuntu-tester'
-        // sh 'docker rmi -f ubuntu-image'
-        sh '''
-          docker ps 
-          docker ps -a
-          docker images
-          docker images -f dangling=true
-          docker image prune -f
-          docker images
-        '''
-      }
-    }
+    // stage("shutdown") {
+    //   steps {
+    //     parallel {
+    //       stats: {
+    //         sh 'docker stop stats'
+    //         sh 'docker rmi -f stats-image'
+    //       },
+    //       wordcheck: {
+    //         sh 'docker stop wordcheck'
+    //         sh 'docker rmi -f wordcheck-image'
+    //       },
+    //       wordvalidation: {
+    //         sh 'docker stop wordvalidation'
+    //         sh 'docker rmi -f wordvalidation-image'
+    //       },
+    //       play: {
+    //         sh 'docker stop play'
+    //         sh 'docker rmi -f play-image'
+    //       },
+    //       orc: {
+    //         sh 'docker stop orc'
+    //         sh 'docker rmi -f orc-image'
+    //       },
+    //       tester: {
+    //         sh 'docker stop ubuntu-tester'
+    //         sh 'docker rmi -f ubuntu-image'
+    //       }
+    //     }
+    //   }
+    // }
   }
   post {
     always {
