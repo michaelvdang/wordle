@@ -20,6 +20,7 @@ pipeline {
           cp .env app/services/Stats/.env
           ls -al app/services/Stats/
           docker ps
+          docker ps -a
           docker network inspect test-network
         '''
         sh '''
@@ -64,8 +65,8 @@ pipeline {
         sh 'docker network inspect test-network'
         sh '''
           docker rmi -f ubuntu-image 095e68df905a
-          docker build -t nginx-tester-image ./jenkins-docker/
-          docker run -d --rm --name nginx-tester --network test-network nginx-tester-image
+          docker build -t ubuntu-image ./jenkins-docker/
+          docker run -d  --name ubuntu-tester --network test-network ubuntu-image
         '''
       }
     }
