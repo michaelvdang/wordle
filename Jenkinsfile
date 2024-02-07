@@ -8,17 +8,23 @@ pipeline {
     stage("precheck") {
       steps {
         sh 'chmod u+x -R ./jenkins-docker'
-        sh '''
-          echo Putting .env content from Credentials into files for containers to use...
-          pwd
-          ls -al
-          echo ${ENV_FILE_CONTENT} > ./.env
-          echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          ls -al
-          echo DONE.
-          cat .env | base64
-          cat redis.conf | base64
-        '''
+        sh 'echo $ENV_FILE_CONTENT'
+        sh 'ls -al'
+        sh 'echo ${ENV_FILE_CONTENT} > ./.env'
+        sh 'echo ${REDIS_CONF_CONTENT} > ./redis.conf'
+        sh 'ls -al'
+        sh 'cat .env | base64'
+        // sh '''
+        //   echo Putting .env content from Credentials into files for containers to use...
+        //   pwd
+        //   ls -al
+        //   echo ${ENV_FILE_CONTENT} > ./.env
+        //   echo ${REDIS_CONF_CONTENT} > ./redis.conf
+        //   ls -al
+        //   echo DONE.
+        //   cat .env | base64
+        //   cat redis.conf | base64
+        // '''
         
         // sh 'printenv'
       }
