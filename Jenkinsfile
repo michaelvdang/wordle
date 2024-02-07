@@ -28,11 +28,7 @@ pipeline {
           docker ps
           docker ps -a
           docker network inspect test-network
-          docker network disconnect -f test-network stats 
-          docker network disconnect -f test-network wordcheck 
-          docker network disconnect -f test-network wordvalidation 
-          docker network disconnect -f test-network play
-          docker network disconnect -f test-network orc
+
           docker network rm -f test-network
           docker network create test-network
           docker network inspect test-network
