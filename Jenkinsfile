@@ -22,7 +22,10 @@ pipeline {
           docker ps
           docker ps -a
           docker network inspect test-network
-          docker network disconnect test-network stats wordcheck wordvalidation play
+          docker network disconnect test-network stats 
+          docker network disconnect test-network wordcheck 
+          docker network disconnect test-network wordvalidation 
+          docker network disconnect test-network play
           docker network rm test-network
           docker network create test-network
           docker network inspect test-network
