@@ -4,8 +4,8 @@ docker ps -a
 echo 'Creaeting new wordle-network...'
 docker network create wordle-network
 
-# echo 'Build and run Redis container..'
-# docker run -d --name redis -p 0.0.0.0:6379:6379 --network wordle-network redis:alpine redis-server redis.conf
+echo 'Build and run Redis container..'
+docker run -d --name redis -p 0.0.0.0:6379:6379 --network wordle-network redis:alpine redis-server redis.conf
 
 echo 'Build and run Stats container..'
 docker build    -t stats-image ./app/services/Stats

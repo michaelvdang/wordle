@@ -13,6 +13,7 @@ docker stop wordvalidation
 docker stop play
 docker stop orc
 echo Removing containers:
+docker rm -f redis
 docker rm -f stats
 docker rm -f wordcheck
 docker rm -f wordvalidation
