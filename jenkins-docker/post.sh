@@ -1,4 +1,4 @@
-docker network inspect test-network
+docker network inspect wordle-network
 docker ps 
 docker ps -a
 docker images
@@ -11,6 +11,6 @@ docker stop wordvalidation
 docker stop play
 docker stop orc
 docker stop ubuntu-tester
-docker network rm test-network
+docker network rm wordle-network
 docker ps 
 docker ps -a
