@@ -82,8 +82,8 @@ pipeline {
         sh '''
           docker rm -f ubuntu-tester
           docker rmi -f ubuntu-image 095e68df905a
-          docker build -t ubuntu-image ./jenkins-docker/
-          docker run -d --no-cache --name ubuntu-tester --network test-network ubuntu-image
+          docker build --no-cache -t ubuntu-image ./jenkins-docker/
+          docker run -d --name ubuntu-tester --network test-network ubuntu-image
         '''
       }
     }
