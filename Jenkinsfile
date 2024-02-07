@@ -10,12 +10,13 @@ pipeline {
         sh 'chmod u+x -R ./jenkins-docker'
         sh '''
           echo Putting .env content from Credentials into files for containers to use...
-          pwd | grep .env
-          pwd | grep redis.conf
+          pwd
+          ls | grep .env
+          ls | grep redis.conf
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          pwd | grep .env
-          pwd | grep redis.conf
+          ls | grep .env
+          ls | grep redis.conf
           echo DONE.
           cat .env
           cat redis.conf
