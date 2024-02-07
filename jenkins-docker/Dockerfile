@@ -14,4 +14,4 @@ RUN sh /integration-test.sh
 RUN cat google.txt
 RUN cat app.txt
 
-CMD sh /integration-test.sh
+CMD sh
