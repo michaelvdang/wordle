@@ -31,13 +31,13 @@ pipeline {
         //   docker network disconnect -f test-network play
         // '''
         // sh 'docker network disconnect -f test-network orc'
-        sh '''
-          docker ps
-          docker ps -a
-          docker network rm -f test-network
-          docker network create test-network
-          docker network inspect test-network
-        '''
+        // sh '''
+        //   docker ps
+        //   docker ps -a
+        //   docker network rm -f test-network
+        //   docker network create test-network
+        //   docker network inspect test-network
+        // '''
         echo 'building Stats container..'
         sh '''
           docker rm -f stats  # containers don't get removed when there's a crash
