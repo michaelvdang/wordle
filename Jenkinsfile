@@ -144,7 +144,7 @@ pipeline {
   }
   post {
     always {
-      sh 'jenkins-docker/post.sh'
+      sh './jenkins-docker/post.sh'
     }
     // failure {
     //   sh 'jenkins-docker/post.sh'
