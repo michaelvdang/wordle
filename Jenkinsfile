@@ -31,6 +31,7 @@ pipeline {
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
         '''
+        sh './jenkins-docker/test.sh'
       }
     }
     

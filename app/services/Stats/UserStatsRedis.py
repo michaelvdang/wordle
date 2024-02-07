@@ -76,7 +76,7 @@ app = FastAPI()
 
 origins = [     # curl and local browser are always allowed
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
-    "http://" + (SERVER_IP),
+    "http://" + str(SERVER_IP),
     "http://" + str(DOMAIN_NAME),
     "https://" + str(DOMAIN_NAME)
     # "http://146.190.58.25",

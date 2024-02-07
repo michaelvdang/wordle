@@ -19,8 +19,9 @@ echo 'Building orc container...'
 docker build    -t orc-image .
 docker run -d --name orc -p 9400:9400    --network wordle-network orc-image
 
+echo 'Buidling ubuntu-curler...'
 docker build    -t ubuntu-image ./jenkins-docker/
-docker run -d --name ubuntu-tester --network wordle-network ubuntu-image
+docker run -d --name ubuntu-curler --network wordle-network ubuntu-image
 
 docker logs orc
 echo 'Containers in wordle-network:'
