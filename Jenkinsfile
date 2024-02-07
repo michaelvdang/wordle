@@ -85,13 +85,13 @@ pipeline {
           docker build --no-cache -t ubuntu-image ./jenkins-docker/
           docker run -d --name ubuntu-tester --network test-network ubuntu-image
         '''
-        script {
-          def output = sh(
-            script: "docker run -d --name ubuntu-tester --network test-network ubuntu-image",
-            returnStdout: true
-          )
-          echo "Output: ${output}"
-        }
+        // script {
+        //   def output = sh(
+        //     script: "docker run -d --name ubuntu-tester --network test-network ubuntu-image",
+        //     returnStdout: true
+        //   )
+        //   echo "Output: ${output}"
+        // }
         sh 'docker logs ubuntu-tester'
       }
     }
@@ -99,12 +99,10 @@ pipeline {
     stage("test") {
       steps {
         echo 'testing the env files..'
-        sh'sleep 5'
         sh '''
           pwd
           echo ${ENV_FILE_CONTENT} > ./.env
           echo ${REDIS_CONF_CONTENT} > ./redis.conf
-          docker ps -a
         '''
       }
     }
@@ -114,6 +112,7 @@ pipeline {
       steps {
         echo 'Shutting down containers...'
         sh '''
+          docker network inspect test-network
           docker images
           docker ps
           docker ps -a
