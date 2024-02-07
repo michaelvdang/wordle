@@ -24,7 +24,7 @@ docker rmi -f wordcheck-image
 docker rmi -f wordvalidation-image
 docker rmi -f play-image
 docker rmi -f orc-image
-docker rmi -f ubuntu-image 095e68df905a
+docker rmi -f ubuntu-image
 
 echo -e \nLog from ubuntu-tester\n
 docker logs ubuntu-tester

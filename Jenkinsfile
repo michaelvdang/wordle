@@ -50,7 +50,7 @@ pipeline {
         '''
         sh 'docker logs orc'
         echo 'Containers in wordle-network:'
-        sh 'docker network inspect --format="{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}" wordle-network'
+        sh 'docker network inspect --format=\'{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}\' wordle-network'
       }
     }
 
