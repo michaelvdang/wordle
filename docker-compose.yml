@@ -54,7 +54,7 @@ services:
       - "./.env:/wordle/.env"
       # - ${PWD}/.env:/wordle/.env
     restart: unless-stopped
-  orchestrator:
+  orc:
     build: .
     # image: w-orc
     container_name: 'orc-cont'

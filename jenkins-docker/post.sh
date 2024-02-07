@@ -42,3 +42,4 @@ docker rm -f wordle-api-tester
 docker network rm wordle-network
 docker ps 
 docker ps -a
+docker images
