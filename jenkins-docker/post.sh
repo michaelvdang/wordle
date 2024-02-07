@@ -18,7 +18,6 @@ docker rm -f wordcheck
 docker rm -f wordvalidation
 docker rm -f play
 docker rm -f orc
-docker rm -f ubuntu-tester
 echo Removing images
 docker rmi -f stats-image
 docker rmi -f wordcheck-image
@@ -30,6 +29,7 @@ docker rmi -f ubuntu-image 095e68df905a
 echo -e \nLog from ubuntu-tester\n
 docker logs ubuntu-tester
 docker stop ubuntu-tester
+docker rm -f ubuntu-tester
 docker network rm wordle-network
 docker ps 
 docker ps -a

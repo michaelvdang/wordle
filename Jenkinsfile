@@ -22,11 +22,9 @@ pipeline {
     }
     stage("build") {
       steps {
-        // sh 'printenv'
+        sh 'printenv'
         sh 'docker network create wordle-network'
-        sh 'docker network inspect wordle-network'
         echo 'building Stats container..'
-        //# containers don't get removed when there's a crash
         sh '''
           docker build    -t stats-image ./app/services/Stats
           docker run -d --name stats -p 9000:9000 --network wordle-network stats-image
@@ -51,13 +49,12 @@ pipeline {
           docker build    -t orc-image .
           docker run -d --name orc -p 9400:9400    --network wordle-network orc-image
         '''
-        sh 'sleep 5'
-        sh 'docker network inspect wordle-network'
-        sh 'docker logs orc'
         sh '''
           docker build    -t ubuntu-image ./jenkins-docker/
           docker run -d --name ubuntu-tester --network wordle-network ubuntu-image
         '''
+        sh 'docker logs orc'
+        sh 'docker network inspect wordle-network'
       }
     }
 
