@@ -24,13 +24,13 @@ pipeline {
       steps {
         // sh 'printenv'
         sh 'docker network inspect test-network'
-        // sh '''
-        //   docker network disconnect -f test-network stats 
-        //   docker network disconnect -f test-network wordcheck 
-        //   docker network disconnect -f test-network wordvalidation 
-        //   docker network disconnect -f test-network play
-        //   docker network disconnect -f test-network orc
-        // '''
+        sh '''
+          docker network disconnect -f test-network stats 
+          docker network disconnect -f test-network wordcheck 
+          docker network disconnect -f test-network wordvalidation 
+          docker network disconnect -f test-network play
+          docker network disconnect -f test-network orc
+        '''
         sh '''
           docker ps
           docker ps -a
