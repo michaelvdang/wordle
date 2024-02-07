@@ -40,7 +40,7 @@ origins = [     # curl and local browser are always allowed
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
     "https://mikespace.xyz",
     "https://mikespace.dev", # DO NOT USE backslash (/)
-    "http://" + SERVER_IP,
+    "http://" + str(SERVER_IP),
     "http://" + DOMAIN_NAME,
     "https://" + DOMAIN_NAME,
     
