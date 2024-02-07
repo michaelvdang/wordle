@@ -139,11 +139,15 @@ pipeline {
           docker image prune -f
           docker images
         '''
-
       }
-      
     }
-    
   }
-
+  post {
+    always {
+      sh 'jenkins-docker/post.sh'
+    }
+    // failure {
+    //   sh 'jenkins-docker/post.sh'
+    // }
+  }
 }
