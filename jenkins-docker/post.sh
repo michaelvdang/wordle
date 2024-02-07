@@ -6,7 +6,13 @@ docker images
 docker images -f dangling=true
 docker image prune -f
 docker images
+
+echo "Debugging Redis START"
+docker logs redis
+echo "END debugging Redis"
+
 echo Stopping the following containers: 
+docker stop redis
 docker stop stats
 docker stop wordcheck
 docker stop wordvalidation
