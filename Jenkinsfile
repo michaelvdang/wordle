@@ -75,7 +75,7 @@ pipeline {
           docker rmi -f orc-image
           docker images
           docker ps
-          docker build --no-cache -t orc-image .
+          docker build    -t orc-image .
           docker run -d --name orc -p 9400:9400    --network test-network orc-image
         '''
         sh 'sleep 5'
@@ -84,7 +84,7 @@ pipeline {
         sh '''
           docker rm -f ubuntu-tester
           docker rmi -f ubuntu-image 095e68df905a
-          docker build --no-cache -t ubuntu-image ./jenkins-docker/
+          docker build    -t ubuntu-image ./jenkins-docker/
           docker run -d --name ubuntu-tester --network test-network ubuntu-image
         '''
         // script {

@@ -41,8 +41,8 @@ origins = [     # curl and local browser are always allowed
     "https://mikespace.xyz",
     "https://mikespace.dev", # DO NOT USE backslash (/)
     "http://" + str(SERVER_IP),
-    "http://" + DOMAIN_NAME,
-    "https://" + DOMAIN_NAME,
+    "http://" + str(DOMAIN_NAME),
+    "https://" + str(DOMAIN_NAME),
     
     # "http://146.190.58.25",
 ]
