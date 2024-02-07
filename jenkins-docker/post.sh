@@ -25,10 +25,11 @@ docker rmi -f wordvalidation-image
 docker rmi -f play-image
 docker rmi -f orc-image
 docker rmi -f ubuntu-image
-
-echo -e '\nLog from ubuntu-tester\n'
+echo ''
+echo -e '\nLog from ubuntu-tester'
 docker logs ubuntu-tester
-echo -e '\nStopping and removing the last container, image, and network\n'
+echo ''
+echo -e '\nStopping and removing the last container, image, and network'
 docker stop ubuntu-tester
 docker rm -f ubuntu-tester
 docker network rm wordle-network

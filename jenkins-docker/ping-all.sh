@@ -1,1 +1,0 @@
-ping -c 1 stats:9000
