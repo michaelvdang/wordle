@@ -24,13 +24,13 @@ pipeline {
       steps {
         // sh 'printenv'
         sh 'docker network inspect test-network'
-        // sh '''
-        //   docker network disconnect -f test-network stats 
-        //   docker network disconnect -f test-network wordcheck 
-        //   docker network disconnect -f test-network wordvalidation 
-        //   docker network disconnect -f test-network play
-        //   docker network disconnect -f test-network orc
-        // '''
+        sh '''
+          docker network disconnect -f test-network stats 
+          docker network disconnect -f test-network wordcheck 
+          docker network disconnect -f test-network wordvalidation 
+          docker network disconnect -f test-network play
+        '''
+        // sh 'docker network disconnect -f test-network orc'
         sh '''
           docker ps
           docker ps -a
@@ -83,8 +83,14 @@ pipeline {
           docker rm -f ubuntu-tester
           docker rmi -f ubuntu-image 095e68df905a
           docker build --no-cache -t ubuntu-image ./jenkins-docker/
-          docker run -d --name ubuntu-tester --network test-network ubuntu-image
         '''
+        script {
+          def output = sh(
+            script: "docker run -d --name ubuntu-tester --network test-network ubuntu-image",
+            returnStdout: true
+          )
+          echo "Output: ${output}"
+        }
       }
     }
 
