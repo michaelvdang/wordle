@@ -1,1 +1,1 @@
-curl stats:9000 && curl wordcheck:9100 && curl wordvalidation:9200 && curl play:9300 && curl orc:9400
+curl stats:9000 > output.txt && curl wordcheck:9100 >> output.txt && curl wordvalidation:9200 >> output.txt && curl play:9300 >> output.txt && curl orc:9400 >> output.txt

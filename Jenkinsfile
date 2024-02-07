@@ -26,6 +26,7 @@ pipeline {
           docker network disconnect test-network wordcheck 
           docker network disconnect test-network wordvalidation 
           docker network disconnect test-network play
+          docker network disconnect test-network orc
           docker network rm test-network
           docker network create test-network
           docker network inspect test-network
@@ -71,6 +72,7 @@ pipeline {
         '''
         sh 'docker network inspect test-network'
         sh '''
+          docker rm -f ubuntu-tester
           docker rmi -f ubuntu-image 095e68df905a
           docker build -t ubuntu-image ./jenkins-docker/
           docker run -d  --name ubuntu-tester --network test-network ubuntu-image
