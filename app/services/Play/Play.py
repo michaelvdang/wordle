@@ -13,7 +13,7 @@ load_dotenv()
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
 def get_redis():
   yield redis.Redis(
-    # host='localhost', 
+    # host='localhost', ## DEBUGGING: use this host and run: uvicorn app.services.Play.Play:app --port 9300 --reload 
     host='redis', 
     port=6379, 
     decode_responses=True, 
@@ -89,12 +89,15 @@ def restore_game(guid: str,
     try:
       pipe.watch(key)
       response = r.hgetall(key)
-      response['status'] = 'success'
+      if ('remain' not in response):
+        response['status'] = 'error'
+        response['message'] = 'This game does not exists in Redis'
+      else:
+        response['status'] = 'success'
       pipe.unwatch()
       return response
     except redis.WatchError:
       return {'status': 'error', 'message': "ERROR: someone tried playing this game at the same time"}
     except TypeError as e:
       return {'status': 'error', 'message': 'TypeError: ' + str(e)}
-    except Exception as e:
-      return {'status': 'error', 'message': str(e)}
+

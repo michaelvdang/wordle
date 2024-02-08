@@ -16,6 +16,7 @@ REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
 SERVER_IP = os.environ.get('SERVER_IP')
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
 ## switch between running individual services or docker compose (same network)
+## DEBUGGING: use 'localhost' and run: uvicorn Orchestrator:app --port 9400 --reload
 # APP_HOST = 'localhost'
 APP_HOST = 'docker'
 endpoints = {
@@ -138,6 +139,8 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
 
     if not results[0]:
         return {'status': 'error', 'message': 'Invalid guess, try again'}
+    if results[1]['status'] == 'error':
+        return 
     if int(results[1]['remain']) < 1:
         return {'status': 'error', 'message': 'Impossible, user is out of guesses'}
 

@@ -3,10 +3,9 @@ FROM python:alpine3.19
 
 WORKDIR /wordle
 
-COPY requirements.txt /wordle/requirements.txt
-
-RUN python3 -m pip install --no-cache-dir --upgrade -r /wordle/requirements.txt
-
 COPY ./ /wordle/app/services/WordCheck
+# COPY requirements.txt /wordle/requirements.txt
+
+RUN python3 -m pip install --upgrade -r /wordle/app/services/WordCheck/requirements.txt
 
 CMD ["uvicorn", "app.services.WordCheck.WordCheck:app", "--host", "0.0.0.0", "--port", "9100"]

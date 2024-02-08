@@ -94,7 +94,7 @@ def hello():
     return {"message": "hello world", 
             "message2": "UserStatsRedis.py",
             # "DOMAIN_NAME": "https://" + DOMAIN_NAME,
-            # "SERVER_IP": "https://" + SERVER_IP
+            # "SERVER_IP": SERVER_IP
             }
 
 # insert finished game into the correct shard based on guid for storage
