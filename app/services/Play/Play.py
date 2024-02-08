@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
+SERVER_IP = os.environ.get('SERVER_IP')
 def get_redis():
   yield redis.Redis(
     # host='localhost', ## DEBUGGING: use this host and run: uvicorn app.services.Play.Play:app --port 9300 --reload 
@@ -24,7 +25,8 @@ app = FastAPI()
 
 @app.get('/')
 def get_test(r: redis.Redis = Depends(get_redis)):
-  return {'message': 'Play.py'}
+  return {'message': 'Play.py',
+          'SERVER_IP': SERVER_IP}
 
 # create a new game object with 6 remaining guesses in Redis
 @app.post('/play')

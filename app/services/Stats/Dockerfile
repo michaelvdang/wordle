@@ -9,7 +9,7 @@ COPY ./ /wordle/app/services/Stats
 # COPY ./.env /wordle/.env
 
 # RUN python3 -m pip install --no-cache-dir --upgrade -r /wordle/requirements.txt
-RUN python3 -m pip install --upgrade -r /wordle/app/services/Stats/requirements.txt
+RUN python3 -m pip install -r /wordle/app/services/Stats/requirements.txt
 
 
 # ## include these lines if the service needs these databases (stats, check, validation)
