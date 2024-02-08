@@ -52,4 +52,4 @@ docker ps
 docker ps -a
 docker images
 rm .env
-rm redis.conf
+rm app/services/Redis/redis.conf

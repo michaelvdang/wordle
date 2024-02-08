@@ -3,6 +3,7 @@ pipeline {
   environment {
     ENV_FILE_PATH = credentials('wordle-env-file')
     REDIS_CONF_FILE_PATH = credentials('redis-conf-file')
+    REDIS_SECRET = credentials('redis-secret')
   }
   stages {
     stage("precheck") {
