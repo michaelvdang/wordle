@@ -14,8 +14,8 @@ REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
 SERVER_IP = os.environ.get('SERVER_IP')
 def get_redis():
   yield redis.Redis(
-    # host='localhost', ## DEBUGGING: use this host and run: uvicorn app.services.Play.Play:app --port 9300 --reload 
-    host='redis', 
+    host='localhost', ## DEBUGGING: use this host and run: uvicorn app.services.Play.Play:app --port 9300 --reload 
+    # host='redis', 
     port=6379, 
     decode_responses=True, 
     password=REDISCLI_AUTH_PASSWORD
