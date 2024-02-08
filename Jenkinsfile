@@ -14,6 +14,7 @@ pipeline {
         echo 'Confirm .env and redis.conf file content: '
         archiveArtifacts '.env'
         archiveArtifacts 'app/services/Redis/redis.conf'
+        archiveArtifacts './jenkins-docker'
         // sh 'printenv'
       }
     }
