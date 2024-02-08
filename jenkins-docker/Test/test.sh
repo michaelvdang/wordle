@@ -1,3 +1,4 @@
+## to be run on a Linux Jenkins agent with docker installed
 echo ===================Testing the api===================
 echo 'Buidling wordle-api-tester...'
 docker build    -t wordle-api-tester-image ./jenkins-docker/Test

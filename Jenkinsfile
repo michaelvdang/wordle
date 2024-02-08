@@ -33,7 +33,7 @@ pipeline {
   post {
     always {
       // sh 'chmod u+x jenkins-docker/post.sh'
-      sh './jenkins-docker/post.sh'
+      sh './jenkins-docker/Post/post.sh'
     }
     // failure {
     //   sh 'jenkins-docker/post.sh'

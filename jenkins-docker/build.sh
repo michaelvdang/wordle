@@ -31,14 +31,14 @@ echo 'Build and run orc container...'
 docker build    -t orc-image .
 docker run -d --name orc -p 9400:9400    --network wordle-network orc-image
 
-echo 'Build and run wordle-status-check...'
-docker build    -t wordle-status-check-image ./jenkins-docker/
-docker run -d --name wordle-status-check --network wordle-network wordle-status-check-image
+echo 'Build and run wordle-connection-check...'
+docker build    -t wordle-connection-check-image ./jenkins-docker/ConnectionCheck/
+docker run -d --name wordle-connection-check --network wordle-network wordle-connection-check-image
 
 
 echo 'Log from orc container: '
 docker logs orc
-echo 'Connection status between wordle-status-check and other containers:'
-docker logs wordle-status-check
+echo 'Connection status between wordle-connection-check and other containers:'
+docker logs wordle-connection-check
 echo 'Containers in wordle-network:'
 docker network inspect --format='{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}' wordle-network
