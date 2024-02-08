@@ -26,6 +26,7 @@ docker rm -f wordvalidation
 docker rm -f play
 docker rm -f orc
 echo Removing images
+docker rmi -f redis-image
 docker rmi -f stats-image
 docker rmi -f wordcheck-image
 docker rmi -f wordvalidation-image
