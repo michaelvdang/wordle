@@ -67,7 +67,7 @@ app = FastAPI(middleware=middleware)
 
 @app.get('/')
 def test():
-    return {'message' : 'Orchestrator.py', 'SERVER_IP': SERVER_IP}
+    return {'message' : 'Orchestrator.py'}
 
 @app.post('/game/new', status_code=201)
 def start_new_game(username: str):# = Body()):
