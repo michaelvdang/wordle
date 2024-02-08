@@ -1,5 +1,5 @@
 curl 'wordvalidation:9200' > /output/wv.txt
-curl 'wordvalidation:9200/word/is-valid/house' >> /output/wv.txt
+curl 'http://wordvalidation:9200/word/is-valid/house' >> /output/wv.txt
 # curl 'orc:9400/game/restore?username=ucohen&game_id=100' > /output/orc.txt
 # curl 'play:9300/play?guid=al%3Bskdjf&game_id=100' > /output/play.txt
 # curl 'wordcheck:9100/answers/count' > /output/wc.txt
