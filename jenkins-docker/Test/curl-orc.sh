@@ -1,6 +1,8 @@
-curl --no-progress-meter 'wordvalidation:9200/' > wv.txt
-curl --no-progress-meter 'wordvalidation:9200/fake-endpoint' >> wv.txt
-curl --no-progress-meter 'wordvalidation:9200/word/is-valid/house/' >> wv.txt
+curl -s 'wordvalidation:9200/' > wv.txt
+curl -s 'wordvalidation:9200/fake-endpoint' >> wv.txt
+echo 'before' >> wv.txt
+curl -s 'wordvalidation:9200/word/is-valid/house/' >> wv.txt
+echo 'after' >> wv.txt
 # curl 'orc:9400/game/restore?username=ucohen&game_id=100' > /output/orc.txt
 # curl 'play:9300/play?guid=al%3Bskdjf&game_id=100' > /output/play.txt
 # curl 'wordcheck:9100/answers/count' > /output/wc.txt
