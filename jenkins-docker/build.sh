@@ -6,7 +6,7 @@ echo 'Creating new wordle-network...'
 docker network create wordle-network
 
 echo 'Build and run Redis container..'
-docker run -d --name redis -p 0.0.0.0:6379:6379 --network wordle-network -v "$(pwd)"/redis.conf:/data/redis.conf redis:alpine redis-server /data/redis.conf
+docker run -d --name redis -p 0.0.0.0:6379:6379 --network wordle-network -v ./redis.conf:/data/redis.conf redis:alpine redis-server /data/redis.conf
 # docker run -d --name redis -p 0.0.0.0:6379:6379 --network wordle-network -v ./redis.conf:/data/redis.conf redis:alpine redis-server /data/redis.conf
 
 echo 'Build and run Stats container..'
