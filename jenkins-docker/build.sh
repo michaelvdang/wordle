@@ -38,5 +38,7 @@ docker run -d --name wordle-status-check --network wordle-network wordle-status-
 
 echo 'Log from orc container: '
 docker logs orc
+echo 'Connection status between wordle-status-check and other containers:'
+docker logs wordle-status-check
 echo 'Containers in wordle-network:'
 docker network inspect --format='{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}' wordle-network
