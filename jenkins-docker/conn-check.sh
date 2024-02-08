@@ -7,3 +7,5 @@ echo '' >> conn-status.txt
 curl play:9300 >> conn-status.txt 
 echo '' >> conn-status.txt
 curl orc:9400 >> conn-status.txt
+
+docker exec redis redis-cli -a $REDIS_SECRET ping >> conn-status.txt

@@ -34,16 +34,16 @@ sudo service docker restart
 ## copy credentials files with scp-secret.bat on windows
 until [ -f ./.env ]
 do
-  echo .env is missing. Run scp-secret.bat to copy the files containing passwords
+  echo .env is missing from project_root. Run scp-secret.bat to copy the files containing passwords
   sleep 10
 done
 echo .env found
-until [ -f ./redis.conf ]
+until [ -f ./app/services/Redis/redis.conf ]
 do 
-  echo redis.conf is missing. Run scp-secret.bat to copy the files containing passwords
+  echo redis.conf is missing from project_root/app/services/Redis/ Run scp-secret.bat to copy the files containing passwords
   sleep 10
 done
-echo redis.conf found
+echo redis.conf found in project_root/app/services/Redis/
 
 ## run crontab
 sudo crontab /home/${USER}/wordle/crontab.txt
