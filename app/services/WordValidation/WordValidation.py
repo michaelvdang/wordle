@@ -6,6 +6,10 @@ app = FastAPI()
 def test():
     return {'message': 'WordValidation.py'}
 
+@app.get('/fake-endpoint')
+def func():
+    return {'message': 'Reached fake-endpoint'}
+
 @app.get("/word/is-valid/{word}")
 def isValid(word: str):
     connection = sqlite3.connect("/wordle/var/WordList.db",timeout=10)  ## for container
