@@ -27,6 +27,7 @@ pipeline {
 
     stage("test") {
       steps {
+        sh 'sleep 10'
         sh './jenkins-docker/Test/test.sh'
       }
     }
