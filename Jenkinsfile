@@ -1,19 +1,20 @@
 pipeline {
   agent any
   environment {
-    ENV_FILE_CONTENT = credentials('wordle-env-file')
-    REDIS_CONF_CONTENT = credentials('redis-conf')
+    ENV_FILE_PATH = credentials('wordle-env-file')
+    REDIS_CONF_FILE_PATH = credentials('redis-conf-file')
   }
   stages {
     stage("precheck") {
       steps {
         sh 'chmod u+x -R ./jenkins-docker'
-        sh 'echo $ENV_FILE_CONTENT'
+        sh 'echo ENV_FILE_PATH: $ENV_FILE_PATH'
         sh 'ls -al'
-        sh 'echo ${ENV_FILE_CONTENT} > ./.env'
-        sh 'echo ${REDIS_CONF_CONTENT} > ./redis.conf'
+        sh 'cat $ENV_FILE_PATH > .env'
+        sh 'cat $REDIS_CONF_FILE_PATH > redis.conf'
         sh 'ls -al'
-        sh 'cat .env | base64'
+        archiveArtifacts '.env'
+        // sh 'cat .env | base64'
         // sh '''
         //   echo Putting .env content from Credentials into files for containers to use...
         //   pwd
