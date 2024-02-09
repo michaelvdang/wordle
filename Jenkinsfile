@@ -49,6 +49,12 @@ pipeline {
         sh 'docker logs play'
         echo 'After test logs from orc:'
         sh 'docker logs orc'
+        sh '''
+          echo ''
+          echo 'Log from wordle-api-tester'
+          docker logs wordle-api-tester
+          echo ''
+        '''
       }
     }
     
