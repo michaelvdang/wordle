@@ -8,10 +8,7 @@ GAME_ID=`cat output.txt | jq '.game_id'`
 echo game_id is $GAME_ID
 USER_ID=`cat output.txt | jq '.user_id'`
 echo user_id is $USER_ID
-GUESS='angry'
-GUID=d6ff7451-147f-3657-831a-246df9f7b166
-USER_ID=51
-GAME_ID=452
+echo the new URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}"
 sleep 1
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> output.txt
 
