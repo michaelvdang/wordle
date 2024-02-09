@@ -42,19 +42,7 @@ pipeline {
       steps {
         // sh 'sleep 5'
         sh './jenkins-docker/Test/test.sh'
-        sh 'sleep 5'
-        echo 'After test logs from wordvalidation:'
-        sh 'docker logs wordvalidation'
-        echo 'After test logs from play:'
-        sh 'docker logs play'
-        echo 'After test logs from orc:'
-        sh 'docker logs orc'
-        sh '''
-          echo ''
-          echo 'Log from wordle-api-tester'
-          docker logs wordle-api-tester
-          echo ''
-        '''
+        
       }
     }
     
