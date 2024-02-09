@@ -13,8 +13,8 @@ docker exec redis redis-cli -a $REDIS_SECRET ping
 
 
 sleep 5
-pwd
-ls -al
+# pwd
+# ls -al
 echo After-test logs from stats:
 docker logs stats > a-stats-log.txt
 echo After-test logs from wordcheck:
@@ -30,3 +30,4 @@ docker logs redis > a-redis-log.txt
 
 echo 'Log from wordle-api-tester'
 docker logs wordle-api-tester > a-tester-log.txt
+cat a-tester-log.txt

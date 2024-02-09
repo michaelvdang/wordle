@@ -50,6 +50,11 @@ echo The guess word is $GUESS >> /data/output.txt
 echo the Add Guess URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 
+GUESS=plant
+echo The guess word is $GUESS >> /data/output.txt
+echo the Add Guess URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
+
 
 
 # curl --no-progress-meter 'wordvalidation:9200/' >> /data/output.txt
