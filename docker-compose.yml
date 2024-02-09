@@ -9,6 +9,7 @@ services:
       - "6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
     volumes:
       - ./var/redis:/data     # add volume to persist data between container restarts
+      # - db/redis/data:/data     # add volume to persist data between container restarts
       - "./app/services/Redis/redis.conf:/usr/local/etc/redis/redis.conf"  # don't forget to import the config file
       # - ${PWD}/redis.conf:/etc/redis.conf  # don't forget to import the config file
     restart: unless-stopped
@@ -50,7 +51,7 @@ services:
     ports: 
       - "9300:9300"
     volumes:
-      - db:/wordle/var
+      # - db:/wordle/var
       - "./.env:/wordle/.env"
       # - ${PWD}/.env:/wordle/.env
     restart: unless-stopped
