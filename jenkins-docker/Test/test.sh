@@ -15,9 +15,9 @@ docker exec redis redis-cli -a $REDIS_SECRET ping
 sleep 5
 pwd
 ls -al
-echo After-test logs from wordvalidation:
+echo After-test logs from stats:
 docker logs stats > a-stats-log.txt
-echo After-test logs from wordvalidation:
+echo After-test logs from wordcheck:
 docker logs wordcheck > a-wc-log.txt
 echo After-test logs from wordvalidation:
 docker logs wordvalidation > awv-log.txt
