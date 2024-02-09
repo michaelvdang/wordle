@@ -22,12 +22,25 @@ pipeline {
     stage("build") {
       steps {
         sh './jenkins-docker/build.sh'
+
+        // testing fastapi
+        sh '''
+          docker ps
+          docker ps -a
+          docker images
+          docker build -t fa-image ./app/services/base
+          docker run -d --name fa-cont --network wordle-network fa-image
+          docker build -t fa-tester-image ./jenkins-docker/test-base
+          docker run -d --name fa-tester --network wordle-network fa-tester-image
+        '''
+        sh 'docker logs fa-tester'
+        sh 'docker logs fa-cont'
       }
     }
 
     stage("test") {
       steps {
-        sh 'sleep 10'
+        sh 'sleep 5'
         sh './jenkins-docker/Test/test.sh'
       }
     }
@@ -37,6 +50,14 @@ pipeline {
     always {
       // sh 'chmod u+x jenkins-docker/post.sh'
       sh './jenkins-docker/Post/post.sh'
+
+      // testing fastapi
+      sh '''
+        docker rm -f fa-cont
+        docker rmi -f fa-image
+        docker rm -f fa-tester
+        docker rmi -f fa-tester-image
+      '''
     }
     // failure {
     //   sh 'jenkins-docker/post.sh'
