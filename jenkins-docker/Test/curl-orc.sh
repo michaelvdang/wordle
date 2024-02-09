@@ -1,6 +1,7 @@
 ## called when the wordle-api-tester container is run
-USER_NAME='ucohen'
-curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=$USERNAME" >> output.txt
+USERNAME='ucohen'
+echo "orc:9400/game/new?username=${USERNAME}"
+curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" >> output.txt
 GUID=`cat output.txt | jq '.guid'`
 echo guid is: $GUID
 GAME_ID=`cat output.txt | jq '.game_id'`
@@ -8,7 +9,7 @@ echo game_id is $GAME_ID
 USER_ID=`cat output.txt | jq '.user_id'`
 echo user_id is $USER_ID
 GUESS='angry'
-curl --no-progress-meter -X 'POST' "orc:9400/game/$GAME_ID?username=$USERNAME&guid=$GUID&user_id=$USER_ID&guess=$GUESS" >> output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> output.txt
 
 
 # curl --no-progress-meter 'wordvalidation:9200/' >> output.txt
