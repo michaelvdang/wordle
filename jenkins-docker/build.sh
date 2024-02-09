@@ -34,6 +34,7 @@ echo 'Build and run orc container...'
 docker build    -t orc-image .
 docker run -d --volume wordle-db:/wordle/var --name orc -p 9400:9400    --network wordle-network orc-image
 
+# this might belong in the Test stage
 echo 'Build and run wordle-connection-check...'
 docker build    -t wordle-connection-check-image ./jenkins-docker/ConnectionCheck/
 docker run -d --name wordle-connection-check --network wordle-network wordle-connection-check-image

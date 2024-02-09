@@ -40,11 +40,13 @@ pipeline {
 
     stage("test") {
       steps {
-        sh 'sleep 5'
+        // sh 'sleep 5'
         sh './jenkins-docker/Test/test.sh'
 
         echo 'After test logs from wordvalidation:'
         sh 'docker logs wordvalidation'
+        echo 'After test logs from play:'
+        sh 'docker logs play'
       }
     }
     
@@ -58,7 +60,7 @@ pipeline {
         docker rm -f fa-tester
         docker rmi -f fa-tester-image
       '''
-      
+
       // sh 'chmod u+x jenkins-docker/post.sh'
       sh './jenkins-docker/Post/post.sh'
 
