@@ -47,6 +47,8 @@ pipeline {
         sh 'docker logs wordvalidation'
         echo 'After test logs from play:'
         sh 'docker logs play'
+        echo 'After test logs from orc:'
+        sh 'docker logs orc'
       }
     }
     
