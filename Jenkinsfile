@@ -42,7 +42,7 @@ pipeline {
       steps {
         sh 'sleep 5'
         sh './jenkins-docker/Test/test.sh'
-        
+
         echo 'After test logs from wordvalidation:'
         sh 'docker logs wordvalidation'
       }
@@ -51,9 +51,6 @@ pipeline {
   }
   post {
     always {
-      // sh 'chmod u+x jenkins-docker/post.sh'
-      sh './jenkins-docker/Post/post.sh'
-
       // testing fastapi
       sh '''
         docker rm -f fa-cont
@@ -61,6 +58,10 @@ pipeline {
         docker rm -f fa-tester
         docker rmi -f fa-tester-image
       '''
+      
+      // sh 'chmod u+x jenkins-docker/post.sh'
+      sh './jenkins-docker/Post/post.sh'
+
     }
     // failure {
     //   sh 'jenkins-docker/post.sh'
