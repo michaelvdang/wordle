@@ -4,7 +4,7 @@ WORKDIR /
 
 RUN apt-get update && apt-get install --yes curl
 
-RUN apt install jq
+RUN apt install --yes jq
 
 COPY curl-orc.sh /curl-orc.sh
 
