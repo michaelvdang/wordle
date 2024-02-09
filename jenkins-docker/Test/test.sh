@@ -14,12 +14,13 @@ docker exec redis redis-cli -a $REDIS_SECRET ping
 
 sleep 5
 pwd
+ls -al
 echo After-test logs from wordvalidation:
-docker logs wordvalidation > ./logs/wv-log.txt
+docker logs wordvalidation > awv-log.txt
 echo After-test logs from play:
-docker logs play > ./logs/play-log.txt
+docker logs play > aplay-log.txt
 echo After-test logs from orc:
-docker logs orc > ./logs/orc-log.txt
+docker logs orc > aorc-log.txt
 
 echo 'Log from wordle-api-tester'
 docker logs wordle-api-tester
