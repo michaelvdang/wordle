@@ -12,6 +12,7 @@ GUESS='angry'
 GUID=d6ff7451-147f-3657-831a-246df9f7b166
 USER_ID=51
 GAME_ID=452
+sleep 1
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> output.txt
 
 
