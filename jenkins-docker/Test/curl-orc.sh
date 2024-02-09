@@ -10,43 +10,43 @@ echo game_id is $GAME_ID >> /data/output.txt
 USER_ID=`cat /data/curl_results.txt | jq '.user_id'`
 echo user_id is $USER_ID >> /data/output.txt
 
-echo sleeping for 3 seconds... >> /data/output.txt
-sleep 3
+# echo sleeping for 3 seconds... >> /data/output.txt
+# sleep 3
 GUESS=house
 echo The guess word is $GUESS >> /data/output.txt
 echo the Add Guess URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 
-echo sleeping for 3 seconds... >> /data/output.txt
-sleep 3
+# echo sleeping for 3 seconds... >> /data/output.txt
+# sleep 3
 GUESS=angry
 echo The guess word is $GUESS >> /data/output.txt
 echo the Add Guess URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 
-echo sleeping for 3 seconds... >> /data/output.txt
-sleep 3
+# echo sleeping for 3 seconds... >> /data/output.txt
+# sleep 3
 GUESS=paint
 echo The guess word is $GUESS >> /data/output.txt
 echo the Add Guess URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 
-echo sleeping for 3 seconds... >> /data/output.txt
-sleep 3
+# echo sleeping for 3 seconds... >> /data/output.txt
+# sleep 3
 GUESS=rhyme
 echo The guess word is $GUESS >> /data/output.txt
 echo the Add Guess URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 
-echo sleeping for 3 seconds... >> /data/output.txt
-sleep 3
+# echo sleeping for 3 seconds... >> /data/output.txt
+# sleep 3
 GUESS=learn
 echo The guess word is $GUESS >> /data/output.txt
 echo the Add Guess URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 
-echo sleeping for 3 seconds... >> /data/output.txt
-sleep 3
+# echo sleeping for 3 seconds... >> /data/output.txt
+# sleep 3
 GUESS=share
 echo The guess word is $GUESS >> /data/output.txt
 echo the Add Guess URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
