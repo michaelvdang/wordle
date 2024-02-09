@@ -47,8 +47,8 @@ docker stop wordle-connection-check
 docker rm -f wordle-connection-check
 docker stop wordle-api-tester
 docker rm -f wordle-api-tester
-docker network rm wordle-network
 docker volume rm wordle-db
+docker network rm wordle-network
 docker ps 
 docker ps -a
 docker images
