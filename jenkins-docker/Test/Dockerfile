@@ -8,4 +8,4 @@ WORKDIR /
 
 COPY curl-orc.sh /curl-orc.sh
 
-CMD sh /curl-orc.sh && cat output.txt
+CMD sh /curl-orc.sh && cat /data/output.txt
