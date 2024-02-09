@@ -6,11 +6,6 @@ docker images
 docker images -f dangling=true
 docker image prune -f
 docker images
-
-echo "Debugging Redis START"
-docker logs redis
-echo "END debugging Redis"
-
 echo Stopping the following containers: 
 docker stop redis
 docker stop stats
@@ -47,8 +42,8 @@ docker stop wordle-connection-check
 docker rm -f wordle-connection-check
 docker stop wordle-api-tester
 docker rm -f wordle-api-tester
-docker volume rm wordle-db
 docker network rm wordle-network
+docker volume rm wordle-db
 docker ps 
 docker ps -a
 docker images
