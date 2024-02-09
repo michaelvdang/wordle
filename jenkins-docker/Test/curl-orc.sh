@@ -1,4 +1,5 @@
 ## called when the wordle-api-tester container is run
+echo `date +%m-%d\ %T` > /data/output.txt
 USERNAME='ucohen'
 echo first URL: "orc:9400/game/new?username=${USERNAME}"
 curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" >> /data/output.txt
