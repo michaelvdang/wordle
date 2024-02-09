@@ -245,4 +245,4 @@ def restore_game(username: str, game_id: int):
         return {**user, **game_data, 'game_id': game_id, 'result': 1}
     # if not found, start new game
     else: 
-        return {'result': 0}
+        return {'result': 0, 'message': 'Game does not exist in database'}
