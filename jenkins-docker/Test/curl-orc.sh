@@ -9,6 +9,7 @@ echo game_id is $GAME_ID
 USER_ID=`cat output.txt | jq '.user_id'`
 echo user_id is $USER_ID
 GUESS='angry'
+sleep 1
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> output.txt
 
 
