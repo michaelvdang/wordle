@@ -38,12 +38,12 @@ curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID2}?username=${USERNAM
 # Restore
 echo ''
 echo Restoring to a game which does not exist game_id == 1 >> /data/output.txt
-echo The Restore Game URL will be: "\"orc:9400/game/restore?username=${USERNAME}&game_id=1\"" >> /data/output.txt
-curl --no-progress-meter -X 'POST' "\"orc:9400/game/restore?username=${USERNAME}&game_id=1\"" >> /data/output.txt
+echo The Restore Game URL will be: "orc:9400/game/restore?username=${USERNAME}&game_id=1" >> /data/output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/restore?username=${USERNAME}&game_id=1" >> /data/output.txt
 echo ''
 echo Restoring to the original game: >> /data/output.txt
-echo The Restore Game URL will be: "\"orc:9400/game/restore?username=${USERNAME}&game_id=$GAME_ID1\"" >> /data/output.txt
-curl --no-progress-meter -X 'POST' "\"orc:9400/game/restore?username=${USERNAME}&game_id=$GAME_ID1\"" >> /data/output.txt
+echo The Restore Game URL will be: "orc:9400/game/restore?username=${USERNAME}&game_id=$GAME_ID1" >> /data/output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/restore?username=${USERNAME}&game_id=$GAME_ID1" >> /data/output.txt
 echo ''
 
 echo Finish the original game: >> /data/output.txt
