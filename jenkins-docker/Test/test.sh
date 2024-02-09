@@ -12,16 +12,13 @@ echo 'Ping Redis...'
 docker exec redis redis-cli -a $REDIS_SECRET ping
 
 
-sh 'sleep 5'
-echo 'After-test logs from wordvalidation:'
-sh 'docker logs wordvalidation > wv-log.txt'
-echo 'After-test logs from play:'
-sh 'docker logs play > play-log.txt'
-echo 'After-test logs from orc:'
-sh 'docker logs orc > orc-log.txt'
-sh '''
-  echo ''
-  echo 'Log from wordle-api-tester'
-  docker logs wordle-api-tester
-  echo ''
-'''
+sleep 5
+echo After-test logs from wordvalidation:
+docker logs wordvalidation > wv-log.txt
+echo After-test logs from play:
+docker logs play > play-log.txt
+echo After-test logs from orc:
+docker logs orc > orc-log.txt
+
+echo 'Log from wordle-api-tester'
+docker logs wordle-api-tester
