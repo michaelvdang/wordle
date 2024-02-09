@@ -9,7 +9,7 @@ pipeline {
     stage("precheck") {
       steps {
         sh 'chmod u+x -R ./jenkins-docker'
-        sh 'mkdir ./logs'
+        sh 'mkdir -p ./logs'
         sh 'chmod u+x -R ./logs'
         sh 'cat $ENV_FILE_PATH > .env'
         sh 'cat $ENV_FILE_PATH > app/services/Stats/.env'
