@@ -8,8 +8,4 @@ WORKDIR /
 
 COPY curl-orc.sh /curl-orc.sh
 
-RUN pwd 
-
-RUN ls -al
-
 CMD sh /curl-orc.sh && cat /data/output.txt

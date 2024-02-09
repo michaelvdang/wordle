@@ -16,6 +16,10 @@ sleep 5
 pwd
 ls -al
 echo After-test logs from wordvalidation:
+docker logs stats > a-stats-log.txt
+echo After-test logs from wordvalidation:
+docker logs wordcheck > a-wc-log.txt
+echo After-test logs from wordvalidation:
 docker logs wordvalidation > awv-log.txt
 echo After-test logs from play:
 docker logs play > aplay-log.txt
