@@ -2,7 +2,7 @@
 USERNAME='ucohen'
 echo "orc:9400/game/new?username=${USERNAME}"
 curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" >> output.txt
-GUID=`cat output.txt | jq '.guid'`
+GUID=`cat output.txt | jq '.guid' | tr -d '"'`
 echo guid is: $GUID
 GAME_ID=`cat output.txt | jq '.game_id'`
 echo game_id is $GAME_ID
