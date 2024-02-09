@@ -1,19 +1,19 @@
 ## called when the wordle-api-tester container is run
 echo `date +%m-%d\ %T` > /data/output.txt
 USERNAME='ucohen'
-echo first URL: "orc:9400/game/new?username=${USERNAME}"
-curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" >> /data/output.txt
-GUID=`cat /data/output.txt | jq '.guid' | tr -d '"'`
-echo guid is: $GUID
-GAME_ID=`cat /data/output.txt | jq '.game_id'`
-echo game_id is $GAME_ID
-USER_ID=`cat /data/output.txt | jq '.user_id'`
-echo user_id is $USER_ID
+echo first URL: "orc:9400/game/new?username=${USERNAME}" >> /data/output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" >> /data/curl_results.txt
+GUID=`cat /data/curl_results.txt | jq '.guid' | tr -d '"'`
+echo guid is: $GUID >> /data/output.txt
+GAME_ID=`cat /data/curl_results.txt | jq '.game_id'`
+echo game_id is $GAME_ID >> /data/output.txt
+USER_ID=`cat /data/curl_results.txt | jq '.user_id'`
+echo user_id is $USER_ID >> /data/output.txt
 
 sleep 3
 GUESS=house
-echo guess is $GUESS
-echo the new URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}"
+echo guess is $GUESS >> /data/output.txt
+echo the new URL will be: "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 
 sleep 3
