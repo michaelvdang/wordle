@@ -23,18 +23,18 @@ pipeline {
       steps {
         sh './jenkins-docker/build.sh'
 
-        // testing fastapi
-        sh '''
-          docker ps
-          docker ps -a
-          docker images
-          docker build -t fa-image ./app/services/base
-          docker run -d --name fa-cont --network wordle-network fa-image
-          docker build -t fa-tester-image ./jenkins-docker/test-base
-          docker run -d --name fa-tester --network wordle-network fa-tester-image
-        '''
-        sh 'docker logs fa-tester'
-        sh 'docker logs fa-cont'
+        // // testing fastapi
+        // sh '''
+        //   docker ps
+        //   docker ps -a
+        //   docker images
+        //   docker build -t fa-image ./app/services/base
+        //   docker run -d --name fa-cont --network wordle-network fa-image
+        //   docker build -t fa-tester-image ./jenkins-docker/test-base
+        //   docker run -d --name fa-tester --network wordle-network fa-tester-image
+        // '''
+        // sh 'docker logs fa-tester'
+        // sh 'docker logs fa-cont'
       }
     }
 
@@ -53,13 +53,13 @@ pipeline {
   }
   post {
     always {
-      // testing fastapi
-      sh '''
-        docker rm -f fa-cont
-        docker rmi -f fa-image
-        docker rm -f fa-tester
-        docker rmi -f fa-tester-image
-      '''
+      // // testing fastapi
+      // sh '''
+      //   docker rm -f fa-cont
+      //   docker rmi -f fa-image
+      //   docker rm -f fa-tester
+      //   docker rmi -f fa-tester-image
+      // '''
 
       // sh 'chmod u+x jenkins-docker/post.sh'
       sh './jenkins-docker/Post/post.sh'
