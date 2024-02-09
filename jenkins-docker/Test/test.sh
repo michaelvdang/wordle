@@ -13,7 +13,6 @@ docker exec redis redis-cli -a $REDIS_SECRET ping
 
 
 sleep 5
-chmod u+x -R ./logs
 echo After-test logs from wordvalidation:
 docker logs wordvalidation > ./logs/wv-log.txt
 echo After-test logs from play:
