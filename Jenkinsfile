@@ -8,8 +8,7 @@ pipeline {
   stages {
     stage("precheck") {
       steps {
-        
-        // sh 'chmod u+x -R ./jenkins-docker'
+        sh 'chmod u+x -R ./jenkins-docker'
         sh 'cat $ENV_FILE_PATH > .env'
         sh 'cat $ENV_FILE_PATH > app/services/Stats/.env'
         sh 'cat $ENV_FILE_PATH > app/services/Play/.env'
