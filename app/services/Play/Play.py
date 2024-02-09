@@ -93,6 +93,7 @@ def restore_game(guid: str,
       response = r.hgetall(key)
       if ('remain' not in response):
         response['status'] = 'error'
+        response['remain'] = 0
         response['message'] = 'This game does not exists in Redis'
       else:
         response['status'] = 'success'

@@ -140,8 +140,8 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
 
     if not results[0]:
         return {'status': 'error', 'message': 'Invalid guess, try again'}
-    if results[1]['status'] == 'error':
-        return 
+    # if results[1]['status'] == 'error':
+    #     return {'status': 'error', 'message': 'NOT SURE'}
     if int(results[1]['remain']) < 1:
         return {'status': 'error', 'message': 'Impossible, user is out of guesses'}
 
