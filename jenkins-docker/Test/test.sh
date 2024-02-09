@@ -8,7 +8,6 @@ echo 'Check if container is on the network...'
 docker network inspect --format='{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}' wordle-network
 
 echo 'Ping Redis...'
-# docker exec redis redis-cli ping
 docker exec redis redis-cli -a $REDIS_SECRET ping
 
 
@@ -25,8 +24,10 @@ echo After-test logs from play:
 docker logs play > aplay-log.txt
 echo After-test logs from orc:
 docker logs orc > aorc-log.txt
+cat aorc-log.txt
 echo After-test logs from redis:
 docker logs redis > a-redis-log.txt
+
 
 echo 'Log from wordle-api-tester'
 docker logs wordle-api-tester > a-tester-log.txt

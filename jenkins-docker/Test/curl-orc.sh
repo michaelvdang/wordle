@@ -1,6 +1,7 @@
 ## called when the wordle-api-tester container is run
-echo `date +%m-%d\ %T` > /data/output.txt
-USERNAME='ucohen'
+echo UTC date and time: `date +%m-%d\ %T` > /data/output.txt
+USERNAME=`bash random-string.sh`
+# USERNAME='ucohen'
 echo start new game URL: "orc:9400/game/new?username=${USERNAME}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" > /data/curl_results.txt
 GUID=`cat /data/curl_results.txt | jq '.guid' | tr -d '"'`
@@ -9,6 +10,7 @@ GAME_ID=`cat /data/curl_results.txt | jq '.game_id'`
 echo game_id is $GAME_ID >> /data/output.txt
 USER_ID=`cat /data/curl_results.txt | jq '.user_id'`
 echo user_id is $USER_ID >> /data/output.txt
+
 
 GUESS=house
 echo The guess word is $GUESS >> /data/output.txt

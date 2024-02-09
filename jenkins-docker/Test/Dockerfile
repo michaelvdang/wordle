@@ -6,6 +6,8 @@ WORKDIR /
 
 # RUN apt install --yes jq
 
+COPY random-string.sh /random-string.sh
+
 COPY curl-orc.sh /curl-orc.sh
 
 CMD sh /curl-orc.sh && cat /data/output.txt
