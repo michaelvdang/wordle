@@ -23,7 +23,7 @@ curl stats:9000/stats/top-winners >> /data/stats-output.txt
 # 7. Get user stats (testing /stats/games/store-result)
 
 USERNAME=`bash random-string.sh`
-echo $USERNAME >> /data/stats-output.txt
+echo New username to create: $USERNAME >> /data/stats-output.txt
 echo 'Create User (/stats/users/new)' >> /data/stats-output.txt
 curl -X POST "stats:9000/stats/users/new?username=${USERNAME}" >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
@@ -48,39 +48,39 @@ echo user_id is $USER_ID >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 GUESS=angry
-echo The guess word is $GUESS >> /data/output.txt
-echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
+echo The guess word is $GUESS >> /data/stats-output.txt
+echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 GUESS=paint
-echo The guess word is $GUESS >> /data/output.txt
-echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
+echo The guess word is $GUESS >> /data/stats-output.txt
+echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 GUESS=rhyme
-echo The guess word is $GUESS >> /data/output.txt
-echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
+echo The guess word is $GUESS >> /data/stats-output.txt
+echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 GUESS=learn
-echo The guess word is $GUESS >> /data/output.txt
-echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
+echo The guess word is $GUESS >> /data/stats-output.txt
+echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 GUESS=share
-echo The guess word is $GUESS >> /data/output.txt
-echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
+echo The guess word is $GUESS >> /data/stats-output.txt
+echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 GUESS=plant
-echo The guess word is $GUESS >> /data/output.txt
-echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
+echo The guess word is $GUESS >> /data/stats-output.txt
+echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
+curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 echo Get user stats - URL: "stats:9000/stats/username/${USER_ID}" >> /data/stats-output.txt
