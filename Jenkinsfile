@@ -10,10 +10,6 @@ pipeline {
       steps {
         sh 'chmod u+x -R ./jenkins-docker'
         sh './jenkins-docker/Pre-Build/pre-build.sh'
-        echo 'Confirm .env and redis.conf file content: '
-        archiveArtifacts '.env'
-        archiveArtifacts 'app/services/Redis/redis.conf'
-        sh 'printenv'
       }
     }
     stage("build") {
@@ -23,7 +19,7 @@ pipeline {
     }
     stage("test") {
       steps {
-        sh './jenkins-docker/Test/test.sh'
+        sh './jenkins-docker/Test/run-test.sh'
       }
     }
   }
@@ -31,8 +27,5 @@ pipeline {
     always {
       sh './jenkins-docker/Post/post.sh'
     }
-    // failure {
-    //   sh 'jenkins-docker/post.sh'
-    // }
   }
 }
