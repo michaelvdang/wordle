@@ -1,3 +1,4 @@
+## to be run inside a Docker container
 echo ''
 echo UTC date and time: `date +%m-%d\ %T` > /data/stats-output.txt
 ## Testing 3 endpoints in the stats API: Get User Stats, Get Username, Get User Id
@@ -9,6 +10,12 @@ echo UTC date and time: `date +%m-%d\ %T` > /data/stats-output.txt
 
 echo Querying top streaks and winners: stats:9000/stats/top-streaks-and-winners >> /data/stats-output.txt
 curl stats:9000/stats/top-streaks-and-winners >> /data/stats-output.txt
+
+echo Query top streaks: stats:9000/stats/top-streaks >> /data/stats-output.txt
+curl stats:9000/stats/top-streaks >> /data/stats-output.txt
+
+echo Query top winners: stats:9000/stats/top-winners >> /data/stats-output.txt
+curl stats:9000/stats/top-winners >> /data/stats-output.txt
 
 USERNAME=`bash random-string.sh`
 

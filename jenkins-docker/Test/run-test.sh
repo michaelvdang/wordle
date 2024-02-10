@@ -1,6 +1,6 @@
 ## to be run on a Linux Jenkins agent with docker installed
 echo ===================Testing the api===================
-
+# TopTen.py must run through a python container
 docker exec orc python3 /wordle/bin/TopTen.py
 
 echo 'Buidling wordle-api-tester...'
