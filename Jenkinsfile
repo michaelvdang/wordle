@@ -8,11 +8,7 @@ pipeline {
   stages {
     stage("precheck") {
       steps {
-        sh 'chmod u+x -R ./jenkins-docker'
-        sh 'cat $ENV_FILE_PATH > .env'
-        sh 'cat $ENV_FILE_PATH > app/services/Stats/.env'
-        sh 'cat $ENV_FILE_PATH > app/services/Play/.env'
-        sh 'cat $REDIS_CONF_FILE_PATH > app/services/Redis/redis.conf'
+        sh './jenkins-docker/Pre-Build/pre-build.sh'
         echo 'Confirm .env and redis.conf file content: '
         archiveArtifacts '.env'
         archiveArtifacts 'app/services/Redis/redis.conf'
@@ -24,13 +20,11 @@ pipeline {
         sh './jenkins-docker/build.sh'
       }
     }
-
     stage("test") {
       steps {
         sh './jenkins-docker/Test/test.sh'
       }
     }
-    
   }
   post {
     always {
