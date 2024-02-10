@@ -1,6 +1,7 @@
 ## to be run inside a Docker container
 echo ''
 echo UTC date and time: `date +%m-%d\ %T` > /data/stats-output.txt
+echo Testing stats API >> /data/stats-output.txt
 ## Testing all endpoints in the stats API, success scenario
 
 echo Querying top streaks and winners: stats:9000/stats/top-streaks-and-winners >> /data/stats-output.txt
@@ -24,7 +25,7 @@ curl stats:9000/stats/top-winners >> /data/stats-output.txt
 USERNAME=`bash random-string.sh`
 echo $USERNAME >> /data/stats-output.txt
 echo 'Create User (/stats/users/new)' >> /data/stats-output.txt
-curl -X POST "stats:9000/stats/users/new" >> /data/stats-output.txt
+curl -X POST "stats:9000/stats/users/new?username=${USERNAME}" >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 echo Get user id - URL: "stats:9000/stats/id/${USERNAME}" >> /data/stats-output.txt
