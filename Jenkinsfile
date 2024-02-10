@@ -8,6 +8,7 @@ pipeline {
   stages {
     stage("precheck") {
       steps {
+        sh 'chmod u+x -R ./jenkins-docker'
         sh './jenkins-docker/Pre-Build/pre-build.sh'
         echo 'Confirm .env and redis.conf file content: '
         archiveArtifacts '.env'

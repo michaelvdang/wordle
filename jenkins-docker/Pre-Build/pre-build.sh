@@ -1,4 +1,3 @@
-chmod u+x -R ./jenkins-docker
 cat $ENV_FILE_PATH > .env
 cat $ENV_FILE_PATH > app/services/Stats/.env
 cat $ENV_FILE_PATH > app/services/Play/.env
