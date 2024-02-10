@@ -84,6 +84,6 @@ curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAM
 echo '' >> /data/stats-output.txt
 
 echo Get user stats - URL: "stats:9000/stats/user?user_id=${USER_ID}&username=${USERNAME}" >> /data/stats-output.txt
-curl "stats:9000/stats/user?user_id=${USER_ID}&username=${USERNAME}" >> /data/stats-output.txt
+curl "stats:9000/stats/users?user_id=${USER_ID}&username=${USERNAME}" >> /data/stats-output.txt
 
 cat /data/stats-output.txt
