@@ -10,4 +10,4 @@ COPY random-string.sh /random-string.sh
 
 COPY test-orc.sh /test-orc.sh
 
-CMD sh /test-orc.sh && cat /data/output.txt
+CMD sh /test-orc.sh && cat /data/output.txt && sh /test-stats.sh && cat /data/stats-output.txt
