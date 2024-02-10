@@ -1,5 +1,8 @@
 ## to be run on a Linux Jenkins agent with docker installed
 echo ===================Testing the api===================
+
+docker exec orc python3 /wordle/bin/TopTen.py
+
 echo 'Buidling wordle-api-tester...'
 docker build    -t wordle-api-tester-image ./jenkins-docker/Test
 docker run -d --volume ./logs/:/data --name wordle-api-tester --network wordle-network wordle-api-tester-image
