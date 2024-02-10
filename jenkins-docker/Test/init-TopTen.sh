@@ -1,0 +1,1 @@
+docker exec -it orc python3 /wordle/bin/TopTen.py
