@@ -1,3 +1,4 @@
+echo ''
 echo UTC date and time: `date +%m-%d\ %T` > /data/stats-output.txt
 ## Testing 3 endpoints in the stats API: Get User Stats, Get Username, Get User Id
 ## scenario 1:
