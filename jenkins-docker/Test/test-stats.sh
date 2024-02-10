@@ -11,3 +11,7 @@ echo Querying top streaks and winners: stats:9000/stats/top-streaks-and-winners 
 curl stats:9000/stats/top-streaks-and-winners >> /data/stats-output.txt
 
 USERNAME=`bash random-string.sh`
+
+
+
+cat /data/stats-output.txt

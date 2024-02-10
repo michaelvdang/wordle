@@ -88,4 +88,4 @@ echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/output.txt
 echo ''
 
-
+cat /data/output.txt
