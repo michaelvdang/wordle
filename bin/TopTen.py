@@ -34,7 +34,7 @@ if (os.name == 'posix'):
   elif (os.path.isfile('/var/lib/docker/volumes/wordle_db/_data/game1.db')):
     path = '/var/lib/docker/volumes/wordle_db/_data/'
   elif (os.path.isfile('./var/game1.db')):
-    path = '../var/game1.db'
+    path = './var/game1.db'
   else:
     raise FileNotFoundError('Could not find game1.db in /var/snap/docker/common/var-lib-docker/volumes/wordle_db/_data/ or /var/lib/docker/volumes/wordle_db/_data/')
 else:
