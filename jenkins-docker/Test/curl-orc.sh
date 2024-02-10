@@ -89,12 +89,3 @@ curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAM
 echo ''
 
 
-# curl --no-progress-meter 'wordvalidation:9200/' >> /data/output.txt
-# curl --no-progress-meter 'wordvalidation:9200/word/is-valid/house' >> /data/output.txt
-# curl --no-progress-meter 'orc:9400/game/restore?username=ucohen&game_id=100' >> /data/output.txt
-# curl --no-progress-meter 'play:9300/play?guid=al%3Bskdjf&game_id=100' >> /data/output.txt
-# curl --no-progress-meter 'wordcheck:9100/answers/count' >> /data/output.txt
-# curl --no-progress-meter 'wordcheck:9100/answers/correct?game_id=100' >> /data/output.txt
-
-# curl -X 'POST' 'orc:9400/game/new?username=ucohen'
-# curl -X 'POST' 'orc:9400/game/new?username=ucohen' -H 'accept: application/json' -d '' > first_curl.txt
