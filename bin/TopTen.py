@@ -24,7 +24,7 @@ r = redis.Redis(host=host, port=6379, decode_responses=True, password=REDISCLI_A
   
 # for when running services in docker in ubuntu with shared volume and
 #     and setting crontab manually in terminal
-path = Path('./var/')   #('Running in Windows and Docker on Windows')
+path = ''
 if (os.name == 'posix'):
   if (os.path.isfile('/var/snap/docker/common/var-lib-docker/volumes/wordle_db/_data/game1.db')): # Docker on Windows doesn't have /var/snap
   #('Running in Docker-Ubuntu that was installed by snap')
@@ -34,6 +34,8 @@ if (os.name == 'posix'):
     path = '/var/lib/docker/volumes/wordle_db/_data/'
   else:
     raise FileNotFoundError('Could not find game1.db in /var/snap/docker/common/var-lib-docker/volumes/wordle_db/_data/ or /var/lib/docker/volumes/wordle_db/_data/')
+else:
+  path = Path('./var/')   #('Running in Windows and Docker on Windows')
 
 print('Path: ', path)
 GAME1_DB = os.path.join(path, 'game1.db')

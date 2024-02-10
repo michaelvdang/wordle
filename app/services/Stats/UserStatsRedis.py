@@ -14,7 +14,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
+# .env file is stored in the same directory as this file
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
 SERVER_IP = os.environ.get('SERVER_IP')
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
