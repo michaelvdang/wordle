@@ -166,6 +166,7 @@ def get_user_stats(
         g1: sqlite3.Connection = Depends(get_db1), 
         g2: sqlite3.Connection = Depends(get_db2), 
         g3: sqlite3.Connection = Depends(get_db3)):
+    username = username.lower()
     gamedb = (g1, g2, g3)
     guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
     # print('guid: ', guid)
@@ -314,6 +315,7 @@ def get_username(user_id: int, udb: sqlite3.Connection = Depends(get_udb)):
 # return user info for a given username
 @app.get('/stats/id/{username}')
 def get_user_id(username: str, udb: sqlite3.Connection = Depends(get_udb)):
+    username = username.lower()
     print('username: ', username)
     print('type: ', type(username))
     # row = udb.execute('SELECT * FROM users WHERE username="mdang4"')
@@ -337,6 +339,7 @@ def create_user(username: str,
         g1: sqlite3.Connection = Depends(get_db1), 
         g2: sqlite3.Connection = Depends(get_db2), 
         g3: sqlite3.Connection = Depends(get_db3)):
+    username = username.lower()
     try:
         # check that username is unique
         row = udb.execute('SELECT * FROM users WHERE username=?', [username])
