@@ -12,4 +12,4 @@ WORKDIR /
 
 COPY ./ /
 
-CMD sh init-TopTen.sh && sh /test-orc.sh && sh /test-stats.sh
+CMD sh /test-orc.sh && sh /test-stats.sh
