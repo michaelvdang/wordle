@@ -23,7 +23,7 @@ pipeline {
         sh './jenkins-docker/Test/run-test.sh'
       }
     }
-    stage("deploy") {
+    stage("pre-deploy") {
       steps {
         sh './jenkins-docker/Deploy/pre-deploy.sh'
       }
