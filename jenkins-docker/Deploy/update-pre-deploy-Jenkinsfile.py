@@ -12,7 +12,7 @@ with open(r'/wordle/jenkins-docker/Deploy/Jenkinsfile', 'r') as file:
 
   data = data.replace(placeholder, SERVER_IP)
 
-with open(r'/wordle/jenkins-docker/Deploy/Jenkinsfile', 'r') as file:
+with open(r'/wordle/jenkins-docker/Deploy/Jenkinsfile', 'w') as file:
   file.write(data)
 
 print('Text replaced')
