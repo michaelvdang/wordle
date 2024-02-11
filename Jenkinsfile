@@ -1,5 +1,5 @@
 def remote = [:]
-remote.name = "node-1"
+remote.name = "EC2 instance"
 
 remote.allowAnyHosts = true
 // create credential in Jenkins for EC2 container with id of AWS-EC2 using private key for the container
@@ -26,7 +26,8 @@ node {
     remote.user = username
     remote.identityFile = identity
     stage("Deploy") {
-      sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/wordle/jenkins-docker/Deploy/'
+      sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/home/ubuntu'
+      // sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/wordle/jenkins-docker/Deploy/'
       sshScript remote: remote, script: "deploy.sh"
     }
   }
