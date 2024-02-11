@@ -4,7 +4,7 @@ pipeline {
     ENV_FILE_PATH = credentials('wordle-env-file')
     REDIS_CONF_FILE_PATH = credentials('redis-conf-file')
     REDIS_SECRET = credentials('redis-secret')
-    AWS_SSH_KEY = credentials('kdgAWSKeyPair')
+    AWS_SSH_KEY = credentials('AWS-EC2')
   }
   stages {
     stage("precheck") {
