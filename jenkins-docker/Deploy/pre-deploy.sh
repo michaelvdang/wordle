@@ -7,5 +7,6 @@ ls -al
 IP_ADDRESS=1.2.3.4
 echo $IP_ADDRESS
 
+# don't forget to mount the Jenkinsfile to orc container when it is run
 docker exec orc python3 /wordle/jenkins-docker/Deploy/update-pre-deploy-Jenkinsfile.py
 cat ./jenkins-docker/Deploy/Jenkinsfile
