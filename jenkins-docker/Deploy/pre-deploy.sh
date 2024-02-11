@@ -6,3 +6,6 @@
 ls -al
 IP_ADDRESS=1.2.3.4
 echo $IP_ADDRESS
+
+docker exec orc python3 /wordle/jenkins-docker/Deploy/update-pre-deploy-Jenkinsfile.py
+cat /wordle/jenkins-docker/Deploy/Jenkinsfile

@@ -1,6 +1,7 @@
 def remote = [:]
 remote.name = "node-1"
 remote.host = "52.8.24.164"
+<IP_ADDRESS>
 remote.allowAnyHosts = true
 // create credential in Jenkins for EC2 container with id of AWS-EC2 using private key for the container
 node {
