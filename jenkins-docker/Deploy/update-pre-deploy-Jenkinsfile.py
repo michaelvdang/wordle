@@ -6,6 +6,8 @@ load_dotenv()
 SERVER_IP = os.environ.get('SERVER_IP')
 
 placeholder = '<IP_ADDRESS>'
+print('SERVER_IP: ', SERVER_IP)
+print('placeholder: ', placeholder)
 
 with open(r'/wordle/jenkins-docker/Deploy/Jenkinsfile', 'r') as file:
   data = file.read()
