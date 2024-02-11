@@ -26,9 +26,9 @@ node {
     remote.user = username
     remote.identityFile = identity
     stage("Deploy") {
-      sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/home/ubuntu'
+      sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/home/ubuntu/'
       // sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/wordle/jenkins-docker/Deploy/'
-      sshScript remote: remote, script: "deploy.sh"
+      sshScript remote: remote, script: "./jenkins-docker/Deploy/deploy.sh"
     }
   }
 }
