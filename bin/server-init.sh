@@ -27,22 +27,18 @@ sudo groupadd -f docker
 sudo usermod -aG docker ${USER}
 sudo service docker restart
 
-### Frontend, when you want to build the front end on the server
-# ## installing npm
-# sudo apt -y install npm 
-
-## copy credentials files with scp-secret.bat on windows
-until [ -f ./.env ]
-do
-  echo .env is missing from project_root. Run scp-secret.bat to copy the files containing passwords
-  sleep 10
-done
-echo .env found
-until [ -f ./app/services/Redis/redis.conf ]
-do 
-  echo redis.conf is missing from project_root/app/services/Redis/ Run scp-secret.bat to copy the files containing passwords
-  sleep 10
-done
+# ## copy credentials files with scp-secret.bat on windows
+# until [ -f ./.env ]
+# do
+#   echo .env is missing from project_root. Run scp-secret.bat to copy the files containing passwords
+#   sleep 10
+# done
+# echo .env found
+# until [ -f ./app/services/Redis/redis.conf ]
+# do 
+#   echo redis.conf is missing from project_root/app/services/Redis/ Run scp-secret.bat to copy the files containing passwords
+#   sleep 10
+# done
 echo redis.conf found in project_root/app/services/Redis/
 
 ## run crontab
@@ -112,8 +108,8 @@ sudo apt -y install npm
 npm i
 npm run build
 
-## METHOD 2: build app LOCALLY
-read -p "Before movign on, if we are not building the app on server, make sure to run scp-fe-build.bat with the correct SERVER_IP to copy html assets to server. Press ENTER to continue..."
-sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
+# ## METHOD 2: build app LOCALLY
+# read -p "Before movign on, if we are not building the app on server, make sure to run scp-fe-build.bat with the correct SERVER_IP to copy html assets to server. Press ENTER to continue..."
+# sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
 
 sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/$DOMAIN_NAME/wordle/
