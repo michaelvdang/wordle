@@ -1,3 +1,5 @@
+Windows commands for starting Jenkins in Docker (from Jenkins.io)
+
 docker run -d --name jenkins-docker --rm --detach ^
   --privileged --network jenkins --network-alias docker ^
   --env DOCKER_TLS_CERTDIR=/certs ^

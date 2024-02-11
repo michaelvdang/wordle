@@ -4,6 +4,7 @@ pipeline {
     ENV_FILE_PATH = credentials('wordle-env-file')
     REDIS_CONF_FILE_PATH = credentials('redis-conf-file')
     REDIS_SECRET = credentials('redis-secret')
+    AWS_SSH_KEY = credentials('kdgAWSKeyPair')
   }
   stages {
     stage("precheck") {
@@ -22,6 +23,11 @@ pipeline {
         sh './jenkins-docker/Test/run-test.sh'
       }
     }
+    // stage("deploy") {
+    //   steps {
+    //     sh './jenkins-docker/Deploy/deploy.sh'
+    //   }
+    // }
   }
   post {
     always {
