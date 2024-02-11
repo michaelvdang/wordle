@@ -1,6 +1,6 @@
 #!/bin/bash
 whoami
-git clone --help
-mkdir hello-abc
+date >> timestamp.txt
+# git clone https://github.com/michaelvdang/wordle.git
 # cd wordle
 # git checkout docker-jenkins
