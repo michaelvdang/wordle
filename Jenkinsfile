@@ -23,11 +23,11 @@ pipeline {
         sh './jenkins-docker/Test/run-test.sh'
       }
     }
-    // stage("deploy") {
-    //   steps {
-    //     sh './jenkins-docker/Deploy/deploy.sh'
-    //   }
-    // }
+    stage("deploy") {
+      steps {
+        sh './jenkins-docker/Deploy/deploy.sh'
+      }
+    }
   }
   post {
     always {
