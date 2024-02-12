@@ -7,7 +7,7 @@ node {
   currentBuild.result = "SUCCESS"
   try {
     stage("Checkout") {
-      cleanWs()
+      // cleanWs()
       checkout scm
     }
     withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'redis-conf-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
@@ -26,8 +26,8 @@ node {
       sh './jenkins-docker/Deploy/pre-deploy.sh'
     }
     withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
-      remote.host = "52.8.24.164"
-      // remote.host = $IP_ADDRESS
+      // remote.host = "52.8.24.164"
+      remote.host = IP_ADDRESS
       remote.user = username
       remote.identityFile = identity
       stage("Deploy") {
