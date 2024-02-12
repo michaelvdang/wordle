@@ -13,6 +13,11 @@ node {
       stage("Set up env") {
         // sh 'chmod u+x -R ./jenkins-docker'
         sh 'chmod +x ./jenkins-docker/Pre-Build/pre-build.sh'
+        sh 'chmod +x ./jenkins-docker/build.sh'
+        sh 'chmod +x ./jenkins-docker/Test/run-test.sh'
+        sh 'chmod +x ./jenkins-docker/Deploy/pre-deploy.sh'
+        sh 'chmod +x ./jenkins-docker/Deploy/deploy.sh'
+        
         sh './jenkins-docker/Pre-Build/pre-build.sh'
       }
     }
