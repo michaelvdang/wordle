@@ -9,12 +9,12 @@ node {
     stage("Checkout") {
       checkout scm
     }
-    withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'wordle-env-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
-      stage("Precheck") {
-        // sh 'chmod u+x -R ./jenkins-docker'
-        sh './jenkins-docker/Pre-Build/pre-build.sh'
-      }
-    }
+    // withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'wordle-env-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
+    //   stage("Set up env") {
+    //     sh 'chmod u+x -R ./jenkins-docker'
+    //     sh './jenkins-docker/Pre-Build/pre-build.sh'
+    //   }
+    // }
     stage("Build") {
       sh './jenkins-docker/build.sh'
     }
