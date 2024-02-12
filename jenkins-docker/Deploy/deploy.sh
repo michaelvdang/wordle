@@ -1,7 +1,7 @@
 #!/bin/bash
 whoami
 date >> timestamp.txt
-git clone https://github.com/rtyley/small-test-repo.git
-# git clone https://github.com/michaelvdang/wordle.git
-# cd wordle
-# git checkout docker-jenkins
+git clone https://github.com/michaelvdang/wordle.git
+cd wordle
+git checkout docker-jenkins
+./server-init.sh

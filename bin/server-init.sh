@@ -39,7 +39,7 @@ sudo service docker restart
 #   echo redis.conf is missing from project_root/app/services/Redis/ Run scp-secret.bat to copy the files containing passwords
 #   sleep 10
 # done
-echo redis.conf found in project_root/app/services/Redis/
+# echo redis.conf found in project_root/app/services/Redis/
 
 ## run crontab
 sudo crontab /home/${USER}/wordle/crontab.txt
