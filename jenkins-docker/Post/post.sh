@@ -37,8 +37,8 @@ docker stop wordle-api-tester
 docker rm -f wordle-api-tester
 docker network rm wordle-network
 docker volume rm wordle-db
-# docker ps 
-# docker ps -a
-# docker images
+docker ps 
+docker ps -a
+docker images
 rm .env
 rm app/services/Redis/redis.conf
