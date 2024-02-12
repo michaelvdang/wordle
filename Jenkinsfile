@@ -11,12 +11,12 @@ node {
     }
     withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'wordle-env-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Set up env") {
-        // sh 'chmod u+x -R ./jenkins-docker'
-        sh 'chmod +x ./jenkins-docker/Pre-Build/pre-build.sh'
-        sh 'chmod +x ./jenkins-docker/build.sh'
-        sh 'chmod +x ./jenkins-docker/Test/run-test.sh'
-        sh 'chmod +x ./jenkins-docker/Deploy/pre-deploy.sh'
-        sh 'chmod +x ./jenkins-docker/Deploy/deploy.sh'
+        sh 'chmod u+x -R ./jenkins-docker'
+        // sh 'chmod +x ./jenkins-docker/Pre-Build/pre-build.sh'
+        // sh 'chmod +x ./jenkins-docker/build.sh'
+        // sh 'chmod +x ./jenkins-docker/Test/run-test.sh'
+        // sh 'chmod +x ./jenkins-docker/Deploy/pre-deploy.sh'
+        // sh 'chmod +x ./jenkins-docker/Deploy/deploy.sh'
         
         sh './jenkins-docker/Pre-Build/pre-build.sh'
       }
