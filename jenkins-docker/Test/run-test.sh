@@ -17,10 +17,9 @@ docker exec redis redis-cli -a "$REDIS_SECRET" ping
 sleep 5
 # pwd
 # ls -al
-rm *.txt
 touch after-test-logs.txt
-echo After-test logs from redis: >> after-test-logs.txt
-docker logs redis >> after-test-logs.txt
+echo After-test logs from redis:
+docker logs redis
 echo After-test logs from stats: >> after-test-logs.txt
 docker logs stats >> after-test-logs.txt
 echo After-test logs from wordcheck: >> after-test-logs.txt
@@ -29,9 +28,11 @@ echo After-test logs from wordvalidation: >> after-test-logs.txt
 docker logs wordvalidation >> after-test-logs.txt
 echo After-test logs from play: >> after-test-logs.txt
 docker logs play >> after-test-logs.txt
-echo After-test logs from orc:
+echo After-test logs from orc: >> after-test-logs.txt
 docker logs orc >> after-test-logs.txt
 
 
 echo After-test logs from wordle-api-tester >> after-test-logs.txt
 docker logs wordle-api-tester >> after-test-logs.txt
+
+cat after-test-logs.txt
