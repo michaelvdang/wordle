@@ -11,7 +11,6 @@ node {
     }
     withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'wordle-env-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Precheck") {
-        sh 'rm /jenkins-docker/Deploy/IP_ADDRESS.env'
         sh 'chmod u+x -R ./jenkins-docker'
         sh './jenkins-docker/Pre-Build/pre-build.sh'
       }
