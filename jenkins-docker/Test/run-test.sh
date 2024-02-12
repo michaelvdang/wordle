@@ -18,8 +18,8 @@ sleep 5
 # pwd
 # ls -al
 touch after-test-logs.txt
-echo After-test logs from redis:
-docker logs redis
+echo After-test logs from redis: >> after-test-logs.txt
+docker logs redis >> after-test-logs.txt
 echo After-test logs from stats: >> after-test-logs.txt
 docker logs stats >> after-test-logs.txt
 echo After-test logs from wordcheck: >> after-test-logs.txt
@@ -35,4 +35,5 @@ docker logs orc >> after-test-logs.txt
 echo After-test logs from wordle-api-tester >> after-test-logs.txt
 docker logs wordle-api-tester >> after-test-logs.txt
 
-cat after-test-logs.txt
+# cat after-test-logs.txt
+echo view logs in after-test-logs.txt
