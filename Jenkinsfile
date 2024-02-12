@@ -27,7 +27,7 @@ node {
     }
     withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
       // remote.host = "52.8.24.164"
-      remote.host = ${IP_ADDRESS}
+      remote.host = "${IP_ADDRESS}"
       remote.user = username
       remote.identityFile = identity
       stage("Deploy") {
