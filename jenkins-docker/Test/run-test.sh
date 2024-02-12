@@ -17,21 +17,21 @@ docker exec redis redis-cli -a "$REDIS_SECRET" ping
 sleep 5
 # pwd
 # ls -al
-echo After-test logs from stats:
-docker logs stats > a-stats-log.txt
-echo After-test logs from wordcheck:
-docker logs wordcheck > a-wc-log.txt
-echo After-test logs from wordvalidation:
-docker logs wordvalidation > awv-log.txt
-echo After-test logs from play:
-docker logs play > aplay-log.txt
+rm *.txt
+touch after-test-logs.txt
+echo After-test logs from redis: >> after-test-logs.txt
+docker logs redis >> after-test-logs.txt
+echo After-test logs from stats: >> after-test-logs.txt
+docker logs stats >> after-test-logs.txt
+echo After-test logs from wordcheck: >> after-test-logs.txt
+docker logs wordcheck >> after-test-logs.txt
+echo After-test logs from wordvalidation: >> after-test-logs.txt
+docker logs wordvalidation >> after-test-logs.txt
+echo After-test logs from play: >> after-test-logs.txt
+docker logs play >> after-test-logs.txt
 echo After-test logs from orc:
-docker logs orc > aorc-log.txt
-cat aorc-log.txt
-echo After-test logs from redis:
-docker logs redis > a-redis-log.txt
+docker logs orc >> after-test-logs.txt
 
 
-echo 'Log from wordle-api-tester'
-docker logs wordle-api-tester > a-tester-log.txt
-cat a-tester-log.txt
+echo After-test logs from wordle-api-tester >> after-test-logs.txt
+docker logs wordle-api-tester >> after-test-logs.txt
