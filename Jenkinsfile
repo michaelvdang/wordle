@@ -10,16 +10,10 @@ node {
       cleanWs()
       checkout scm
     }
-    withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'wordle-env-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
+    withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'redis-conf-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Set up env") {
         sh 'chmod u+x -R ./jenkins-docker' 
         sh './jenkins-docker/Pre-Build/setup-env.sh'
-        // sh 'chmod +x ./jenkins-docker/Pre-Build/pre-build.sh'
-        // sh 'chmod +x ./jenkins-docker/build.sh'
-        // sh 'chmod +x ./jenkins-docker/Test/run-test.sh'
-        // sh 'chmod +x ./jenkins-docker/Deploy/pre-deploy.sh'
-        // sh 'chmod +x ./jenkins-docker/Deploy/deploy.sh'
-        
       }
     }
     stage("Build") {
@@ -33,12 +27,10 @@ node {
     }
     withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
       remote.host = $IP_ADDRESS
-      // remote.host = "<IP_ADDRESS>" // for template
       remote.user = username
       remote.identityFile = identity
       stage("Deploy") {
-        sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/home/ubuntu/'
-        // sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/wordle/jenkins-docker/Deploy/'
+        // sshPut remote: remote, from: './jenkins-docker/Deploy/deploy.sh', into: '/home/ubuntu/'
         sshScript remote: remote, script: "./jenkins-docker/Deploy/deploy.sh"
       }
     }
