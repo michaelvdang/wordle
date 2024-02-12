@@ -4,4 +4,4 @@ date >> timestamp.txt
 git clone https://github.com/michaelvdang/wordle.git
 cd wordle
 git checkout docker-jenkins
-./server-init.sh
+./bin/server-init.sh
