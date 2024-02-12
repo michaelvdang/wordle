@@ -45,4 +45,7 @@ node {
       // subject: 'project build failed',
       // to: 'mdang2023@gmail.com'
   }
+  finally {
+    sh './jenkins-docker/Post/post.sh'
+  }
 }

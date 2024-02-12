@@ -6,6 +6,7 @@ echo 'Creating new wordle-network...'
 docker network create wordle-network
 
 echo 'Creating new volume...'
+# named volume wordle-db to store and share the SQLite and Redis databases, created in orc container
 docker volume create wordle-db
 
 echo 'Build and run Redis container..'
@@ -32,8 +33,8 @@ docker run -d --name play -p 0.0.0.0:9300:9300 -h localhost --network wordle-net
 
 echo 'Build and run orc container...'
 docker build    -t orc-image .
-docker run -d --volume wordle-db:/wordle/var --name orc -p 9400:9400    --network wordle-network orc-image
-# docker run -d --volume ./jenkins-docker/Deploy/:/wordle/jenkins-docker/Deploy/ --volume wordle-db:/wordle/var --name orc -p 9400:9400    --network wordle-network orc-image
+# docker run -d --volume wordle-db:/wordle/var --name orc -p 9400:9400    --network wordle-network orc-image
+docker run -d --volume ./jenkins-docker/Deploy/:/wordle/jenkins-docker/Deploy/ --volume wordle-db:/wordle/var --name orc -p 9400:9400    --network wordle-network orc-image
 
 # this might belong in the Test stage
 echo 'Build and run wordle-connection-check...'

@@ -6,7 +6,7 @@
 # don't forget to mount the Jenkinsfile to orc container when it is run
 # docker exec orc python3 /wordle/jenkins-docker/Deploy/update-pre-deploy-Jenkinsfile.py
 # cat ./jenkins-docker/Deploy/Jenkinsfile
-docker exec orc ls -al /wordle
+
 docker exec orc ls -al /wordle/jenkins-docker/Deploy
 docker exec orc python3 /wordle/jenkins-docker/Deploy/extract-ip-address.py
 IP_ADDRESS=`cat ./jenkins-docker/Deploy/IP_ADDRESS.env`
