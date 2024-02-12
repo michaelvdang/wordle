@@ -6,7 +6,7 @@ remote.allowAnyHosts = true
 node {
   currentBuild.result = "SUCCESS"
   try {
-    withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'wordle-env-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
+    // withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'wordle-env-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Checkout") {
         checkout scm
       }
@@ -24,7 +24,7 @@ node {
       stage("pre-deploy") {
         sh './jenkins-docker/Deploy/pre-deploy.sh'
       }
-    }
+    // }
 
     // withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
     //   remote.host = "52.8.24.164"
