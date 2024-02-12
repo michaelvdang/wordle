@@ -19,15 +19,17 @@ node {
     stage("Build") {
       sh './jenkins-docker/build.sh'
     }
-    stage("Test") {
-      sh './jenkins-docker/Test/run-test.sh'
+    withCredentials([string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
+      stage("Test") {
+        sh './jenkins-docker/Test/run-test.sh'
+      }
     }
     stage("Pre-deploy") {
       sh './jenkins-docker/Deploy/pre-deploy.sh'
     }
     withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
       // remote.host = "52.8.24.164"
-      remote.host = "$IP_ADDRESS"
+      remote.host = "${IP_ADDRESS}"
       remote.user = username
       remote.identityFile = identity
       stage("Deploy") {
