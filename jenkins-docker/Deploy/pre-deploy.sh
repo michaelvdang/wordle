@@ -4,5 +4,8 @@
 # change the <IP_ADDRESS> in the Wordle-deploy Jenkinsfile to the correct address
 
 # don't forget to mount the Jenkinsfile to orc container when it is run
-docker exec orc python3 /wordle/jenkins-docker/Deploy/update-pre-deploy-Jenkinsfile.py
-cat ./jenkins-docker/Deploy/Jenkinsfile
+# docker exec orc python3 /wordle/jenkins-docker/Deploy/update-pre-deploy-Jenkinsfile.py
+# cat ./jenkins-docker/Deploy/Jenkinsfile
+docker exec orc python3 /wordle/jenkins-docker/Deploy/extract-ip-address.py
+IP_ADDRESS=`cat ./jenkins-docker/Deploy/IP_ADDRESS.env`
+echo $IP_ADDRESS

@@ -6,25 +6,25 @@ remote.allowAnyHosts = true
 node {
   currentBuild.result = "SUCCESS"
   try {
+    stage("Checkout") {
+      checkout scm
+    }
     withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'wordle-env-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
-      stage("Checkout") {
-        checkout scm
-      }
       stage("precheck") {
-        // git pull
         sh 'chmod u+x -R ./jenkins-docker'
         sh './jenkins-docker/Pre-Build/pre-build.sh'
       }
-      stage("build") {
-        sh './jenkins-docker/build.sh'
-      }
-      stage("test") {
-        sh './jenkins-docker/Test/run-test.sh'
-      }
-      stage("pre-deploy") {
-        sh './jenkins-docker/Deploy/pre-deploy.sh'
-      }
     }
+    stage("build") {
+      sh './jenkins-docker/build.sh'
+    }
+    stage("test") {
+      sh './jenkins-docker/Test/run-test.sh'
+    }
+    stage("pre-deploy") {
+      sh './jenkins-docker/Deploy/pre-deploy.sh'
+    }
+  }
 
     // withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
     //   remote.host = "52.8.24.164"
@@ -37,7 +37,6 @@ node {
     //     sshScript remote: remote, script: "./jenkins-docker/Deploy/deploy.sh"
     //   }
     // }
-  }
   catch (err) {
     currentBuild.result = "FAILURE"
       // mail body: "project build error is here: ${env.BUILD_URL}" ,
