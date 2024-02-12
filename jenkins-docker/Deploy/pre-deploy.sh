@@ -11,4 +11,4 @@ docker exec orc ls -al /wordle/jenkins-docker/Deploy
 docker exec orc python3 /wordle/jenkins-docker/Deploy/extract-ip-address.py
 IP_ADDRESS=`cat ./jenkins-docker/Deploy/IP_ADDRESS.env`
 echo $IP_ADDRESS
-docker exec orc rm /wordle/jenkins-docker/Deploy//wordle/jenkins-docker/Deploy/extract-ip-address.py
+docker exec orc rm /wordle/jenkins-docker/Deploy//wordle/jenkins-docker/Deploy/IP_ADDRESS.env
