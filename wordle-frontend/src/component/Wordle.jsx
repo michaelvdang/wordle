@@ -397,8 +397,8 @@ const Wordle = ({mode}) => {
   
   return (
     <>
-    <h1 className='text-white'>VITE_DOMAIN_NAME: {new String(import.meta.env.VITE_DOMAIN_NAME)}</h1>
-    <h1 className='text-white'>STATS_URL: {STATS_URL}</h1>
+    {/* <h1 className='text-white'>VITE_DOMAIN_NAME: {new String(import.meta.env.VITE_DOMAIN_NAME)}</h1>
+    <h1 className='text-white'>STATS_URL: {STATS_URL}</h1> */}
     {isSettingUsername && 
       <UsernameDialog 
         username={username}

@@ -1,5 +1,5 @@
 #!/bin/bash
-#### Run this script in an EC2 Ubuntu instance from the project root: ie. /home/ubutnu/wordle
+#### Run this script in an EC2 Ubuntu instance from the project root: ie. /home/ubuntu/wordle
 ####  this will install the entire application that can be accessed at
 ####  VITE_SERVER_IP of the EC2 instance. You'll need to get a domain name
 ####  and point DNS to VITE_SERVER_IP, if needed, run certbot
@@ -132,12 +132,14 @@ sudo apt install nodejs -y
 sudo apt -y install npm 
 npm i
 npm run build
+cd ../
 
 # ## METHOD 2: build app LOCALLY
 # read -p "Before movign on, if we are not building the app on server, make sure to run scp-fe-build.bat with the correct VITE_SERVER_IP to copy html assets to server. Press ENTER to continue..."
 # sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
 
-sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/$VITE_DOMAIN_NAME/wordle/
+sudo cp -r ./wordle-frontend/dist/* /var/www/$VITE_DOMAIN_NAME/wordle/
+# sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/$VITE_DOMAIN_NAME/wordle/
 
 if [ "$VITE_DOMAIN_NAME" = "no-domain" ]
 then 
