@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
 SERVER_IP = os.environ.get('SERVER_IP')
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
 ## switch between running individual services or docker compose (same network)
