@@ -92,6 +92,7 @@ sudo ln -s /etc/nginx/sites-available/$VITE_DOMAIN_NAME.conf /etc/nginx/sites-en
   # remove no-domain nginx configs and files
 if [ ! "$VITE_DOMAIN_NAME" = "no-domain" ]
 then 
+  sudo chmod +x /etc/nginx/sites-enabled/no-domain
   sudo rm -rf /etc/nginx/sites-enabled/no-domain
   sudo rm -rf /etc/nginx/sites-available/no-domain.conf
   sudo rm -rf /var/www/no-domain
