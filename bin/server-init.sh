@@ -138,5 +138,5 @@ echo App can now be accessed at $VITE_DOMAIN_NAME/wordle
 fi
 echo Next step: acquire a domain name and point DNS to $VITE_SERVER_IP, then get a SSL certificate with Let's Encrypt's certbot
 echo Finally: update the .env file with new domain name and rerun Jenkins with the updated .env
-
+echo If encounters error, try to reun certbot with: sudo certbot --nginx
 echo How to run certbot according to instructions from https://certbot.eff.org/
