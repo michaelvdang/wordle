@@ -12,15 +12,15 @@ let ORC_URL = ''
 if (import.meta.env.VITE_DOMAIN_NAME === undefined) {
   throw new Error('Missing env file or env variables');
 }
-const DOMAIN_NAME = import.meta.env.VITE_DOMAIN_NAME // 'michaeldang.dev'
+const VITE_DOMAIN_NAME = import.meta.env.VITE_DOMAIN_NAME // 'michaeldang.dev'
 // check if a real domain name is supplied
-if (import.meta.env.DEV || DOMAIN_NAME == 'no-domain') {
+if (import.meta.env.DEV || VITE_DOMAIN_NAME == 'no-domain') {
   STATS_URL = 'http://localhost:9000'
   ORC_URL = 'http://localhost:9400'
 }
 else {
-  STATS_URL = 'https://stats.api.' + DOMAIN_NAME
-  ORC_URL = 'https://orchestrator.api.' + DOMAIN_NAME
+  STATS_URL = 'https://stats.api.' + VITE_DOMAIN_NAME
+  ORC_URL = 'https://orchestrator.api.' + VITE_DOMAIN_NAME
 }
 // const APP_SERVER = 'local'
 const APP_SERVER = 'remote'
@@ -406,6 +406,7 @@ const Wordle = ({mode}) => {
   return (
     <>
     {/* <h1 className='text-white'>VITE_DOMAIN_NAME: {new String(import.meta.env.VITE_DOMAIN_NAME)}</h1> */}
+    {/* <h1 className='text-white'>STATS_URL: {STATS_URL}</h1> */}
     {isSettingUsername && 
       <UsernameDialog 
         username={username}
