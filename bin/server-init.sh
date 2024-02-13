@@ -120,5 +120,7 @@ npm run build
 
 sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/$DOMAIN_NAME/wordle/
 
-echo App can now be accessed at $IP_ADDRESS/wordle
+echo App can now be accessed at $SERVER_IP/wordle
+echo Next step: acquire a domain name and point DNS to $SERVER_IP, then get a SSL certificate with Let's Encrypt's certbot
+echo Finally: update the .env file with new domain name and rerun Jenkins with the updated .env
 sleep 10
