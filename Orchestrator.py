@@ -43,16 +43,8 @@ origins = [     # curl and local browser are always allowed
     "http://" + str(SERVER_IP),
     "http://" + str(DOMAIN_NAME),
     "https://" + str(DOMAIN_NAME),
-    
-    # "http://146.190.58.25",
 ]
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+
 middleware = [
     Middleware(
         CORSMiddleware,

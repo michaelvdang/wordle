@@ -88,6 +88,14 @@ sudo mv $VITE_DOMAIN_NAME.conf /etc/nginx/sites-available
 sudo rm /etc/nginx/sites-enabled/$VITE_DOMAIN_NAME
 sudo ln -s /etc/nginx/sites-available/$VITE_DOMAIN_NAME.conf /etc/nginx/sites-enabled/$VITE_DOMAIN_NAME
 
+  # remove no-domain nginx configs and files
+if [ "$VITE_DOMAIN_NAME" = "no-domain" ]
+then 
+  rm -rf /etc/nginx/sites-enabled/no-domain
+  rm -rf /etc/nginx/sites-available/no-domain.conf
+  rm -rf /var/www/no-domain
+fi
+
 sudo nginx -s reload
 
 ## make NGINX static files directory

@@ -24,21 +24,16 @@ node {
         sh './jenkins-docker/Test/run-test.sh'
       }
     }
-    // stage("Pre-deploy") {
-    //   sh './jenkins-docker/Deploy/pre-deploy.sh'
-    //   sh 'ls -al'
-    //   sh 'ls ./app/services/Redis/'
-    // }
     withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
       remote.host = "52.8.24.164"
       // remote.host = IP_ADDRESS
       remote.user = username
       remote.identityFile = identity
       stage("Deploy") {
-        sshScript remote: remote, script: './jenkins-docker/Deploy/deploy.sh'
+        sshScript remote: remote, script: './jenkins-docker/Deploy/clone-checkout.sh'
         sshPut remote: remote, from: './.env', into: '/home/ubuntu/wordle/', override: true
         sshPut remote: remote, from: './app/services/Redis/redis.conf', into: '/home/ubuntu/wordle/app/services/Redis/', override: true
-        sshCommand remote: remote, command: "cd /home/ubuntu/wordle && ./bin/server-init.sh"
+        sshCommand remote: remote, command: "cd /home/ubuntu/wordle && chmod +x ./bin/server-init.sh && ./bin/server-init.sh"
       }
     }
   }

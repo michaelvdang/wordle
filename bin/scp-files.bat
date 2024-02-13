@@ -1,3 +1,4 @@
+@REM This script copies files from windows computer to server at SERVER_IP
 @REM set /p "USER=Enter user: "
 @REM set /p "SERVER_IP=Enter SERVER_IP: "
 set SERVER_IP=50.18.88.20

@@ -22,19 +22,6 @@ else {
   STATS_URL = 'http://stats.api.' + VITE_DOMAIN_NAME
   ORC_URL = 'http://orchestrator.api.' + VITE_DOMAIN_NAME
 }
-// const APP_SERVER = 'local'
-const APP_SERVER = 'remote'
-
-const endpoints = {
-  'local': {
-    'stats': 'http://localhost:9000',
-    'orc': 'http://localhost:9400',
-  },
-  'remote': {
-    'stats': 'https://stats.api.michaeldang.dev', // also change links in StatsDialog and LeaderboardModal
-    'orc': 'https://orchestrator.api.michaeldang.dev',
-  },
-}
 
 const LETTERS = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -58,7 +45,6 @@ const Wordle = ({mode}) => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [guesses, setGuesses] = useState([]);       // array of made guesses
   const [guessIndex, setGuessIndex] = useState(0);  // index of the current guess
-  // const [letterIndex, setLetterIndex] = useState(0);
   const [currentGuess, setCurrentGuess] = useState(''); // current guess being made
   const [gameWon, setGameWon] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -95,7 +81,6 @@ const Wordle = ({mode}) => {
   const fetchNewGame = (_username = username) => {
     clearLocalStorage();
     fetch(ORC_URL + '/game/new?username=' + _username,
-    // fetch(endpoints[APP_SERVER]['orc'] + '/game/new?username=' + _username,
       {
         method: 'POST',
       })

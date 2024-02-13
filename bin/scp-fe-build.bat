@@ -1,3 +1,4 @@
+@REM This script copies locally built frontend files to server at SERVER_IP
 @REM set /p "USER=Enter user: "
 @REM set /p "SERVER_IP=Enter SERVER_IP: "
 @REM set /p "DOMAIN_NAME=Enter DOMAIN_NAME: "
