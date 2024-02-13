@@ -26,8 +26,8 @@ if (import.meta.env.DEV || VITE_DOMAIN_NAME == 'no-domain') {
 //   ORC_URL = VITE_SERVER_IP + ':9400'
 // }
 else {
-  STATS_URL = 'http://stats.api.' + VITE_DOMAIN_NAME
-  ORC_URL = 'http://orchestrator.api.' + VITE_DOMAIN_NAME
+  STATS_URL = 'https://stats.api.' + VITE_DOMAIN_NAME
+  ORC_URL = 'https://orchestrator.api.' + VITE_DOMAIN_NAME
 }
 
 const LETTERS = [
