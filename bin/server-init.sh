@@ -94,8 +94,8 @@ if [ ! "$VITE_DOMAIN_NAME" = "no-domain" ]
 then 
   sudo chmod +wx /etc/nginx/sites-enabled/no-domain
   sudo rm -rf /etc/nginx/sites-enabled/no-domain
-  sudo rm -rf /etc/nginx/sites-available/no-domain.conf
-  sudo rm -rf /var/www/no-domain
+  # sudo rm -rf /etc/nginx/sites-available/no-domain.conf
+  # sudo rm -rf /var/www/no-domain
 fi
 
 sudo nginx -s reload
