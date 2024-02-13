@@ -33,7 +33,7 @@ node {
         sshScript remote: remote, script: './jenkins-docker/Deploy/clone-checkout.sh'
         sshPut remote: remote, from: './.env', into: '/home/ubuntu/wordle/', override: true
         sshPut remote: remote, from: './app/services/Redis/redis.conf', into: '/home/ubuntu/wordle/app/services/Redis/', override: true
-        sshCommand remote: remote, command: "cd /home/ubuntu/wordle && chmod +x ./bin/server-init.sh && ./bin/server-init.sh"
+        sshCommand remote: remote, command: "cd /home/ubuntu/wordle && chmod +x ./bin/server-init.sh && sudo ./bin/server-init.sh"
       }
     }
   }
