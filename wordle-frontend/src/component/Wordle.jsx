@@ -13,10 +13,15 @@ if (import.meta.env.VITE_DOMAIN_NAME === undefined) {
   throw new Error('Missing env file or env variables');
 }
 const VITE_DOMAIN_NAME = import.meta.env.VITE_DOMAIN_NAME // 'michaeldang.dev'
+const VITE_SERVER_IP = '' + import.meta.env.VITE_SERVER_IP
 // check if a real domain name is supplied
 if (import.meta.env.DEV || VITE_DOMAIN_NAME == 'no-domain') {
   STATS_URL = 'http://localhost:9000'
   ORC_URL = 'http://localhost:9400'
+}
+else if (import.meta.env.VITE_DOMAIN_NAME == 'no-domain') {
+  STATS_URL = VITE_SERVER_IP + ':9000'
+  ORC_URL = VITE_SERVER_IP + ':9400'
 }
 else {
   STATS_URL = 'http://stats.api.' + VITE_DOMAIN_NAME

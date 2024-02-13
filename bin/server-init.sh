@@ -1,8 +1,8 @@
 #!/bin/bash
 #### Run this script in an EC2 Ubuntu instance from the project root
 ####  this will install the entire application that can be accessed at
-####  SERVER_IP of the EC2 instance. You'll need to get a domain name
-####  and point DNS to SERVER_IP, if needed, run certbot
+####  VITE_SERVER_IP of the EC2 instance. You'll need to get a domain name
+####  and point DNS to VITE_SERVER_IP, if needed, run certbot
 ### Backend
 ## installing Docker
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do sudo apt-get remove $pkg; done
@@ -67,8 +67,8 @@ curl -4 icanhazip.com
   # get env variables, including: DOMAIN_NAME
 source .env
 
-  # remove carriage return from $SERVER_IP
-SERVER_IP=`echo $SERVER_IP | tr -d "\r" | cat -v`
+  # remove carriage return from $VITE_SERVER_IP
+VITE_SERVER_IP=`echo $VITE_SERVER_IP | tr -d "\r" | cat -v`
 # DOMAIN_NAME=`echo $DOMAIN_NAME | tr -d "\r" | cat -v`
 VITE_DOMAIN_NAME=`echo $VITE_DOMAIN_NAME | tr -d "\r" | cat -v`
 VITE_BACK_END_TYPE=`echo $VITE_BACK_END_TYPE | tr -d "\r" | cat -v`
@@ -79,8 +79,8 @@ echo VITE_BACK_END_TYPE=$VITE_BACK_END_TYPE >> /home/${USER}/wordle/wordle-front
 
   # copy template to new file
 sudo cat nginx-template.conf > $VITE_DOMAIN_NAME.conf
-  # replace <SERVER_IP> in config file with SERVER_IP from .env
-sed -i "s/<SERVER_IP>/$SERVER_IP/g" $VITE_DOMAIN_NAME.conf
+  # replace <VITE_SERVER_IP> in config file with VITE_SERVER_IP from .env
+sed -i "s/<VITE_SERVER_IP>/$VITE_SERVER_IP/g" $VITE_DOMAIN_NAME.conf
 sed -i "s/<DOMAIN_NAME>/$VITE_DOMAIN_NAME/g" $VITE_DOMAIN_NAME.conf
   # move config file and create soft link
 sudo mv $VITE_DOMAIN_NAME.conf /etc/nginx/sites-available
@@ -123,18 +123,18 @@ npm i
 npm run build
 
 # ## METHOD 2: build app LOCALLY
-# read -p "Before movign on, if we are not building the app on server, make sure to run scp-fe-build.bat with the correct SERVER_IP to copy html assets to server. Press ENTER to continue..."
+# read -p "Before movign on, if we are not building the app on server, make sure to run scp-fe-build.bat with the correct VITE_SERVER_IP to copy html assets to server. Press ENTER to continue..."
 # sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
 
 sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/$VITE_DOMAIN_NAME/wordle/
 
 if [ "$VITE_DOMAIN_NAME" = "no-domain" ]
 then 
-echo App can now be accessed at $SERVER_IP/wordle
+echo App can now be accessed at $VITE_SERVER_IP/wordle
 else 
 echo App can now be accessed at $VITE_DOMAIN_NAME/wordle
 fi
-echo Next step: acquire a domain name and point DNS to $SERVER_IP, then get a SSL certificate with Let's Encrypt's certbot
+echo Next step: acquire a domain name and point DNS to $VITE_SERVER_IP, then get a SSL certificate with Let's Encrypt's certbot
 echo Finally: update the .env file with new domain name and rerun Jenkins with the updated .env
 
 echo How to run certbot according to instructions from https://certbot.eff.org/
