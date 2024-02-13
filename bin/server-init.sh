@@ -119,3 +119,6 @@ npm run build
 # sudo mkdir -p /home/$USER/wordle/wordle-frontend/dist
 
 sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/$DOMAIN_NAME/wordle/
+
+echo App can now be accessed at $IP_ADDRESS/wordle
+sleep 10
