@@ -27,7 +27,7 @@ node {
     stage("Pre-deploy") {
       sh './jenkins-docker/Deploy/pre-deploy.sh'
       sh 'ls -al'
-      sh 'ls /app/services/Redis/'
+      sh 'ls ./app/services/Redis/'
     }
     withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
       remote.host = "52.8.24.164"
