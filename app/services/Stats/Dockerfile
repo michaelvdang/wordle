@@ -3,12 +3,12 @@ FROM python:alpine3.19
 
 WORKDIR /wordle
 
-COPY ./requirements.txt /wordle/app/services/Stats/requirements.txt
+COPY requirements.txt /wordle/app/services/Stats/requirements.txt
 
 # RUN python3 -m pip install --no-cache-dir --upgrade -r /wordle/requirements.txt
 RUN python3 -m pip install -r /wordle/app/services/Stats/requirements.txt
 
-COPY ./ /wordle/app/services/Stats
+COPY . /wordle/app/services/Stats
 
 # ## include these lines if the service needs these databases (stats, check, validation)
 # ## but these lines create different databases for each container (not shared)

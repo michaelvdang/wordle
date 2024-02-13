@@ -39,7 +39,7 @@ endpoints = {
 origins = [     # curl and local browser are always allowed
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
     "https://mikespace.xyz",
-    "https://mikespace.dev", # DO NOT USE backslash (/)
+    "https://mikespace.dev", # DO NOT USE trailing slash (/)
     "http://" + str(VITE_SERVER_IP),
     "http://" + str(VITE_DOMAIN_NAME),
     "https://" + str(VITE_DOMAIN_NAME),
