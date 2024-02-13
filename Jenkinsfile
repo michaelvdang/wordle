@@ -36,8 +36,9 @@ node {
       remote.identityFile = identity
       stage("Deploy") {
         sshScript remote: remote, script: './jenkins-docker/Deploy/deploy.sh'
-        sshPut remote: remote, from: '.env', into: '/wordle'
-        sshPut remote: remote, from: '/wordle/app/services/Redis/redis.conf', into: '/wordle/app/services/Redis'
+        sshPut remote: remote, from: './.env', into: '/home/ubuntu/wordle'
+        // sshPut remote: remote, from: '.env', into: '/home/ubuntu/wordle'
+        sshPut remote: remote, from: './app/services/Redis/redis.conf', into: '/home/ubuntu/wordle/app/services/Redis/'
         sshCommand remote: remote, command: "cd /wordle && ./bin/server-init.sh"
       }
     }
