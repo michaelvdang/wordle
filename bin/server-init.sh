@@ -70,12 +70,12 @@ source .env
   # remove carriage return from $SERVER_IP
 SERVER_IP=`echo $SERVER_IP | tr -d "\r" | cat -v`
 DOMAIN_NAME=`echo $DOMAIN_NAME | tr -d "\r" | cat -v`
-VITE_DOMAIN_NAME=`echo VITE_DOMAIN_NAME=$VITE_DOMAIN_NAME | tr -d "\r" | cat -v`
-VITE_BACK_END_TYPE=`echo VITE_BACK_END_TYPE=$VITE_BACK_END_TYPE | tr -d "\r" | cat -v`
+VITE_DOMAIN_NAME=`echo $VITE_DOMAIN_NAME | tr -d "\r" | cat -v`
+VITE_BACK_END_TYPE=`echo $VITE_BACK_END_TYPE | tr -d "\r" | cat -v`
 
   # create frontend .env file
-echo $VITE_DOMAIN_NAME > /home/${USER}/wordle/wordle-frontend/.env
-echo $VITE_BACK_END_TYPE >> /home/${USER}/wordle/wordle-frontend/.env
+echo VITE_DOMAIN_NAME=$VITE_DOMAIN_NAME > /home/${USER}/wordle/wordle-frontend/.env
+echo VITE_BACK_END_TYPE=$VITE_BACK_END_TYPE >> /home/${USER}/wordle/wordle-frontend/.env
 
   # copy template to new file
 sudo cat nginx-template.conf > $DOMAIN_NAME.conf
