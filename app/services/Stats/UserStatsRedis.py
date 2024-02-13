@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 load_dotenv()
 # .env file is stored in the same directory as this file
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
-SERVER_IP = os.environ.get('SERVER_IP')
-DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
+VITE_SERVER_IP = os.environ.get('VITE_SERVER_IP')
+VITE_DOMAIN_NAME = os.environ.get('VITE_DOMAIN_NAME')
 def get_redis():
     yield redis.Redis(
                     # host='localhost',
@@ -76,9 +76,9 @@ app = FastAPI()
 
 origins = [     # curl and local browser are always allowed
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
-    "http://" + str(SERVER_IP),
-    "http://" + str(DOMAIN_NAME),
-    "https://" + str(DOMAIN_NAME)
+    "http://" + str(VITE_SERVER_IP),
+    "http://" + str(VITE_DOMAIN_NAME),
+    "https://" + str(VITE_DOMAIN_NAME)
     # "http://146.190.58.25",
 ]
 app.add_middleware(
@@ -93,8 +93,8 @@ app.add_middleware(
 def hello():
     return {"message": "hello world", 
             "message2": "UserStatsRedis.py",
-            # "DOMAIN_NAME": "https://" + DOMAIN_NAME,
-            "SERVER_IP": SERVER_IP
+            # "VITE_DOMAIN_NAME": "https://" + VITE_DOMAIN_NAME,
+            "VITE_SERVER_IP": VITE_SERVER_IP
             }
 
 # insert finished game into the correct shard based on guid for storage
