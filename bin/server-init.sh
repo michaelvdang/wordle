@@ -89,7 +89,7 @@ sudo rm /etc/nginx/sites-enabled/$VITE_DOMAIN_NAME
 sudo ln -s /etc/nginx/sites-available/$VITE_DOMAIN_NAME.conf /etc/nginx/sites-enabled/$VITE_DOMAIN_NAME
 
   # remove no-domain nginx configs and files
-if [ "$VITE_DOMAIN_NAME" = "no-domain" ]
+if [ ! "$VITE_DOMAIN_NAME" = "no-domain" ]
 then 
   rm -rf /etc/nginx/sites-enabled/no-domain
   rm -rf /etc/nginx/sites-available/no-domain.conf
@@ -128,7 +128,12 @@ npm run build
 
 sudo cp -r /home/$USER/wordle/wordle-frontend/dist/* /var/www/$VITE_DOMAIN_NAME/wordle/
 
+if [ "$VITE_DOMAIN_NAME" = "no-domain" ]
+then 
 echo App can now be accessed at $SERVER_IP/wordle
+else 
+echo App can now be accessed at $VITE_DOMAIN_NAME/wordle
+fi
 echo Next step: acquire a domain name and point DNS to $SERVER_IP, then get a SSL certificate with Let's Encrypt's certbot
 echo Finally: update the .env file with new domain name and rerun Jenkins with the updated .env
 
