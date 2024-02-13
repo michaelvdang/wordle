@@ -27,6 +27,7 @@ Issues faced while developing app:
 - Understanding which process has permission and how to grant permission or elevate privilege, reason: couldn't delete some files or directory
 - Understanding that Jenkins doesn't have elevated privilege but the docker containers services do, and thus can create and manipulate files
 - Manage the credentials and keep them updated
+- Understanding where the project root is and where the current working directory is, also mapping between system and container
 
 START HERE:
 Hardware: 
