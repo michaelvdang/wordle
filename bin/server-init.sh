@@ -83,11 +83,11 @@ echo VITE_BACK_END_TYPE=$VITE_BACK_END_TYPE >> ./wordle-frontend/.env
   # remove no-domain nginx configs and files
 if [ ! "$VITE_DOMAIN_NAME" = "no-domain" ]
 then 
-  # sudo chmod +w /etc/nginx/sites-enabled/no-domain
+  sudo chmod +w /etc/nginx/sites-enabled/no-domain
   sudo rm -rf /etc/nginx/sites-enabled/no-domain
-  # sudo chmod +w /etc/nginx/sites-available/no-domain.conf
+  sudo chmod +w /etc/nginx/sites-available/no-domain.conf
   sudo rm -rf /etc/nginx/sites-available/no-domain.conf
-  # sudo chmod -R +w /var/www/no-domain
+  sudo chmod -R +w /var/www/no-domain
   sudo rm -rf /var/www/no-domain
 fi
 

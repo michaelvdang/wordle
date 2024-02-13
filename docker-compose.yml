@@ -8,8 +8,8 @@ services:
     ports:
       - "6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
     volumes:
-      - ./var/redis:/data     # add volume to persist data between container restarts
-      # - db/redis/data:/data     # add volume to persist data between container restarts
+      - wordle-db:/data     # add volume to persist data between container restarts
+      # - wordle-db/redis/data:/data     # add volume to persist data between container restarts
       - "./app/services/Redis/redis.conf:/etc/redis/redis.conf"  # don't forget to import the config file
       # - ${PWD}/app/services/Redis/redis.con:/etc/redis/redis.conf  # don't forget to import the config file
     restart: unless-stopped
@@ -20,7 +20,7 @@ services:
     ports: 
       - "9000:9000"
     volumes:
-      - db:/wordle/var
+      - wordle-db:/wordle/var
       - "./.env:/wordle/.env"  # because .env is a file, this needs full path or .env will become a directory
       # - ${PWD}/.env:/wordle/.env  # ${PWD} works for linux but not windows, because .env is a file, this needs full path or .env will become a directory
     depends_on:
@@ -33,7 +33,7 @@ services:
     ports: 
       - "9100:9100"
     volumes:
-      - db:/wordle/var
+      - wordle-db:/wordle/var
     restart: unless-stopped
   wordvalidation:
     build: ./app/services/WordValidation
@@ -42,7 +42,7 @@ services:
     ports: 
       - "9200:9200"
     volumes:
-      - db:/wordle/var
+      - wordle-db:/wordle/var
     restart: unless-stopped
   play:
     build: ./app/services/Play
@@ -51,7 +51,7 @@ services:
     ports: 
       - "9300:9300"
     volumes:
-      # - db:/wordle/var
+      # - wordle-db:/wordle/var
       - "./.env:/wordle/.env"
       # - ${PWD}/.env:/wordle/.env
     restart: unless-stopped
@@ -63,7 +63,7 @@ services:
     ports: 
       - "9400:9400"
     volumes:
-      - db:/wordle/var
+      - wordle-db:/wordle/var
       # - "./.env:/wordle/.env"
       # - ${PWD}/.env:/wordle/.env
     depends_on:
@@ -89,4 +89,4 @@ services:
   #     - redis
   #   restart: unless-stopped
 volumes:
-  db:
+  wordle-db:
