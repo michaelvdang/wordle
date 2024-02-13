@@ -95,7 +95,7 @@ fi
   # copy template to new file only if there is no conf file 
 if [ ! -e "/etc/nginx/sites-available/$VITE_DOMAIN_NAME.conf" ]
 then 
-sudo cat nginx-template.conf > $VITE_DOMAIN_NAME.conf
+sudo cat Nginx/nginx-template.conf > $VITE_DOMAIN_NAME.conf
   # replace <VITE_SERVER_IP> in config file with VITE_SERVER_IP from .env
 sed -i "s/<VITE_SERVER_IP>/$VITE_SERVER_IP/g" $VITE_DOMAIN_NAME.conf
 sed -i "s/<DOMAIN_NAME>/$VITE_DOMAIN_NAME/g" $VITE_DOMAIN_NAME.conf
