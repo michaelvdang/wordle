@@ -20,10 +20,10 @@ if (import.meta.env.DEV) {
   ORC_URL = 'http://localhost:9400'
 }
 else if (import.meta.env.VITE_DOMAIN_NAME == 'no-domain') {
-  STATS_URL = ''
-  ORC_URL = ''
-  // STATS_URL = VITE_SERVER_IP + ':9000'
-  // ORC_URL = VITE_SERVER_IP + ':9400'
+  // STATS_URL = '/wordle'
+  // ORC_URL = '/wordle'
+  STATS_URL = VITE_SERVER_IP + ':9000'
+  ORC_URL = VITE_SERVER_IP + ':9400'
 }
 else {
   STATS_URL = 'http://stats.api.' + VITE_DOMAIN_NAME
