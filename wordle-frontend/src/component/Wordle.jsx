@@ -15,7 +15,7 @@ if (import.meta.env.VITE_DOMAIN_NAME === undefined) {
 const VITE_DOMAIN_NAME = import.meta.env.VITE_DOMAIN_NAME // 'michaeldang.dev'
 const VITE_SERVER_IP = '' + import.meta.env.VITE_SERVER_IP
 // check if a real domain name is supplied
-if (import.meta.env.DEV || VITE_DOMAIN_NAME == 'no-domain') {
+if (import.meta.env.DEV) {
   STATS_URL = 'http://localhost:9000'
   ORC_URL = 'http://localhost:9400'
 }
