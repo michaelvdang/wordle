@@ -73,7 +73,9 @@ VITE_SERVER_IP=`echo $VITE_SERVER_IP | tr -d "\r" | cat -v`
 VITE_DOMAIN_NAME=`echo $VITE_DOMAIN_NAME | tr -d "\r" | cat -v`
 VITE_BACK_END_TYPE=`echo $VITE_BACK_END_TYPE | tr -d "\r" | cat -v`
 
-  # create frontend .env file
+
+
+  # create .env file for frontend build
 echo VITE_DOMAIN_NAME=$VITE_DOMAIN_NAME > ./wordle-frontend/.env
 echo VITE_SERVER_IP=$VITE_SERVER_IP >> ./wordle-frontend/.env
 echo VITE_BACK_END_TYPE=$VITE_BACK_END_TYPE >> ./wordle-frontend/.env
@@ -85,6 +87,21 @@ then
   sudo rm -rf /etc/nginx/sites-enabled/no-domain
   # sudo rm -rf /etc/nginx/sites-available/no-domain.conf
   # sudo rm -rf /var/www/no-domain
+fi
+
+
+  # copy template to new file only if there is no conf file 
+if [ ! -e "$VITE_DOMAIN_NAME.conf" ]
+then 
+sudo cat nginx-template.conf > $VITE_DOMAIN_NAME.conf
+  # replace <VITE_SERVER_IP> in config file with VITE_SERVER_IP from .env
+sed -i "s/<VITE_SERVER_IP>/$VITE_SERVER_IP/g" $VITE_DOMAIN_NAME.conf
+sed -i "s/<DOMAIN_NAME>/$VITE_DOMAIN_NAME/g" $VITE_DOMAIN_NAME.conf
+  # move config file and create soft link
+sudo mv $VITE_DOMAIN_NAME.conf /etc/nginx/sites-available
+  # remove old links
+sudo rm /etc/nginx/sites-enabled/$VITE_DOMAIN_NAME
+sudo ln -s /etc/nginx/sites-available/$VITE_DOMAIN_NAME.conf /etc/nginx/sites-enabled/$VITE_DOMAIN_NAME
 fi
 
 sudo nginx -s reload

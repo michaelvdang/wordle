@@ -1,4 +1,5 @@
 #!/bin/bash
+## run in the USER directory, ie. /home/$USER
 whoami
 date >> timestamp.txt
 
