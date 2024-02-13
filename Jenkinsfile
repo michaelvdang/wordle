@@ -17,7 +17,7 @@ node {
       }
     }
     stage("Build") {
-      sh './jenkins-docker/Build/build.sh'
+      sh './jenkins-docker/Jenkins-build/build.sh'
     }
     withCredentials([string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Test") {
