@@ -75,7 +75,7 @@ VITE_BACK_END_TYPE=`echo $VITE_BACK_END_TYPE | tr -d "\r" | cat -v`
 
   # create frontend .env file
 echo VITE_DOMAIN_NAME=$VITE_DOMAIN_NAME > /home/${USER}/wordle/wordle-frontend/.env
-echo VITE_SERVER_IP=$VITE_SERVER_IP > /home/${USER}/wordle/wordle-frontend/.env
+echo VITE_SERVER_IP=$VITE_SERVER_IP >> /home/${USER}/wordle/wordle-frontend/.env
 echo VITE_BACK_END_TYPE=$VITE_BACK_END_TYPE >> /home/${USER}/wordle/wordle-frontend/.env
 
   # copy template to new file
