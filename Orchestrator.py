@@ -12,8 +12,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SERVER_IP = os.environ.get('SERVER_IP')
-DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
+VITE_SERVER_IP = os.environ.get('VITE_SERVER_IP')
+VITE_DOMAIN_NAME = os.environ.get('VITE_DOMAIN_NAME')
 ## switch between running individual services or docker compose (same network)
 ## DEBUGGING: use 'localhost' and run: uvicorn Orchestrator:app --port 9400 --reload
 # APP_HOST = 'localhost'
@@ -40,9 +40,9 @@ origins = [     # curl and local browser are always allowed
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
     "https://mikespace.xyz",
     "https://mikespace.dev", # DO NOT USE backslash (/)
-    "http://" + str(SERVER_IP),
-    "http://" + str(DOMAIN_NAME),
-    "https://" + str(DOMAIN_NAME),
+    "http://" + str(VITE_SERVER_IP),
+    "http://" + str(VITE_DOMAIN_NAME),
+    "https://" + str(VITE_DOMAIN_NAME),
 ]
 
 middleware = [

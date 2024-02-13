@@ -14,7 +14,7 @@ echo 'Ping Redis...'
 docker exec redis redis-cli -a "$REDIS_SECRET" ping
 
 
-sleep 5
+# sleep 5
 # pwd
 # ls -al
 touch after-test-logs.txt

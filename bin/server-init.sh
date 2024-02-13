@@ -1,5 +1,5 @@
 #!/bin/bash
-#### Run this script in an EC2 Ubuntu instance from the project root
+#### Run this script in an EC2 Ubuntu instance from the project root: ie. /home/ubutnu/wordle
 ####  this will install the entire application that can be accessed at
 ####  VITE_SERVER_IP of the EC2 instance. You'll need to get a domain name
 ####  and point DNS to VITE_SERVER_IP, if needed, run certbot
@@ -42,11 +42,11 @@ sudo service docker restart
 # echo redis.conf found in project_root/app/services/Redis/
 
 ## run crontab
-sudo crontab /home/${USER}/wordle/crontab.txt
+sudo crontab ./crontab.txt
 
 ## install pip, venv, and requirements for crontab
 sudo apt -y install python3-pip
-sudo python3 -m pip install -r cron-requirements.txt
+sudo python3 -m pip install -r ./cron-requirements.txt
 
 ## start the services
 sudo docker compose up -d
@@ -74,20 +74,9 @@ VITE_DOMAIN_NAME=`echo $VITE_DOMAIN_NAME | tr -d "\r" | cat -v`
 VITE_BACK_END_TYPE=`echo $VITE_BACK_END_TYPE | tr -d "\r" | cat -v`
 
   # create frontend .env file
-echo VITE_DOMAIN_NAME=$VITE_DOMAIN_NAME > /home/${USER}/wordle/wordle-frontend/.env
-echo VITE_SERVER_IP=$VITE_SERVER_IP >> /home/${USER}/wordle/wordle-frontend/.env
-echo VITE_BACK_END_TYPE=$VITE_BACK_END_TYPE >> /home/${USER}/wordle/wordle-frontend/.env
-
-  # copy template to new file
-sudo cat nginx-template.conf > $VITE_DOMAIN_NAME.conf
-  # replace <VITE_SERVER_IP> in config file with VITE_SERVER_IP from .env
-sed -i "s/<VITE_SERVER_IP>/$VITE_SERVER_IP/g" $VITE_DOMAIN_NAME.conf
-sed -i "s/<DOMAIN_NAME>/$VITE_DOMAIN_NAME/g" $VITE_DOMAIN_NAME.conf
-  # move config file and create soft link
-sudo mv $VITE_DOMAIN_NAME.conf /etc/nginx/sites-available
-  # remove old links
-sudo rm /etc/nginx/sites-enabled/$VITE_DOMAIN_NAME
-sudo ln -s /etc/nginx/sites-available/$VITE_DOMAIN_NAME.conf /etc/nginx/sites-enabled/$VITE_DOMAIN_NAME
+echo VITE_DOMAIN_NAME=$VITE_DOMAIN_NAME > ./wordle-frontend/.env
+echo VITE_SERVER_IP=$VITE_SERVER_IP >> ./wordle-frontend/.env
+echo VITE_BACK_END_TYPE=$VITE_BACK_END_TYPE >> ./wordle-frontend/.env
 
   # remove no-domain nginx configs and files
 if [ ! "$VITE_DOMAIN_NAME" = "no-domain" ]
@@ -105,7 +94,8 @@ sudo mkdir -p /var/www/$VITE_DOMAIN_NAME
 sudo mkdir -p /var/www/$VITE_DOMAIN_NAME/wordle
 
 ## METHOD 1: build the app ON server
-cd /home/$USER/wordle/wordle-frontend
+cd ./wordle-frontend
+# cd /home/$USER/wordle/wordle-frontend
 ## installing node and npm
 # fix broken install 
   # sudo rm /etc/apt/sources.list
@@ -137,6 +127,6 @@ else
 echo App can now be accessed at $VITE_DOMAIN_NAME/wordle
 fi
 echo Next step: acquire a domain name and point DNS to $VITE_SERVER_IP, then get a SSL certificate with Let's Encrypt's certbot
-echo Finally: update the .env file with new domain name and rerun Jenkins with the updated .env
-echo If encounters error, try to reun certbot with: sudo certbot --nginx
 echo How to run certbot according to instructions from https://certbot.eff.org/
+echo Finally: update the .env file with new domain name and rerun Jenkins with the updated .env
+echo If encounters error, try to run certbot with: sudo certbot --nginx
