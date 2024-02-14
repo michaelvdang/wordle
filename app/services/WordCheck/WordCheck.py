@@ -33,7 +33,7 @@ settings = Settings()
 app = FastAPI()
 
 @app.get("/")
-def test():
+def hello():
     return {'hello': 'WordCheck.py'}
 
 @app.post("/answers/check")
