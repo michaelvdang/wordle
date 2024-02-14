@@ -13,6 +13,7 @@ load_dotenv()
 
 VITE_SERVER_IP = os.environ.get('VITE_SERVER_IP')
 VITE_DOMAIN_NAME = os.environ.get('VITE_DOMAIN_NAME')
+VITE_SECRET = os.environ.get('VITE_SECRET')
 ## switch between running individual services or docker compose (same network)
 ## DEBUGGING: use 'localhost' and run: uvicorn Orchestrator:app --port 9400 --reload
 # APP_HOST = 'localhost'
@@ -59,7 +60,7 @@ app = FastAPI(middleware=middleware)
 @app.get('/')
 def test():
     return {'message' : 'Orchestrator.py',
-            'VITE_DOMAIN_NAME': VITE_DOMAIN_NAME}
+            'VITE_SECRET': VITE_SECRET}
 
 @app.post('/game/new', status_code=201)
 def start_new_game(username: str):# = Body()):

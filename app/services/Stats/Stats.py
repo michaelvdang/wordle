@@ -19,6 +19,7 @@ load_dotenv()
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
 VITE_SERVER_IP = os.environ.get('VITE_SERVER_IP')
 VITE_DOMAIN_NAME = os.environ.get('VITE_DOMAIN_NAME')
+VITE_SECRET = os.environ.get('VITE_SECRET')
 def get_redis():
     yield redis.Redis(
                     # host='localhost',
@@ -91,7 +92,7 @@ def hello():
             "message2": "UserStatsRedis.py",
             # "VITE_DOMAIN_NAME": "https://" + VITE_DOMAIN_NAME,
             # "VITE_SERVER_IP": VITE_SERVER_IP, 
-            "VITE_DOMAIN_NAME": VITE_DOMAIN_NAME,
+            "VITE_SECRET": VITE_SECRET,
             }
 
 # insert finished game into the correct shard based on guid for storage

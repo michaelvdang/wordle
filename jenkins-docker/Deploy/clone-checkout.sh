@@ -12,6 +12,7 @@ then
   cd 
   sudo rm -rf wordle
   ls -al
+  docker rmi wordle-orc wordle-stats wordle-check wordle-validation wordle-play
 fi
 
 git clone https://github.com/michaelvdang/wordle.git
