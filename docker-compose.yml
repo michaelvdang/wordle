@@ -21,8 +21,8 @@ services:
       - "9000:9000"
     volumes:
       - wordle-db:/wordle/var
-      - "./.env:/wordle/.env"  # because .env is a file, this needs full path or .env will become a directory
-      # - ${PWD}/.env:/wordle/.env  # ${PWD} works for linux but not windows, because .env is a file, this needs full path or .env will become a directory
+      # - "./.env:/wordle/.env" # try both options
+      - "./.env:/wordle/app/services/Stats/.env"
     depends_on:
       - redis
     restart: unless-stopped

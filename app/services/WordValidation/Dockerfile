@@ -3,9 +3,9 @@ FROM python:alpine3.19
 
 WORKDIR /wordle
 
-COPY requirements.txt /wordle/app/services/WordValidation/requirements.txt
+COPY wordvalidation-requirements.txt /wordle/app/services/WordValidation/wordvalidation-requirements.txt
 
-RUN python3 -m pip install -r /wordle/app/services/WordValidation/requirements.txt
+RUN python3 -m pip install -r /wordle/app/services/WordValidation/wordvalidation-requirements.txt
 
 COPY . /wordle/app/services/WordValidation
 

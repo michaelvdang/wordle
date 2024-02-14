@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/ba
 # this script is for running in containers
 mkdir -p /wordle/var
 # sqlite3 /wordle/var/WordList.db < /wordle/share/WordList.sql

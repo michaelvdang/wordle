@@ -3,19 +3,24 @@ FROM python:alpine3.19
 
 WORKDIR /wordle
 
-COPY ./requirements.txt /wordle/requirements.txt
+COPY ./orc-requirements.txt /wordle/orc-requirements.txt
 
-RUN python3 -m pip install -r /wordle/requirements.txt
+RUN python3 -m pip install -r /wordle/orc-requirements.txt
 # RUN python3 -m pip install --no-cache-dir --upgrade -r /requirements.txt
 
 COPY ./ /wordle
+# COPY app/ /wordle/app/
+# COPY bin/ /wordle/bin/
+# COPY share/ /wordle/share/
+# COPY jenkins-docker/ /wordle/jenkins-docker/
+# COPY wordle-frontend/src/ /wordle/wordle-frontend/src/
 
 ## include these lines if the service needs these databases (stats, check, validation)
 ## but these lines create different databases for each container (not shared)
 RUN mkdir -p /wordle/var
 RUN chmod 544 ./bin/docker-init-db.sh
 RUN chmod 544 ./bin/TopTen.py
-RUN ./bin/docker-init-db.sh
+RUN sh ./bin/docker-init-db.sh
 # RUN python3 --version
 
 # multiple calls to uvicorn doesn't work
