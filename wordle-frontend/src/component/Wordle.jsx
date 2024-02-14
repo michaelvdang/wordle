@@ -309,7 +309,7 @@ const Wordle = ({mode}) => {
     if (data['completed']) {
       setGameCompleted(true);
       clearLocalStorage();
-      console.log('GAME COMPLETED: DID YOU WIN? ', data['won'])
+      // console.log('GAME COMPLETED: DID YOU WIN? ', data['won'])
       if (data['won']) {
         setGameWon(true); // for game completed dialog
       }
