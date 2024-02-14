@@ -5,14 +5,13 @@ docker ps -a
 echo 'Creating new wordle-network...'
 docker network create wordle-network
 
-echo 'Creating new volume...'
 # named volume wordle-db to store and share the SQLite and Redis databases, created in orc container
+echo 'Creating new volume...'
 docker volume create wordle-db
 
 echo 'Build and run Redis container..'
 docker build    -t redis-image ./app/services/Redis
 docker run -d --volume wordle-db:/wordle/var --name redis -p 0.0.0.0:6379:6379 --network wordle-network redis-image
-# docker run -d --name redis -p 0.0.0.0:6379:6379 --network wordle-network -v ./redis.conf:/data/redis.conf redis:alpine redis-server /data/redis.conf
 # docker run -d --name redis -p 0.0.0.0:6379:6379 --network wordle-network -v ./redis.conf:/data/redis.conf redis:alpine redis-server /data/redis.conf
 
 echo 'Build and run Stats container..'
@@ -33,19 +32,4 @@ docker run -d --volume ./.env:/wordle/.env --name play -p 0.0.0.0:9300:9300 -h l
 
 echo 'Build and run orc container...'
 docker build    -t orc-image .
-# docker run -d --volume wordle-db:/wordle/var --name orc -p 9400:9400    --network wordle-network orc-image
 docker run -d --volume ./.env:/wordle/.env --volume ./jenkins-docker/Deploy/:/wordle/jenkins-docker/Deploy/ --volume wordle-db:/wordle/var --name orc -p 9400:9400    --network wordle-network orc-image
-
-# this might belong in the Test stage
-echo 'Build and run wordle-connection-check...'
-docker build    -t wordle-connection-check-image ./jenkins-docker/ConnectionCheck/
-docker run -d --name wordle-connection-check --network wordle-network wordle-connection-check-image
-
-
-echo 'Log from orc container: '
-docker logs orc
-echo 'Connection status between wordle-connection-check and other containers:'
-docker logs wordle-connection-check
-echo ''
-echo 'Containers in wordle-network:'
-docker network inspect --format='{{range $container_id,$conf := .Containers}} {{println $conf.Name $container_id}} {{end}}' wordle-network
