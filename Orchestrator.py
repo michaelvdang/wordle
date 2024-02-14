@@ -60,7 +60,7 @@ app = FastAPI(middleware=middleware)
 @app.get('/')
 def test():
     return {'message' : 'Orchestrator.py',
-            'VITE_SERVER_IP': VITE_SERVER_IP}
+            'VITE_DOMAIN_NAME': VITE_DOMAIN_NAME}
 
 @app.post('/game/new', status_code=201)
 def start_new_game(username: str):# = Body()):

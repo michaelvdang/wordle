@@ -94,7 +94,7 @@ def hello():
     return {"message": "hello world", 
             "message2": "UserStatsRedis.py",
             # "VITE_DOMAIN_NAME": "https://" + VITE_DOMAIN_NAME,
-            "VITE_SERVER_IP": VITE_SERVER_IP, 
+            # "VITE_SERVER_IP": VITE_SERVER_IP, 
             "VITE_DOMAIN_NAME": VITE_DOMAIN_NAME,
             }
 
