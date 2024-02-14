@@ -48,12 +48,9 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
         # 'completed': int(False),
         # 'won': int(False),
       })
-      # r.hset(key, 'remain', 6)
       r.expire(key, 60*60*24) # expire in 24 hours
-      # r.rpush(key, 6)
       pipe.unwatch()
       return {**(r.hgetall(key)), 'status': 'success'}
-      # return {'game': r.lrange(key, 0, -1), 'status': 'success'}
     except redis.WatchError:
       return {'status': 'error', 'message': "RedisWatchError"}
   
@@ -77,10 +74,8 @@ def update_game_with_guess(guid: str,
       else:
         pipe.unwatch()
         return {'game' : {}, 'status': 'error', 'message': 'guesses limit reached'}
-        # return "ERROR: guesses limit reached"
     except redis.WatchError:
       return {'game' : {}, 'status': 'error', 'message': 'someone tried guessing at the same time'}
-      # return "ERROR: someone tried guessing at the same time"
 
 @app.get('/play')
 def restore_game(guid: str, 
@@ -88,7 +83,6 @@ def restore_game(guid: str,
                  r: redis.Redis = Depends(get_redis)):
   key = f"{guid}:{game_id}"
 
-  ## do we need pipe here?
   with r.pipeline() as pipe:
     try:
       pipe.watch(key)

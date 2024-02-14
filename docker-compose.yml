@@ -26,7 +26,7 @@ services:
     depends_on:
       - redis
     restart: unless-stopped
-  wordcheck:
+  check:
     build: ./app/services/WordCheck
     # image: w-check
     container_name: 'check-cont'
@@ -35,7 +35,7 @@ services:
     volumes:
       - wordle-db:/wordle/var
     restart: unless-stopped
-  wordvalidation:
+  validation:
     build: ./app/services/WordValidation
     # image: w-validation
     container_name: 'validation-cont'
@@ -68,8 +68,8 @@ services:
       # - ${PWD}/.env:/wordle/.env
     depends_on:
       - stats
-      - wordcheck
-      - wordvalidation
+      - check
+      - validation
       - play
     restart: unless-stopped
   # nginx:
