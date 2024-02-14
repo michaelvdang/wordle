@@ -64,7 +64,9 @@ export default function NewGameDialog(props) {
                           <div className=''>
                             The correct answer was: 
                           </div>
-                          <div className='flex justify-center font-semibold text-lg'>'{answer}'</div>
+                          <div 
+                            className='flex justify-center font-semibold text-lg' 
+                            id='correct_answer'>'{answer}'</div>
                         </div>}
                       <div className="mt-4">
                         <p className="text-sm text-gray-500">
@@ -77,6 +79,7 @@ export default function NewGameDialog(props) {
                 <div 
                 className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
+                    id="play_new_game_button"
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-green-600
                     px-3 py-2 text-sm font-semibold text-white shadow-sm 
@@ -90,6 +93,7 @@ export default function NewGameDialog(props) {
                     Play New Game
                   </button>
                   <button
+                    id="cancel_play_new_game_button"
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md 
                     bg-white px-3 py-2 text-sm font-semibold text-gray-900 

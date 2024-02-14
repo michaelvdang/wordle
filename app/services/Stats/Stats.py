@@ -1,4 +1,5 @@
 # top 30 winners and streaks are stored in Redis
+# the rest are in SQLite database
 
 from fastapi import FastAPI, Depends
 import contextlib
@@ -14,8 +15,11 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
+# .env file is stored in the same directory as this file
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
+VITE_SERVER_IP = os.environ.get('VITE_SERVER_IP')
+VITE_DOMAIN_NAME = os.environ.get('VITE_DOMAIN_NAME')
+VITE_SECRET = os.environ.get('VITE_SECRET')
 def get_redis():
     yield redis.Redis(
                     # host='localhost',
@@ -44,10 +48,6 @@ class Settings(BaseSettings):
     game2db: str = GAME2_DB
     game3db: str = GAME3_DB
 
-    ## leaving this will throw an error because we have another .env
-    # class Config():
-    #     env_file = '.env'
-
 
 def get_udb():
     with contextlib.closing(sqlite3.connect(settings.user_db)) as udb:
@@ -74,9 +74,9 @@ app = FastAPI()
 
 origins = [     # curl and local browser are always allowed
     "http://localhost:5173",    # needs this even when React App is local and Orc is remote
-    "https://mikespace.xyz",
-    "https://mikespace.dev",
-    # "http://146.190.58.25",
+    "http://" + str(VITE_SERVER_IP),
+    "http://" + str(VITE_DOMAIN_NAME),
+    "https://" + str(VITE_DOMAIN_NAME)
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -88,7 +88,12 @@ app.add_middleware(
 
 @app.get("/")
 def hello():
-    return {"message": "hello world", "message2": "UserStatsRedis.py"}
+    return {"message": "hello world", 
+            "message2": "UserStatsRedis.py",
+            # "VITE_DOMAIN_NAME": "https://" + VITE_DOMAIN_NAME,
+            # "VITE_SERVER_IP": VITE_SERVER_IP, 
+            "VITE_SECRET": VITE_SECRET,
+            }
 
 # insert finished game into the correct shard based on guid for storage
 @app.post("/stats/games/store-result", status_code=201)
@@ -102,13 +107,8 @@ def store_game_result(
         g3: sqlite3.Connection = Depends(get_db3),
         r: redis.Redis = Depends(get_redis)):
     try:
-        # print('username: ', username)
-        # print('user_id: ', user_id)
-        # print('game_id: ', game_id)
-        # print('result: ', result)
         gamedb = (g1, g2, g3)
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
-        # print('guid: ', guid)
 
         finished = datetime.date.today()
         guesses = result.guesses
@@ -130,8 +130,6 @@ def store_game_result(
 # return top 10 winners
 @app.get('/stats/top-winners', status_code=200)
 def get_top_winners(r: redis.Redis = Depends(get_redis)):
-    # r = redis.Redis('redis://redis:6379')
-    # r = aioredis.from_url(config.redis_url, decode_responses=True)
     top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
     
     return [(user_id, int(score)) for (user_id, score) in top_wins]
@@ -139,8 +137,6 @@ def get_top_winners(r: redis.Redis = Depends(get_redis)):
 # return top 10 streaks
 @app.get('/stats/top-streaks', status_code=200)
 def get_top_streaks(r: redis.Redis = Depends(get_redis)):
-    # r = redis.Redis('redis://redis:6379')
-    # r = aioredis.from_url(config.redis_url, decode_responses=True)
     top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)
     return [(user_id, int(score)) for (user_id, score) in top_streaks]
 
@@ -159,6 +155,7 @@ def get_user_stats(
         g1: sqlite3.Connection = Depends(get_db1), 
         g2: sqlite3.Connection = Depends(get_db2), 
         g3: sqlite3.Connection = Depends(get_db3)):
+    username = username.lower()
     gamedb = (g1, g2, g3)
     guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
     # print('guid: ', guid)
@@ -236,63 +233,6 @@ def get_user_stats(
         stats['average_guesses'] = 0
     return stats
 
-
-    # current streak
-    #   use RunGroup and get the last group, check if won or lost
-    # max streak 
-    #   select *, (select max(streak) from streaks where user_id=8) from games where user_id=8 order by finished;
-
-
-
-
-    # cursor = udb.cursor()
-    # cursor.execute('ATTACH DATABASE ' + "'" +
-    #                gamedb[int(guid) % 3] + "'" + ' AS ga')
-
-    # cursor.execute('''
-    #     select  
-    #         i.gamesPlayed,
-    #         i.gamesWon,
-	#         (cast(i.gameswon as real)/cast(i.gamesplayed as real))*100 as winPercentage,
-	#         cast(i.guesses as real)/cast(i.gamesplayed as real) as averageGuesses,
-	#         s.streak as currentStreak, 
-    #         i.maxStreak
-    #     from
-    #         (select 
-    #             u.user_id,
-    #             u.username,
-    #             count(g.game_id) as gamesplayed, 
-    #             w.[count(won)] as gameswon, 
-    #             sum(g.guesses)as guesses,
-    #             max(st.streak) as maxstreak
-    #         from
-	#             main.users u
-	#             inner join ga.wins w on u.user_id=w.user_id
-	#             inner join ga.games g on w.user_id = g.user_id
-	#             left outer join streaks st on st.user_id=g.user_id
-    #         where
-	#             u.user_id=(?)) i
-	#     left join streaks s on s.user_id = i.user_id
-    #     order by beginning desc
-    #     limit 1
-    #     ''', (userID,))
-    # data_json = {}
-    # headers = [i[0] for i in cursor.description]
-    # data = cursor.fetchall()
-
-    # for row in data:
-    #     for i, header in enumerate(headers):
-    #         data_json.update({header: row[i]})
-
-    # guesses = {}
-    # gameguesses = cursor.execute(
-    #     '''select guesses,count(*) as NoOfGames from ga.games where user_id=(?) group by guesses''', (userID,)).fetchall()
-    # for row in gameguesses:
-    #     guesses.update({row[0]: row[1]})
-    # data_json.update({"guesses": guesses})
-    # data_json.update({'user_id': userID})
-    # return data_json
-
 @app.get('/stats/username/{user_id}')
 def get_username(user_id: int, udb: sqlite3.Connection = Depends(get_udb)):
     print('user_id: ', user_id)
@@ -307,6 +247,7 @@ def get_username(user_id: int, udb: sqlite3.Connection = Depends(get_udb)):
 # return user info for a given username
 @app.get('/stats/id/{username}')
 def get_user_id(username: str, udb: sqlite3.Connection = Depends(get_udb)):
+    username = username.lower()
     print('username: ', username)
     print('type: ', type(username))
     # row = udb.execute('SELECT * FROM users WHERE username="mdang4"')
@@ -330,6 +271,7 @@ def create_user(username: str,
         g1: sqlite3.Connection = Depends(get_db1), 
         g2: sqlite3.Connection = Depends(get_db2), 
         g3: sqlite3.Connection = Depends(get_db3)):
+    username = username.lower()
     try:
         # check that username is unique
         row = udb.execute('SELECT * FROM users WHERE username=?', [username])

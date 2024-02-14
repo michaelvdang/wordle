@@ -3,88 +3,64 @@ services:
   redis:
     image: redis:alpine
     container_name: 'redis-cont'
-    # command: ash -c "redis-server --appendonly yes --requirepass password"
-    command: redis-server /etc/redis.conf # this file has password and other configs
+    command: redis-server /etc/redis/redis.conf # this file has password and other configs
     ports:
-      - "6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
+      - "0.0.0.0:6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
     volumes:
-      - ./var/redis:/data     # add volume to persist data between container restarts
-      - "./redis.conf:/etc/redis.conf"  # don't forget to import the config file
-      # - ${PWD}/redis.conf:/etc/redis.conf  # don't forget to import the config file
+      - wordle-db:/data     # add volume to persist data between container restarts
+      - "./app/services/Redis/redis.conf:/etc/redis/redis.conf"
     restart: unless-stopped
   stats:
-    build: ./app/services/Stats   # Either build from Dockerfile or use a prebuilt image
-    # image: w-stats              # must build image manually first
+    build: ./app/services/Stats
     container_name: 'stats-cont'
     ports: 
       - "9000:9000"
     volumes:
-      - db:/wordle/var
-      - "./.env:/wordle/.env"  # because .env is a file, this needs full path or .env will become a directory
-      # - ${PWD}/.env:/wordle/.env  # ${PWD} works for linux but not windows, because .env is a file, this needs full path or .env will become a directory
+      - wordle-db:/wordle/var
+      - "./.env:/wordle/.env" # try both options
+      # - "./.env:/wordle/app/services/Stats/.env"
     depends_on:
       - redis
     restart: unless-stopped
-  wordcheck:
+  check:
     build: ./app/services/WordCheck
-    # image: w-check
     container_name: 'check-cont'
     ports: 
       - "9100:9100"
     volumes:
-      - db:/wordle/var
+      - wordle-db:/wordle/var
     restart: unless-stopped
-  wordvalidation:
+  validation:
     build: ./app/services/WordValidation
-    # image: w-validation
     container_name: 'validation-cont'
     ports: 
       - "9200:9200"
     volumes:
-      - db:/wordle/var
+      - wordle-db:/wordle/var
     restart: unless-stopped
   play:
     build: ./app/services/Play
-    # image: w-play
     container_name: 'play-cont'
     ports: 
       - "9300:9300"
     volumes:
-      - db:/wordle/var
       - "./.env:/wordle/.env"
-      # - ${PWD}/.env:/wordle/.env
+      # - "./.env:/wordle/app/services/Play/.env"
+    depends_on:
+      - redis
     restart: unless-stopped
-  orchestrator:
+  orc:
     build: .
-    # image: w-orc
     container_name: 'orc-cont'
     ports: 
       - "9400:9400"
     volumes:
-      - db:/wordle/var
-      # - "./.env:/wordle/.env"
-      # - ${PWD}/.env:/wordle/.env
+      - wordle-db:/wordle/var
     depends_on:
       - stats
-      - wordcheck
-      - wordvalidation
+      - check
+      - validation
       - play
     restart: unless-stopped
-  # nginx:
-  #   build: ./wordle-frontend
-  #   container_name: 'nginx-cont'
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./wordle-frontend/dist:/usr/share/nginx/html
-  #   depends_on:
-  #     - stats
-  #     - wordcheck
-  #     - wordvalidation
-  #     - play
-  #     - orchestrator
-  #     - redis
-  #   restart: unless-stopped
 volumes:
-  db:
+  wordle-db:

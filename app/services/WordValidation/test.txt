@@ -1,0 +1,4 @@
+curl http://wordvalidation:9200/word/is-valid/house
+  {"is_valid_word":true}
+
+  

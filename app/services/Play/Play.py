@@ -11,9 +11,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 REDISCLI_AUTH_PASSWORD = os.environ.get('REDISCLI_AUTH_PASSWORD')
+VITE_SECRET = os.environ.get('VITE_SECRET')
 def get_redis():
   yield redis.Redis(
-    # host='localhost', 
+    # host='localhost', ## DEBUGGING: use this host and run: uvicorn app.services.Play.Play:app --port 9300 --reload 
     host='redis', 
     port=6379, 
     decode_responses=True, 
@@ -24,7 +25,10 @@ app = FastAPI()
 
 @app.get('/')
 def get_test(r: redis.Redis = Depends(get_redis)):
-  return {'message': 'Play.py'}
+  return {'message': 'Play.py',
+          # 'VITE_SERVER_IP': VITE_SERVER_IP,
+          'VITE_SECRET': VITE_SECRET,
+          }
 
 # create a new game object with 6 remaining guesses in Redis
 @app.post('/play')
@@ -44,12 +48,9 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
         # 'completed': int(False),
         # 'won': int(False),
       })
-      # r.hset(key, 'remain', 6)
       r.expire(key, 60*60*24) # expire in 24 hours
-      # r.rpush(key, 6)
       pipe.unwatch()
       return {**(r.hgetall(key)), 'status': 'success'}
-      # return {'game': r.lrange(key, 0, -1), 'status': 'success'}
     except redis.WatchError:
       return {'status': 'error', 'message': "RedisWatchError"}
   
@@ -73,10 +74,8 @@ def update_game_with_guess(guid: str,
       else:
         pipe.unwatch()
         return {'game' : {}, 'status': 'error', 'message': 'guesses limit reached'}
-        # return "ERROR: guesses limit reached"
     except redis.WatchError:
       return {'game' : {}, 'status': 'error', 'message': 'someone tried guessing at the same time'}
-      # return "ERROR: someone tried guessing at the same time"
 
 @app.get('/play')
 def restore_game(guid: str, 
@@ -84,17 +83,20 @@ def restore_game(guid: str,
                  r: redis.Redis = Depends(get_redis)):
   key = f"{guid}:{game_id}"
 
-  ## do we need pipe here?
   with r.pipeline() as pipe:
     try:
       pipe.watch(key)
       response = r.hgetall(key)
-      response['status'] = 'success'
+      if ('remain' not in response):
+        response['status'] = 'error'
+        response['remain'] = 0
+        response['message'] = 'This game does not exists in Redis'
+      else:
+        response['status'] = 'success'
       pipe.unwatch()
       return response
     except redis.WatchError:
       return {'status': 'error', 'message': "ERROR: someone tried playing this game at the same time"}
     except TypeError as e:
       return {'status': 'error', 'message': 'TypeError: ' + str(e)}
-    except Exception as e:
-      return {'status': 'error', 'message': str(e)}
+

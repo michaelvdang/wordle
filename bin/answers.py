@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-
+'''
+Add words from Answers.sql to Answers.db
+'''
 import contextlib
 import sqlite3
 

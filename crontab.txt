@@ -1,3 +1,5 @@
-* * * * * /root/wordle/.venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
+# IMPORTANT: leave a space at the end of line and then a new line
+#* * * * * /root/wordle/.venv/bin/python /root/wordle/bin/TopTen.py >> /root/wordle/cron.log 2>&1
 # or 
-* * * * * /home/<USER>/wordle/.venv/bin/python /home/<USER>/wordle/bin/TopTen.py >> /home/<USER>/wordle/cron.log 2>&1
+#* * * * * /home/<USER>/wordle/.venv/bin/python /home/<USER>/wordle/bin/TopTen.py >> /home/<USER>/wordle/cron.log 2>&1
+* * * * * python3 /home/ubuntu/wordle/bin/TopTen.py 

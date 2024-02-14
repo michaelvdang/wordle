@@ -26,7 +26,7 @@ const stats = {
 }
 
 export default function StatsDialog(props) {
-  const {setShowStats, username, user_id, APP_SERVER} = props;
+  const {setShowStats, username, user_id, STATS_URL} = props;
   const [userStats, setUserStats] = useState({
     win_percentage: '',
     // user_id,
@@ -42,11 +42,8 @@ export default function StatsDialog(props) {
   useEffect(() => {
     // console.log('usename: ', username);
     // console.log('user_id: ', user_id);
-    // console.log(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username);
-    // fetch(`http://mikespace.xyz:9000/stats/users?user_id=` + user_id + '&username=' + username)
-    fetch(endpoints[APP_SERVER]['stats'] + `/stats/users?user_id=` + user_id + '&username=' + username)
-    // fetch(`http://localhost:9000/stats/users?user_id=` + user_id + '&username=' + username)
-    // fetch(`https://stats.api.mikespace.xyz/stats/users?user_id=` + user_id + '&username=' + username)
+    fetch(STATS_URL + `/stats/users?user_id=` + user_id + '&username=' + username)
+    // fetch(endpoints[APP_SERVER]['stats'] + `/stats/users?user_id=` + user_id + '&username=' + username)
       .then(res => res.json())
       .then(res => {
         // console.log(res);

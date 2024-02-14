@@ -23,6 +23,11 @@ game1.db:
             streaks(user_id, streak, beginning, ending)
             wins(user_id, count(won))
 
+Issues faced while developing app:
+- Understanding which process has permission and how to grant permission or elevate privilege, reason: couldn't delete some files or directory
+- Understanding that Jenkins doesn't have elevated privilege but the docker containers services do, and thus can create and manipulate files
+- Manage the credentials and keep them updated
+- Understanding where the project root is and where the current working directory is, also mapping between system and container
 
 START HERE:
 Hardware: 
@@ -33,13 +38,26 @@ Hardware:
     - This should be done after we've set up the backend so we can see how the firewall works
     - Networking>Firewall
     - Enable: SSH, HTTP, HTTPS
+
+CICD with Jenkins to Ubuntu:Jammy server:
+- Install Jenkins in Docker: https://www.jenkins.io/doc/book/installing/docker/#on-windows
+- Add credentials: with these credentialId's
+    - .env: wordle-env-file
+    - redis.conf: redis-conf-file
+    - REDIS_AUTH_PASSWORD: redis-secret
+    - server SSH key: AWS-EC2
+    - Github fine-grained PAT: github-token (but not necessary)
+- Debug: check docker logs of each container in addition to Jenkins Console Output
+    
 Deployment: 
-- Install Docker
-    - https://www.docker.com/products/docker or https://docs.docker.com/engine/install/ubuntu/
 - Pull from git repo
     - git clone https://github.com/michaelvdang/wordle.git
     - cd wordle
     - git checkout docker
+- Install Docker
+    - https://www.docker.com/products/docker or https://docs.docker.com/engine/install/ubuntu/
+- Install npm 
+    - sudo apt install npm
 - Copy .env, redis.conf, and crontab.txt (using FileZilla)
 - Build and copy frontend code (maybe download npm and just build it on server)
     - place the wordle-frontend/dist/ folder in /wordle/wordle-frontend/ (including dist/)
@@ -62,12 +80,12 @@ Deploy backend using Docker:
         - Find where the .db files are: docker volume ls && docker volume inspect wordle_db
         - Make sure the path in TopTen.py matches the path in Mountpoint
     - install dependencies: python3 -m pip install -r cron-requirements.txt
-    - create a file to store cron-fragments.txt
+    - create a file to store cron-fragments.txt (not necessary)
     - view running cron jobs: crontab -l (to list) -e (to edit)
     - put running cron jobs into crontab.txt
     - * * * * * /home/<USER>/wordle/.venv/bin/python /home/<USER>/wordle/bin/TopTen.py >> /home/<USER>/wordle/cron.log 2>&1
     - Use the correct username for line above, also note if python's dependencies are installed in a virtual environment
-    - run: crontab crontab.txt
+    - run: sudo crontab crontab.txt (sudo to put crontab into root)
     - Rotate cron.log so it doesn't become too big: https://serverfault.com/questions/703757/how-to-rotate-a-log-file-from-crontab
 - You can now access the server at http://<IP_ADDRESS>:<PORT#> where <PORT#> can be any of the 9000, 9100, 9200, 9300, 9400
 - However, the frontend is unlikely to work because its origin is a public IP address
