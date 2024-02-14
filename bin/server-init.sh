@@ -42,11 +42,11 @@ sudo service docker restart
 # echo redis.conf found in project_root/app/services/Redis/
 
 ## run crontab
-sudo crontab ./crontab.txt
+sudo crontab ./var/cron/crontab.txt
 
 ## install pip, venv, and requirements for crontab
 sudo apt -y install python3-pip
-sudo python3 -m pip install -r ./cron-requirements.txt
+sudo python3 -m pip install -r ./var/cron/cron-requirements.txt
 
 ## start the services
 sudo docker compose up -d
