@@ -10,14 +10,16 @@ import faker
 DATABASE = './var/stats.db'
 SCHEMA = './share/stats.sql'
 
-NUM_STATS = 1_000
-NUM_USERS = 100
-YEAR = 2022
+NUM_STATS = 200
+NUM_USERS = 50
+YEAR = 2024
+# NUM_STATS = 1_000
+# NUM_USERS = 100
+# YEAR = 2022
 
 random.seed(YEAR)
 fake = faker.Faker()
-# fake.seed(YEAR)   ## deprecated
-faker.Faker.seed(YEAR)  ## new method
+faker.Faker.seed(YEAR)
 with contextlib.closing(sqlite3.connect(DATABASE)) as db:
     with open(SCHEMA) as f:
         db.executescript(f.read())

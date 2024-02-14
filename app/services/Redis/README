@@ -1,0 +1,2 @@
+This is setup to be run by Jenkins because it is difficult to bind redis.conf to 
+container when we do 'docker run', which has the redis password on it

@@ -1,3 +1,0 @@
-PYTHONUBUFFERED=True
-DATABASE=./var/Answers.db
-LOGGING_CONFIG=./etc/logging.ini

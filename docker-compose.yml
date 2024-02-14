@@ -1,0 +1,66 @@
+version: '3'
+services:
+  redis:
+    image: redis:alpine
+    container_name: 'redis-cont'
+    command: redis-server /etc/redis/redis.conf # this file has password and other configs
+    ports:
+      - "0.0.0.0:6379:6379" # need to map it to a port on the host so crontab can update it with the top streaks and wins
+    volumes:
+      - wordle-db:/data     # add volume to persist data between container restarts
+      - "./app/services/Redis/redis.conf:/etc/redis/redis.conf"
+    restart: unless-stopped
+  stats:
+    build: ./app/services/Stats
+    container_name: 'stats-cont'
+    ports: 
+      - "9000:9000"
+    volumes:
+      - wordle-db:/wordle/var
+      - "./.env:/wordle/.env" # try both options
+      # - "./.env:/wordle/app/services/Stats/.env"
+    depends_on:
+      - redis
+    restart: unless-stopped
+  check:
+    build: ./app/services/WordCheck
+    container_name: 'check-cont'
+    ports: 
+      - "9100:9100"
+    volumes:
+      - wordle-db:/wordle/var
+    restart: unless-stopped
+  validation:
+    build: ./app/services/WordValidation
+    container_name: 'validation-cont'
+    ports: 
+      - "9200:9200"
+    volumes:
+      - wordle-db:/wordle/var
+    restart: unless-stopped
+  play:
+    build: ./app/services/Play
+    container_name: 'play-cont'
+    ports: 
+      - "9300:9300"
+    volumes:
+      - "./.env:/wordle/.env"
+      # - "./.env:/wordle/app/services/Play/.env"
+    depends_on:
+      - redis
+    restart: unless-stopped
+  orc:
+    build: .
+    container_name: 'orc-cont'
+    ports: 
+      - "9400:9400"
+    volumes:
+      - wordle-db:/wordle/var
+    depends_on:
+      - stats
+      - check
+      - validation
+      - play
+    restart: unless-stopped
+volumes:
+  wordle-db:

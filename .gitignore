@@ -1,3 +1,14 @@
+.env
+redis.conf
+var/
+*.tar.gz
+__pycache__
+depr
+letsencrypt/
+
+# React frontend
+node_modules
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

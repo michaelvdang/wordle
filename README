@@ -1,3 +1,8 @@
+Current state of the app:
+- App is deployed on a Droplet at https://mikespace.xyz
+- Things to fix: 
+    - none
+
 WordList.db 
     - all the 5 letter words in the dictionary
 stats.db - 
@@ -18,18 +23,139 @@ game1.db:
             streaks(user_id, streak, beginning, ending)
             wins(user_id, count(won))
 
- 
+Issues faced while developing app:
+- Understanding which process has permission and how to grant permission or elevate privilege, reason: couldn't delete some files or directory
+- Understanding that Jenkins doesn't have elevated privilege but the docker containers services do, and thus can create and manipulate files
+- Manage the credentials and keep them updated
+- Understanding where the project root is and where the current working directory is, also mapping between system and container
 
-Project 5:
+START HERE:
+Hardware: 
+- Get a server with static IP and Ubuntu 22.04 LTS
+- See Ubuntu server section for further instructions
+- Setup non-root user for security: https://www.digitalocean.com/community/tutorials/initial-server-setup-with-ubuntu-20-04
+- Setup basic firewall to limit access to server
+    - This should be done after we've set up the backend so we can see how the firewall works
+    - Networking>Firewall
+    - Enable: SSH, HTTP, HTTPS
 
+CICD with Jenkins to Ubuntu:Jammy server:
+- Install Jenkins in Docker: https://www.jenkins.io/doc/book/installing/docker/#on-windows
+- Add credentials: with these credentialId's
+    - .env: wordle-env-file
+    - redis.conf: redis-conf-file
+    - REDIS_AUTH_PASSWORD: redis-secret
+    - server SSH key: AWS-EC2
+    - Github fine-grained PAT: github-token (but not necessary)
+- Debug: check docker logs of each container in addition to Jenkins Console Output
+    
+Deployment: 
+- Pull from git repo
+    - git clone https://github.com/michaelvdang/wordle.git
+    - cd wordle
+    - git checkout docker
+- Install Docker
+    - https://www.docker.com/products/docker or https://docs.docker.com/engine/install/ubuntu/
+- Install npm 
+    - sudo apt install npm
+- Copy .env, redis.conf, and crontab.txt (using FileZilla)
+- Build and copy frontend code (maybe download npm and just build it on server)
+    - place the wordle-frontend/dist/ folder in /wordle/wordle-frontend/ (including dist/)
+
+Deployment details:
+Deploy backend using Docker: 
+- Docker Volume NOTE: using named volume in docker compose means that the volume will be managed by Docker (it won't be in the local ./var directory, but will create new .db files in the virtual ./var directory, the local ones, if they have .db files will not reflect what happens in the app when it is running)
+- Most of the above steps are done automatically using docker compose, except for 3 things:
+    - Copying the .env file (was .gitignored so git clone doesn't work)
+    - Copying the redis.conf file (also .gitignored)
+    - Setting up crontab for TopTen leaderboard 
+        - During dev: run: python bin/TopTen.py manually from one of the containers (usually Orchestrator)
+- .env and redis.conf has passwords so they must be copied manually into root folder
+- Setting up crontab to update Leaderboard (probably best done manualy since it's outside of docker)
+    - NOTE: RUN AS ROOT to get permissions to the docker volumes
+    - Must install pip in order to install redis: apt install python3-pip
+    - Create a venv: python3 -m venv .venv
+    - Activate the venv: source .venv/bin/activate
+    - bin/TopTen.py will query game1.db, game2.db, etc. to find the top 10 longest streaks and winners
+        - Find where the .db files are: docker volume ls && docker volume inspect wordle_db
+        - Make sure the path in TopTen.py matches the path in Mountpoint
+    - install dependencies: python3 -m pip install -r cron-requirements.txt
+    - create a file to store cron-fragments.txt (not necessary)
+    - view running cron jobs: crontab -l (to list) -e (to edit)
+    - put running cron jobs into crontab.txt
+    - * * * * * /home/<USER>/wordle/.venv/bin/python /home/<USER>/wordle/bin/TopTen.py >> /home/<USER>/wordle/cron.log 2>&1
+    - Use the correct username for line above, also note if python's dependencies are installed in a virtual environment
+    - run: sudo crontab crontab.txt (sudo to put crontab into root)
+    - Rotate cron.log so it doesn't become too big: https://serverfault.com/questions/703757/how-to-rotate-a-log-file-from-crontab
+- You can now access the server at http://<IP_ADDRESS>:<PORT#> where <PORT#> can be any of the 9000, 9100, 9200, 9300, 9400
+- However, the frontend is unlikely to work because its origin is a public IP address
+    - We'll need to go to the front end Wordle component and note the APP_SERVER value (either 'local' or 'remote')
+    - 'local' allows the front end to work locally during development, both React and the Docker backend must be on the same machine
+    - 'remote' uses HTTPS, which means we must make the API public, meaning we'll need the following:
+        - Create an A record that points orchestrator.api.mikespace.dev to the server
+        - Configure NGINX to proxy requests to orchestrator.api.mikespace.dev to <SERVER_IP>:9400
+        - Get the SSL certificate:
+            - Link: https://www.nginx.com/blog/using-free-ssltls-certificates-from-lets-encrypt-with-nginx/
+            - Link: https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04
+        - Finally, rebuild the front end and make sure APP_SERVER is on 'remote' with the correct API links, place in the path specified by the root line from NGINX config file
+            - 'orc': 'https://orchestrator.api.mikespace.dev'
+            - 'stats': 'https://stats.api.mikespace.dev'
+
+Deploy frontend (NGINX outside Docker): (follow this guide - https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04)
+- Configure NGINX reverse proxy so front end can talk to the APIs
+    - Copy the NGINX <website-name>.conf file to /etc/nginx/sites-available/
+    - Create a symlink: ln -s /etc/nginx/sites-available/mikespace.dev.conf /etc/nginx/sites-enabled/mikespace.dev
+    - Restart NGINX to take effect: sudo systemctl restart nginx OR sudo nginx -s reload
+- Not necessary but you can see how DNS works by adding an A record in Networking>Domains
+    - have stats.api.mikespace.xyz point to the server
+    - configure NGINX to proxy requeststo stats.api.mikespace.xyz to <SERVER_IP>:9000
+    - The APIs are now available at http://stats.api.mikespace.xyz, etc.
+- Go to Let's Encrypt: https://letsencrypt.org/getting-started/ to get TLS certificates
+- The above steps also configured the location of the dist/ folder: /usr/share/nginx/html
+- Build the app on local machine: npm run build
+- SFTP to the server using FileZilla and upload the dist/ content to /var/www/html
+    - NOTE: for NGINX, put the dist/ content in /usr/share/nginx/html
+- The page should be viewable after a few seconds
+
+Deploy frontend (NGINX in Docker):
+- Build app on local machine: npm run build
+- SFTP to server using FileZilla and upload the dist/ content to /wordle/wordle-frontend/dist 
+- Start Docker compose
+
+Ubuntu server (Digital Ocean Droplet):
+- On local machine, create ssh key-pair, go to <user>/.ssh: ssh-keygen
+- If you don't have access to server thru SSH, go to droplet's control panel and open Access>Droplet Console
+- On server, find .ssh/ folder: ls -al
+- Run: nano .ssh/authorized_keys
+- Add the public key to the file
+- Save and quit
+- Make sure .ssh/ has 700 permissions and authorized_keys has 600 permissions
+- Back to local machine, run: ssh -i <key file> <user>@<droplet IP>
+
+FileZilla setup: 
+- This will use the same SSH key that is used to SSH into server
+- Edit>Settings...>SFTP: add SSH private key in 'Add key file'
+- Save and quit
+- File>Site Manager>New site:
+    - Protocol: SFTP
+    - Host: (IP or domain name) 
+    - Logon Type: Interactive
+    - User: root
+- Connect
+
+
+
+
+Manual installation:
+Running on bare Linux:
 How to start the application:
 - Install all dependencies, some of the required modules are, but there could be others:
     - apt install python3-pip
     - venv: apt install python3.10-venv
 - Create virtual environment and use it
-    - python3 -m venv venv
-    - chmod u+rwx venv/bin/activate
-    - source venv/bin/activate
+    - python3 -m venv .venv
+    - chmod u+rwx .venv/bin/activate
+    - source .venv/bin/activate
 - Install python dependencies
     - pip install Faker
     - python redis module: pip install redis
@@ -48,7 +174,6 @@ How to start the application:
     - apt install ruby-rubygems
     - gem install foreman
 
-
 - Once all dependencies are installed, initialize the databases
     - open Terminal in the application's root folder: bin/init.sh
 
@@ -56,10 +181,34 @@ How to start the application:
     - in Terminal: 
         - foreman start -m 'stats=3,check=1,validate=1,play=1,orchestratorb=1,traefik=1' 
 
-- Add a cronjob to update Redis every 10 minutes:
+- Add a cronjob to update Redis every 10 minutes - needs patience because it quietly fails (doesn't print to the current terminal):
+    - NOTE: Run crontab as root because of permissions to the docker volumes
     - run: crontab -e
-    - Enter: '*/10 * * * *  /usr/bin/python3 /{path to project folder}/bin/TopTen.py >> /{Path to project folder}/cron.log 2>&1'
+    - Enter: '*/10 * * * *  /home/<USER>/wordle/.venv/bin/python3 /home/michael/wordle/bin/TopTen.py >> /home/<USER>/wordle/cron.log 2>&1'
+    - NOTE: in DO Ubuntu Droplet, the 'Home' directory is /root for the root user, 
+        so the full file path for this is /root/wordle/bin/TopTen.py
+    - NOTE: python's dependencies might be install within a virtual environment, be sure to include it in the path to call python3
+    - Also: chmod 744 bin/TopTen.py (has been added to Dockerfile for Orchestrator)
     - Save and quit editor
+
+- Redis:
+    - Security:
+        - We must set password to use ACL because the port is open to WAN, anyone can access it
+        - Also, protected mode protects from non-localhost users but we still have to set a password anyway or otherwise we'd lose access
+        - See list of ACL users: ACL LIST
+        - More commands: https://redis.io/commands/acl-setuser/
+        - But the way to go is by using redis.conf file, (or an external ACL file)
+            - https://redis.io/docs/management/config-file/
+        - To use redis.conf in docker compose:
+            - services > redis:
+                - command: redis-server /etc/redis.conf
+                - volumes:
+                    - ./redis.conf:/etc/redis.conf
+    - Data persistence: 
+        - Data is wiped from memory between restarts, but redis periodically dumps data to a file, just give it a volume like:
+            - ./var/redis:/data
+        - But this way we can lose a couple minutes' worth of data in case of an outage. so use Append Only File in redis.conf:
+            - appendonly yes
 
 
 
