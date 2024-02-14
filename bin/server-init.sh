@@ -150,4 +150,4 @@ fi
 echo Next step: acquire a domain name and point DNS to $VITE_SERVER_IP, then get a SSL certificate with Let's Encrypt's certbot
 echo How to run certbot according to instructions from https://certbot.eff.org/
 echo Finally: update the .env file with new domain name and rerun Jenkins with the updated .env
-echo If encounters error, try to run certbot with: sudo certbot --nginx
+echo ERR_CONNECTION_RESET: If domain has been TLS certified before, try to rerun certbot on server with: sudo certbot --nginx
