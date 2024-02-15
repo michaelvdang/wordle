@@ -13,4 +13,4 @@ WORKDIR /
 
 COPY ./ /
 
-CMD bash /test-orc.sh && bash /test-stats.sh
+CMD sh /test-orc.sh && sh /test-stats.sh
