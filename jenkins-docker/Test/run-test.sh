@@ -10,6 +10,7 @@ docker exec orc python3 /wordle/bin/TopTen.py
 
 # API integration testing
 echo 'Buidling wordle-api-tester...'
+ls -al
 ls -al ./jenkins-docker
 ls -al ./jenkins-docker/Test
 ls -al ./jenkins-docker/Test/integration-api-test/
