@@ -25,7 +25,9 @@ docker network inspect --format='{{range $container_id,$conf := .Containers}} {{
 
 echo 'Ping Redis...'
 docker exec redis redis-cli -a "$REDIS_SECRET" ping
-docker exec redis redis-cli -a "$REDIS_SECRET" 'keys *'
+echo ''
+echo 'Try to get keys from Redis...'
+docker exec redis redis-cli -a "$REDIS_SECRET" keys *
 echo ''
 echo 'Ping Redis with wrong password'
 docker exec redis redis-cli -a "hello" ping
@@ -33,6 +35,7 @@ echo ''
 echo 'Ping Redis with no password'
 docker exec redis redis-cli ping
 
+rm -f after-test-docker-logs.txt
 echo UTC date and time: `date +%m-%d\ %T` > logs/after-test-docker-logs.txt
 # Redis logs
 echo After-test logs from redis: >> logs/after-test-docker-logs.txt
