@@ -1,6 +1,7 @@
 ## called when the wordle-api-tester container is run
 echo UTC date and time: `date +%m-%d\ %T` > /data/output.txt
 echo Testing orc API >> /data/output.txt
+curl "orc:9400" >> /data/output.txt
 ## scenario 1: 
 # 1. Generate random username and Create new game with username (Create new game)
 # 2. Add 1 guess (Add guess)
