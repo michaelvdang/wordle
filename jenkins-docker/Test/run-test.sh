@@ -17,7 +17,7 @@ ls -al
 ls -al ./jenkins-docker
 ls -al ./jenkins-docker/Test
 ls -al ./jenkins-docker/Test/integration-api-test/
-docker build   --progress plain -t wordle-api-tester-image ./jenkins-docker/Test/integration-api-test/
+docker build   --progress=plain -t wordle-api-tester-image ./jenkins-docker/Test/integration-api-test/
 docker run -d --volume ./logs/:/data --name wordle-api-tester --network wordle-network wordle-api-tester-image
 
 echo 'Check if container is on the network...'
@@ -27,7 +27,7 @@ echo 'Ping Redis...'
 docker exec redis redis-cli -a "$REDIS_SECRET" ping
 echo ''
 echo 'Try to get keys from Redis...'
-docker exec redis redis-cli -a "$REDIS_SECRET" keys *
+docker exec redis redis-cli -a "$REDIS_SECRET" 'keys *; set a 5; get a;' 
 echo ''
 echo 'Ping Redis with wrong password'
 docker exec redis redis-cli -a "hello" ping
@@ -35,7 +35,6 @@ echo ''
 echo 'Ping Redis with no password'
 docker exec redis redis-cli ping
 
-rm -f after-test-docker-logs.txt
 echo UTC date and time: `date +%m-%d\ %T` > logs/after-test-docker-logs.txt
 # Redis logs
 echo After-test logs from redis: >> logs/after-test-docker-logs.txt

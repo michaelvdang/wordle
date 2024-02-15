@@ -23,8 +23,9 @@ node {
       stage("Test") {
         // unitTestStatusCode = sh script:'./jenkins-docker/Test/api-unit-test/api-unit-test.sh', returnStatus: true
         // echo "unitTestStatusCode: $unitTestStatusCode"
-        integrationTestStatusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
-        echo "integrationTestStatusCode $integrationTestStatusCode"
+        // integrationTestStatusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
+        // echo "integrationTestStatusCode $integrationTestStatusCode"
+        sh './jenkins-docker/Test/run-test.sh'
       }
     }
     
