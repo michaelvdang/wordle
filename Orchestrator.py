@@ -1,5 +1,6 @@
 import httpx
 from fastapi import FastAPI, Depends, Body, Query
+from fastapi.middleware.cors import CORSMiddleware
 import random
 from models import Game
 import json
