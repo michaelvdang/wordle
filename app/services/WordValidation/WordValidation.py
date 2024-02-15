@@ -3,7 +3,7 @@ import sqlite3
 app = FastAPI()
 
 @app.get('/')
-def test():
+def hello():
     return {'message': 'WordValidation.py'}
 
 @app.get("/word/is-valid/{word}")

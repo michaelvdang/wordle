@@ -178,7 +178,7 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
         async def get_game_answer():
             async with httpx.AsyncClient() as client:
                 return (await client.get(endpoints[APP_HOST]['check'] 
-                                         + '/answers/correct?game_id=' + str(game_id))).json()
+                                         + '/answers/' + str(game_id))).json()
         answer = asyncio.run(get_game_answer())
 
         # 3. return user's score

@@ -38,6 +38,17 @@ def hello():
 
 @app.post("/answers/check")
 def check_answer(game: Game, db: sqlite3.Connection = Depends(get_db)):
+    '''
+    Check a guess against the correct ANSWER for a give game_id
+    class Game(BaseModel):
+        game_id: int
+        word_id: int
+        guess: str
+    return: a JSON object with 3 keys
+        - results: a list of length 5 from [0,1,2], 0 for miss, 1 for present, 2 for exact
+        - present_letters: a set of letters present in the ANSWER
+        - absent_letter: a set of letters users have guessed that are not in present_letters
+    '''
     row = db.execute(
         "SELECT * FROM Answers WHERE word_id = ? LIMIT 1", [game.word_id]).fetchone()
     #return row[1]
@@ -60,20 +71,31 @@ def check_answer(game: Game, db: sqlite3.Connection = Depends(get_db)):
 
 @app.put("/answers/change")
 def change_answer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(get_db)):
-    db.execute("UPDATE Answers SET gameword = (?) WHERE word_id = ? LIMIT 1", [
+    '''
+    Change the correct answer to new_word for a the given word_id
+    Return a JSON with keys 'status' and 'message'
+    '''
+    db.execute("UPDATE Answers SET gameword = (?) WHERE word_id = ?", [
                new_word, word_id]).fetchone()
     db.commit()
     row = db.execute(
         "SELECT * FROM Answers WHERE word_id = ? LIMIT 1", [word_id]).fetchone()
-    return f'new word for id {word_id} is {row[1]}'
+    return {'status': 'success', 'message': f'new word for id {word_id} is {row[1]}'}
 
 @app.get("/answers/count")
 def get_answers_count(db: sqlite3.Connection = Depends(get_db)):
+    '''
+    Gets the number of answers in the database
+    Return a JSON object with key 'count' for number of answers in database
+    '''
     row = db.execute('SELECT count(*) FROM Answers').fetchone()
     return {'count': row[0]}
 
-@app.get("/answers/correct")
+@app.get("/answers/{game_id}")
 def get_correct_answer(game_id: int, db: sqlite3.Connection = Depends(get_db)):
+    '''
+    Return the correct answer for a give game_id
+    '''
     row = db.execute("SELECT gameword FROM Game_words WHERE game_id = (?)", [game_id]).fetchone()
     print(row)
     return {'word': row[0], 'status': 'success'}
