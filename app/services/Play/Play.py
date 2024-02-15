@@ -61,11 +61,17 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
       return {'status': 'error', 'message': "RedisWatchError"}
   
 # add new guess to current game
-@app.put('/play')
+@app.put('/play', status_code=status.HTTP_201_CREATED)
 def update_game_with_guess(guid: str, 
                            game_id: int, 
                            guess: str, 
                            r: redis.Redis = Depends(get_redis)):
+  '''
+  Add a guess to game stored on Redis with key <guid>:<game_id>
+  The key for this guess is one plus the highest guess# stored in Redis
+  Return the game object and status on success
+    or an empty game object and status if not found or an excpetion occurred
+  '''
   key = f"{guid}:{game_id}"
   with r.pipeline() as pipe:
     try: 
@@ -83,10 +89,14 @@ def update_game_with_guess(guid: str,
     except redis.WatchError:
       return {'game' : {}, 'status': 'error', 'message': 'someone tried guessing at the same time'}
 
-@app.get('/play')
+@app.get('/play', status_code=status.HTTP_200_OK)
 def restore_game(guid: str, 
                  game_id: int, 
                  r: redis.Redis = Depends(get_redis)):
+  '''
+  Return a game from Redis that matches the key <guid>:<game_id>
+    or a JSON with status and message on failure or exception
+  '''
   key = f"{guid}:{game_id}"
 
   with r.pipeline() as pipe:
