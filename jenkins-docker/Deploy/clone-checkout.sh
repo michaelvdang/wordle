@@ -17,5 +17,4 @@ fi
 
 git clone https://github.com/michaelvdang/wordle.git
 cd wordle
-git checkout docker-jenkins
-cat Orchestrator.py
+git checkout testing

@@ -27,14 +27,11 @@ docker rmi -f wordcheck-image
 docker rmi -f wordvalidation-image
 docker rmi -f play-image
 docker rmi -f orc-image
-docker rmi -f wordle-connection-check-image
-docker rmi -f wordle-api-tester-image
 
 echo 'Stopping and removing the last container, image, and network'
-docker stop wordle-connection-check
-docker rm -f wordle-connection-check
 docker stop wordle-api-tester
 docker rm -f wordle-api-tester
+docker rmi -f wordle-api-tester-image
 docker network rm wordle-network
 docker volume rm wordle-db
 docker ps 
