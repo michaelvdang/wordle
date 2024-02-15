@@ -5,7 +5,7 @@ WORKDIR /
 
 RUN apt-get update && apt-get install --yes curl
 
-RUN apt install --yes jq
+RUN apt update && apt install --yes jq
 
 # COPY random-string.sh /random-string.sh
 
@@ -13,4 +13,4 @@ RUN apt install --yes jq
 
 COPY ./ /
 
-CMD sh /test-orc.sh && sh /test-stats.sh
+CMD bash /test-orc.sh && bash /test-stats.sh
