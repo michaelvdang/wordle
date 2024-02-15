@@ -10,6 +10,9 @@ docker exec orc python3 /wordle/bin/TopTen.py
 
 # API integration testing
 echo 'Buidling wordle-api-tester...'
+ls -al ./jenkins-docker
+ls -al ./jenkins-docker/Test
+ls -al ./jenkins-docker/Test/api-integration-test/
 docker build    -t wordle-api-tester-image ./jenkins-docker/Test/api-integration-test/
 docker run -d --volume ./logs/:/data --name wordle-api-tester --network wordle-network wordle-api-tester-image
 
