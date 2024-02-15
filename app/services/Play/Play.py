@@ -53,6 +53,7 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
         # 'completed': int(False),
         # 'won': int(False),
       })
+      
       # game = {
       #   'remain': 6,
       #   # 'present_letters': '',
