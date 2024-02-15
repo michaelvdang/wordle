@@ -28,10 +28,10 @@ echo After-test logs from redis: >> after-test-docker-logs.txt
 docker logs redis >> after-test-docker-logs.txt
 echo After-test logs from stats: >> after-test-docker-logs.txt
 docker logs stats >> after-test-docker-logs.txt
-echo After-test logs from wordcheck: >> after-test-docker-logs.txt
-docker logs wordcheck >> after-test-docker-logs.txt
-echo After-test logs from wordvalidation: >> after-test-docker-logs.txt
-docker logs wordvalidation >> after-test-docker-logs.txt
+echo After-test logs from check: >> after-test-docker-logs.txt
+docker logs check >> after-test-docker-logs.txt
+echo After-test logs from validation: >> after-test-docker-logs.txt
+docker logs validation >> after-test-docker-logs.txt
 echo After-test logs from play: >> after-test-docker-logs.txt
 docker logs play >> after-test-docker-logs.txt
 echo After-test logs from orc: >> after-test-docker-logs.txt
