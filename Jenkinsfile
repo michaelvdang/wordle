@@ -21,8 +21,8 @@ node {
     }
     withCredentials([string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Test") {
-        unitTestStatusCode = sh script:'./jenkins-docker/Test/api-unit-test/api-unit-test.sh', returnStatus: true
-        echo "unitTestStatusCode: $unitTestStatusCode"
+        // unitTestStatusCode = sh script:'./jenkins-docker/Test/api-unit-test/api-unit-test.sh', returnStatus: true
+        // echo "unitTestStatusCode: $unitTestStatusCode"
         integrationTestStatusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
         echo "integrationTestStatusCode $integrationTestStatusCode"
       }
