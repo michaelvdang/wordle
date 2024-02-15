@@ -34,16 +34,12 @@ node {
   }
   catch (err) {
     currentBuild.result = "FAILURE"
-      // mail body: "project build error is here: ${env.BUILD_URL}" ,
-      // from: 'mdang2023@gmail.com',
-      // replyTo: 'mdang2023@gmail.com',
-      // subject: 'project build failed',
-      // to: 'mdang2023@gmail.com'
+
   }
   finally {
     // if (currentBuild.result == 'FAILURE') {
     if (unitTestStatusCode == 1) {
-      echo 'UNIT TEST FAILED'
+      echo 'UNIT TEST FAILED'      
     }
     else if (integrationTestStatusCode == 1) {
       echo 'INTEGRATION TEST FAILED'
