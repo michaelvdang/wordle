@@ -21,10 +21,10 @@ node {
     }
     withCredentials([string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Test") {
-        // unitTestStatusCode = sh script:'./jenkins-docker/Test/api-unit-test/api-unit-test.sh', returnStatus: true
-        // echo "unitTestStatusCode: $unitTestStatusCode"
-        // integrationTestStatusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
-        // echo "integrationTestStatusCode $integrationTestStatusCode"
+        unitTestStatusCode = sh script:'./jenkins-docker/Test/api-unit-test/api-unit-test.sh', returnStatus: true
+        echo "unitTestStatusCode: $unitTestStatusCode"
+        integrationTestStatusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
+        echo "integrationTestStatusCode $integrationTestStatusCode"
         sh './jenkins-docker/Test/run-test.sh'
       }
     }
@@ -39,12 +39,14 @@ node {
       // to: 'mdang2023@gmail.com'
   }
   finally {
-    if (currentBuild.result == 'FAILURE') {
-      echo 'BUILD FAILED'
+    // if (currentBuild.result == 'FAILURE') {
+    if (unitTestStatusCode == 1 || integrationTestStatusCode == 1)
+      echo 'TEST FAILED'
     }
     
-    if (currentBuild.result == 'SUCCESS') {
-      echo 'BUILD SUCEEDED'
+    // if (currentBuild.result == 'SUCCESS') {
+    if (unitTestStatusCode == 0 || integrationTestStatusCode == 0) {
+      echo 'TEST SUCEEDED'
       // withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
       //   remote.host = "52.8.24.164"
       //   // remote.host = IP_ADDRESS
