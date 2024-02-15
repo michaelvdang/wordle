@@ -18,6 +18,7 @@ echo '' >> /data/orc-output.txt
 # 6. Restore to previous game (Restore game)
 # 6. Finish this game by adding 5 more guesses (Add guess)
 
+rm -f /data/curl_results.txt /data/curl-results.txt
 # USERNAME=`asdf`
 if [ -e random.sh ]
 then 
