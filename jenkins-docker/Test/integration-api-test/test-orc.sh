@@ -2,6 +2,7 @@
 echo UTC date and time: `date +%m-%d\ %T` > /data/output.txt
 echo Testing orc API >> /data/output.txt
 curl "orc:9400" >> /data/output.txt
+echo '' >> /data/output.txt
 ## scenario 1: 
 # 1. Generate random username and Create new game with username (Create new game)
 # 2. Add 1 guess (Add guess)
@@ -13,7 +14,7 @@ curl "orc:9400" >> /data/output.txt
 
 USERNAME=`bash random-string.sh`
 # USERNAME='ucohen'
-echo username is: $USERNAME
+echo username is: $USERNAME >> /data/output.txt
 echo start first new game URL: "orc:9400/game/new?username=${USERNAME}" >> /data/output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" > /data/curl_results.txt
 GUID=`cat /data/curl_results.txt | jq '.guid' | tr -d '"'`
