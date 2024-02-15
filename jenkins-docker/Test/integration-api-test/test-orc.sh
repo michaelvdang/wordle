@@ -29,12 +29,12 @@ fi
 # USERNAME='ucohen'
 echo username is: $USERNAME >> /data/orc-output.txt
 echo start first new game URL: "orc:9400/game/new?username=${USERNAME}" >> /data/orc-output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" > /data/curl_results.txt
-GUID=`cat /data/curl_results.txt | jq '.guid' | tr -d '"'`
+curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" > /data/orc-curl-results.txt
+GUID=`cat /data/orc-curl-results.txt | jq '.guid' | tr -d '"'`
 echo guid is: $GUID >> /data/orc-output.txt
-GAME_ID1=`cat /data/curl_results.txt | jq '.game_id'`
+GAME_ID1=`cat /data/orc-curl-results.txt | jq '.game_id'`
 echo game_id1 is $GAME_ID1 >> /data/orc-output.txt
-USER_ID=`cat /data/curl_results.txt | jq '.user_id'`
+USER_ID=`cat /data/orc-curl-results.txt | jq '.user_id'`
 echo user_id is $USER_ID >> /data/orc-output.txt
 
 GUESS=house
@@ -43,8 +43,8 @@ echo the Add Guess URL will be: "orc:9400/game/${GAME_ID1}?username=${USERNAME}&
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID1}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/orc-output.txt
 echo '' >> /data/orc-output.txt
 echo Start second new game URL: "orc:9400/game/new?username=${USERNAME}" >> /data/orc-output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" > /data/curl_results.txt
-GAME_ID2=`cat /data/curl_results.txt | jq '.game_id'`
+curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" > /data/orc-curl-results.txt
+GAME_ID2=`cat /data/orc-curl-results.txt | jq '.game_id'`
 echo game_id2 is $GAME_ID2 >> /data/orc-output.txt
 
 GUESS=homie

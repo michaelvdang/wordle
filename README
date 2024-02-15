@@ -24,6 +24,7 @@ game1.db:
             wins(user_id, count(won))
 
 Issues faced while developing app:
+- Debugging: will see error code that is 500 INTERNAL SERVER ERROR and nothing else, the error is somewhere within the chain and we have to trace the code to find it
 - Understanding which process has permission and how to grant permission or elevate privilege, reason: couldn't delete some files or directory
 - Understanding that Jenkins doesn't have elevated privilege but the docker containers services do, and thus can create and manipulate files
 - Manage the credentials and keep them updated

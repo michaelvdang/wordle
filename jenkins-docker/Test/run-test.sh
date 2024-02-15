@@ -25,27 +25,46 @@ docker network inspect --format='{{range $container_id,$conf := .Containers}} {{
 
 echo 'Ping Redis...'
 docker exec redis redis-cli -a "$REDIS_SECRET" ping
+docker exec redis redis-cli -a "$REDIS_SECRET" 'keys *'
+echo ''
+echo 'Ping Redis with wrong password'
+docker exec redis redis-cli -a "hello" ping
+echo ''
+echo 'Ping Redis with no password'
+docker exec redis redis-cli ping
 
-echo UTC date and time: `date +%m-%d\ %T` > after-test-docker-logs.txt
-echo After-test logs from redis: >> after-test-docker-logs.txt
-docker logs redis >> after-test-docker-logs.txt
-echo After-test logs from stats: >> after-test-docker-logs.txt
-docker logs stats >> after-test-docker-logs.txt
-echo After-test logs from check: >> after-test-docker-logs.txt
-docker logs check >> after-test-docker-logs.txt
-echo After-test logs from validation: >> after-test-docker-logs.txt
-docker logs validation >> after-test-docker-logs.txt
-echo After-test logs from play: >> after-test-docker-logs.txt
-docker logs play >> after-test-docker-logs.txt
+echo UTC date and time: `date +%m-%d\ %T` > logs/after-test-docker-logs.txt
+# Redis logs
+echo After-test logs from redis: >> logs/after-test-docker-logs.txt
+docker logs redis >> logs/after-test-docker-logs.txt
+echo '' >> logs/after-test-docker-logs.txt
+# Stats logs
+echo After-test logs from stats: >> logs/after-test-docker-logs.txt
+docker logs stats >> logs/after-test-docker-logs.txt
+echo '' >> logs/after-test-docker-logs.txt
+# Check logs
+echo After-test logs from check: >> logs/after-test-docker-logs.txt
+docker logs check >> logs/after-test-docker-logs.txt
+echo '' >> logs/after-test-docker-logs.txt
+# Validation logs
+echo After-test logs from validation: >> logs/after-test-docker-logs.txt
+docker logs validation >> logs/after-test-docker-logs.txt
+echo '' >> logs/after-test-docker-logs.txt
+# Play logs
+echo After-test logs from play: >> logs/after-test-docker-logs.txt
+docker logs play >> logs/after-test-docker-logs.txt
+echo '' >> logs/after-test-docker-logs.txt
 docker logs play
-echo After-test logs from orc: >> after-test-docker-logs.txt
-docker logs orc >> after-test-docker-logs.txt
+# Orc logs
+echo After-test logs from orc: >> logs/after-test-docker-logs.txt
+docker logs orc >> logs/after-test-docker-logs.txt
+echo '' >> logs/after-test-docker-logs.txt
 docker logs orc
 
 
-echo After-test logs from wordle-api-tester >> after-test-docker-logs.txt
-docker logs wordle-api-tester >> after-test-docker-logs.txt
+echo After-test logs from wordle-api-tester >> logs/after-test-docker-logs.txt
+docker logs wordle-api-tester >> logs/after-test-docker-logs.txt
 docker logs wordle-api-tester
 
-# cat after-test-docker-logs.txt
-echo view logs in after-test-docker-logs.txt
+# cat logs/after-test-docker-logs.txt
+echo view logs in logs/after-test-docker-logs.txt
