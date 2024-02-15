@@ -50,17 +50,18 @@ GUESS=homie
 echo The guess word is $GUESS >> /data/orc-output.txt
 echo The Add Guess URL will be: "orc:9400/game/${GAME_ID2}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/orc-output.txt
 curl --no-progress-meter -X 'POST' "orc:9400/game/${GAME_ID2}?username=${USERNAME}&guid=${GUID}&user_id=${USER_ID}&guess=${GUESS}" >> /data/orc-output.txt
+
 # Restore
 echo '' >> /data/orc-output.txt
 
 echo Restoring to a game which does not exist game_id == 1 >> /data/orc-output.txt
 echo The Restore Game URL will be: "orc:9400/game/restore?username=${USERNAME}&game_id=1" >> /data/orc-output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/restore?username=${USERNAME}&game_id=1" >> /data/orc-output.txt
+curl --no-progress-meter "orc:9400/game/restore?username=${USERNAME}&game_id=1" >> /data/orc-output.txt
 echo '' >> /data/orc-output.txt
 
 echo Restoring to the original game: >> /data/orc-output.txt
 echo The Restore Game URL will be: "orc:9400/game/restore?username=${USERNAME}&game_id=$GAME_ID1" >> /data/orc-output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/restore?username=${USERNAME}&game_id=$GAME_ID1" >> /data/orc-output.txt
+curl --no-progress-meter "orc:9400/game/restore?username=${USERNAME}&game_id=$GAME_ID1" >> /data/orc-output.txt
 echo '' >> /data/orc-output.txt
 
 echo Finish the original game: >> /data/orc-output.txt
