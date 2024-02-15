@@ -2,7 +2,7 @@
 # create, update and retrieve games from users
 
 # from logging.handlers import WatchedFileHandler
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, status
 import random
 import redis
 import os
@@ -23,16 +23,21 @@ def get_redis():
 
 app = FastAPI()
 
-@app.get('/')
-def get_test(r: redis.Redis = Depends(get_redis)):
+@app.get('/', status_code=status.HTTP_200_OK)
+def hello(r: redis.Redis = Depends(get_redis)):
   return {'message': 'Play.py',
           # 'VITE_SERVER_IP': VITE_SERVER_IP,
           'VITE_SECRET': VITE_SECRET,
           }
 
 # create a new game object with 6 remaining guesses in Redis
-@app.post('/play')
+@app.post('/play', status_code=status.HTTP_201_CREATED)
 def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
+  '''
+  Create a new key in Redis that is of the form: <guid>:<game_id>
+  with value 'remain' '6'
+  Return the newly created object along with a 'status' key
+  '''
   key = f"{guid}:{game_id}"
   with r.pipeline() as pipe:
     try:
@@ -40,17 +45,18 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
       # TODO: raise proper error
       if r.exists(key):
         return {'status': 'error', 'message':"ERROR: this game already exists"}
-      r.hset(key, mapping={
+      game = {
         'remain': 6,
         # 'present_letters': '',
         # 'absent_letters': '',
         # 'game_progress': '', # *ng** for n and g in correct position
         # 'completed': int(False),
         # 'won': int(False),
-      })
+      }
+      r.hset(key, mapping=game)
       r.expire(key, 60*60*24) # expire in 24 hours
       pipe.unwatch()
-      return {**(r.hgetall(key)), 'status': 'success'}
+      return {**(game), 'status': 'success'}
     except redis.WatchError:
       return {'status': 'error', 'message': "RedisWatchError"}
   

@@ -5,7 +5,6 @@ import contextlib
 from fastapi import FastAPI, Body, Depends
 from pydantic import BaseModel#, BaseSettings
 from pydantic_settings import BaseSettings
-# from models import Game
 
 class Game(BaseModel):
     game_id: int
@@ -13,11 +12,7 @@ class Game(BaseModel):
     guess: str
 
 class Settings(BaseSettings):
-    # answers_database: str = '/wordle/var/Answers.db'  # for container
-    answers_database: str = './var/Answers.db'    # for non-container
-
-    # class Config:
-    #     env_file = ".envWordCheck"
+    answers_database: str = './var/Answers.db'
 
 
 def get_db():
