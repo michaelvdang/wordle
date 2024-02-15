@@ -40,12 +40,13 @@ node {
   }
   finally {
     // if (currentBuild.result == 'FAILURE') {
-    if (unitTestStatusCode == 1 || integrationTestStatusCode == 1) {
-      echo 'TEST FAILED'
+    if (unitTestStatusCode == 1) {
+      echo 'UNIT TEST FAILED'
     }
-    
-    // if (currentBuild.result == 'SUCCESS') {
-    if (unitTestStatusCode == 0 || integrationTestStatusCode == 0) {
+    else if (integrationTestStatusCode == 1) {
+      echo 'INTEGRATION TEST FAILED'
+    }
+    else {
       echo 'TEST SUCEEDED'
       // withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
       //   remote.host = "52.8.24.164"
@@ -62,5 +63,6 @@ node {
     }
     // ALWAYS
     sh './jenkins-docker/Post/post.sh'
+    archiveArtifacts: 'logs/after-test-docker-logs.txt'
   }
 }
