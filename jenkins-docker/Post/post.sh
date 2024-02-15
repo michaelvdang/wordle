@@ -9,22 +9,22 @@ docker image prune -f
 echo Stopping the following containers: 
 docker stop redis
 docker stop stats
-docker stop wordcheck
-docker stop wordvalidation
+docker stop check
+docker stop validation
 docker stop play
 docker stop orc
 echo Removing containers:
 docker rm -f redis
 docker rm -f stats
-docker rm -f wordcheck
-docker rm -f wordvalidation
+docker rm -f check
+docker rm -f validation
 docker rm -f play
 docker rm -f orc
 echo Removing images
 docker rmi -f redis-image
 docker rmi -f stats-image
-docker rmi -f wordcheck-image
-docker rmi -f wordvalidation-image
+docker rmi -f check-image
+docker rmi -f validation-image
 docker rmi -f play-image
 docker rmi -f orc-image
 
