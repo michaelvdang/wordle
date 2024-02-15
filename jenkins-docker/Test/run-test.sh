@@ -23,7 +23,7 @@ echo 'Ping Redis...'
 docker exec redis redis-cli -a "$REDIS_SECRET" ping
 
 
-echo UTC date and time: `date +%m-%d\ %T` > after-test-logs.txt
+echo UTC date and time: `date +%m-%d\ %T` > after-test-docker-logs.txt
 echo After-test logs from redis: >> after-test-logs.txt
 docker logs redis >> after-test-logs.txt
 echo After-test logs from stats: >> after-test-logs.txt
