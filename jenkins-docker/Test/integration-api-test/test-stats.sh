@@ -23,6 +23,7 @@ curl stats:9000/stats/top-winners >> /data/stats-output.txt
 # 7. Get user stats (testing /stats/games/store-result)
 
 USERNAME=`bash random-string.sh`
+echo '' >> /data/stats-output.txt
 echo New username to create: $USERNAME >> /data/stats-output.txt
 echo 'Create User (/stats/users/new)' >> /data/stats-output.txt
 curl -X POST "stats:9000/stats/users/new?username=${USERNAME}" >> /data/stats-output.txt

@@ -15,7 +15,8 @@ echo '' >> /data/orc-output.txt
 # 6. Restore to previous game (Restore game)
 # 6. Finish this game by adding 5 more guesses (Add guess)
 
-USERNAME=`asdf`
+# USERNAME=`asdf`
+USERNAME=`bash random-string.sh`
 # USERNAME='ucohen'
 echo username is: $USERNAME >> /data/orc-output.txt
 echo start first new game URL: "orc:9400/game/new?username=${USERNAME}" >> /data/orc-output.txt
