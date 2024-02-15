@@ -3,10 +3,10 @@ echo ===================Testing the api===================
 # TopTen.py must run through a python container
 docker exec orc python3 /wordle/bin/TopTen.py
 
+# API unit testing
+docker exec orc pytest -vv
 
-
-
-
+# API integration testing
 echo 'Buidling wordle-api-tester...'
 docker build    -t wordle-api-tester-image ./jenkins-docker/Test/api-integration-test/
 docker run -d --volume ./logs/:/data --name wordle-api-tester --network wordle-network wordle-api-tester-image

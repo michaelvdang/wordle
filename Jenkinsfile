@@ -21,7 +21,8 @@ node {
     }
     withCredentials([string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Test") {
-        sh './jenkins-docker/Test/run-test.sh'
+        statusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
+        echo "$statusCode"
       }
     }
     

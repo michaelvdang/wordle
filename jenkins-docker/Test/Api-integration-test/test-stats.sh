@@ -1,4 +1,4 @@
-## to be run inside a Docker container
+## to be run inside a Docker container with curl and jq
 echo ''
 echo UTC date and time: `date +%m-%d\ %T` > /data/stats-output.txt
 echo Testing stats API >> /data/stats-output.txt
