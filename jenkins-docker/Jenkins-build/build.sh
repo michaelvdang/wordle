@@ -19,12 +19,12 @@ docker build    -t stats-image ./app/services/Stats
 docker run -d --volume ./.env:/wordle/.env --volume wordle-db:/wordle/var --name stats -p 9000:9000 --network wordle-network stats-image
 
 echo 'Build and run WordCheck container...'
-docker build    -t wordcheck-image ./app/services/WordCheck
-docker run -d --volume wordle-db:/wordle/var --name wordcheck -p 0.0.0.0:9100:9100 -h localhost --network wordle-network  wordcheck-image
+docker build    -t check-image ./app/services/WordCheck
+docker run -d --volume wordle-db:/wordle/var --name check -p 0.0.0.0:9100:9100 -h localhost --network wordle-network  check-image
 
 echo 'Build and run WordValidation container...'
-docker build    -t wordvalidation-image ./app/services/WordValidation
-docker run -d --volume wordle-db:/wordle/var --name wordvalidation -p 0.0.0.0:9200:9200 -h localhost --network wordle-network wordvalidation-image
+docker build    -t validation-image ./app/services/WordValidation
+docker run -d --volume wordle-db:/wordle/var --name validation -p 0.0.0.0:9200:9200 -h localhost --network wordle-network validation-image
 
 echo 'Build and run play container...'
 docker build    -t play-image ./app/services/Play
