@@ -1,14 +1,18 @@
 ## to be run on a Linux Jenkins agent with docker installed
 echo ===================Testing the api===================
 # TopTen.py must run through a python container
+echo Prepare Redis leaderboard:
 docker exec orc python3 /wordle/bin/TopTen.py
 
 # API unit testing
-pytest -vv
+python -m pytest -vv
 # docker exec orc pytest -vv
 
 # API integration testing
 echo 'Buidling wordle-api-tester...'
+ls -al ./jenkins-docker
+ls -al ./jenkins-docker/Test
+ls -al ./jenkins-docker/Test/api-integration-test/
 docker build    -t wordle-api-tester-image ./jenkins-docker/Test/api-integration-test/
 docker run -d --volume ./logs/:/data --name wordle-api-tester --network wordle-network wordle-api-tester-image
 
