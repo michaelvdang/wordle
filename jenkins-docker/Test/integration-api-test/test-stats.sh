@@ -32,6 +32,7 @@ echo '' >> /data/stats-output.txt
 echo Get user id - URL: "stats:9000/stats/id/${USERNAME}" >> /data/stats-output.txt
 curl "stats:9000/stats/id/${USERNAME}" > /data/stats-curl-results.txt
 USER_ID=`cat /data/stats-curl-results.txt | jq '.user_id' | tr -d '"' `
+echo Retrieved USER_ID: $USER_ID >> /data/stats-output.txt
 cat /data/stats-curl-results.txt >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
