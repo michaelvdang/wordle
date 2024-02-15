@@ -25,7 +25,7 @@ node {
         echo "unitTestStatusCode: $unitTestStatusCode"
         integrationTestStatusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
         echo "integrationTestStatusCode $integrationTestStatusCode"
-        // sh './jenkins-docker/Test/run-test.sh'
+        sh './jenkins-docker/Test/run-test.sh'
 
         sh './jenkins-docker/Test/create-logs.sh'
       }
