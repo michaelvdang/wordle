@@ -45,18 +45,26 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
       # TODO: raise proper error
       if r.exists(key):
         return {'status': 'error', 'message':"ERROR: this game already exists"}
-      game = {
+      r.hset(key, mapping={
         'remain': 6,
         # 'present_letters': '',
         # 'absent_letters': '',
         # 'game_progress': '', # *ng** for n and g in correct position
         # 'completed': int(False),
         # 'won': int(False),
-      }
-      r.hset(key, mapping=game)
+      })
+      # game = {
+      #   'remain': 6,
+      #   # 'present_letters': '',
+      #   # 'absent_letters': '',
+      #   # 'game_progress': '', # *ng** for n and g in correct position
+      #   # 'completed': int(False),
+      #   # 'won': int(False),
+      # }
+      # r.hset(key, mapping=game)
       r.expire(key, 60*60*24) # expire in 24 hours
       pipe.unwatch()
-      return {**(game), 'status': 'success'}
+      return {**(r.hgetall(key)), 'status': 'success'}
     except redis.WatchError:
       return {'status': 'error', 'message': "RedisWatchError"}
   
