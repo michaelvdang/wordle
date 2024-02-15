@@ -1,5 +1,5 @@
-FROM nginx:alpine
 # FROM dwdraju/alpine-curl-jq
+FROM nginx
 
 WORKDIR /
 
