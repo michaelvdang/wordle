@@ -22,24 +22,24 @@ docker network inspect --format='{{range $container_id,$conf := .Containers}} {{
 echo 'Ping Redis...'
 docker exec redis redis-cli -a "$REDIS_SECRET" ping
 
-
+rm -f after-test-logs.txt
 echo UTC date and time: `date +%m-%d\ %T` > after-test-docker-logs.txt
-echo After-test logs from redis: >> after-test-logs.txt
-docker logs redis >> after-test-logs.txt
-echo After-test logs from stats: >> after-test-logs.txt
-docker logs stats >> after-test-logs.txt
-echo After-test logs from wordcheck: >> after-test-logs.txt
-docker logs wordcheck >> after-test-logs.txt
-echo After-test logs from wordvalidation: >> after-test-logs.txt
-docker logs wordvalidation >> after-test-logs.txt
-echo After-test logs from play: >> after-test-logs.txt
-docker logs play >> after-test-logs.txt
-echo After-test logs from orc: >> after-test-logs.txt
-docker logs orc >> after-test-logs.txt
+echo After-test logs from redis: >> after-test-docker-logs.txt
+docker logs redis >> after-test-docker-logs.txt
+echo After-test logs from stats: >> after-test-docker-logs.txt
+docker logs stats >> after-test-docker-logs.txt
+echo After-test logs from wordcheck: >> after-test-docker-logs.txt
+docker logs wordcheck >> after-test-docker-logs.txt
+echo After-test logs from wordvalidation: >> after-test-docker-logs.txt
+docker logs wordvalidation >> after-test-docker-logs.txt
+echo After-test logs from play: >> after-test-docker-logs.txt
+docker logs play >> after-test-docker-logs.txt
+echo After-test logs from orc: >> after-test-docker-logs.txt
+docker logs orc >> after-test-docker-logs.txt
 
 
-echo After-test logs from wordle-api-tester >> after-test-logs.txt
-docker logs wordle-api-tester >> after-test-logs.txt
+echo After-test logs from wordle-api-tester >> after-test-docker-logs.txt
+docker logs wordle-api-tester >> after-test-docker-logs.txt
 
-# cat after-test-logs.txt
-echo view logs in after-test-logs.txt
+# cat after-test-docker-logs.txt
+echo view logs in after-test-docker-logs.txt

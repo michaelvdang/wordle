@@ -2,6 +2,9 @@
 echo UTC date and time: `date +%m-%d\ %T` > /data/orc-output.txt
 echo Testing orc API >> /data/orc-output.txt
 curl "orc:9400" >> /data/orc-output.txt
+curl "check:9100" >> /data/orc-output.txt
+curl "check:9100/answers/count" >> /data/orc-output.txt
+curl "validation:9200" >> /data/orc-output.txt
 echo '' >> /data/orc-output.txt
 ## scenario 1: 
 # 1. Generate random username and Create new game with username (Create new game)
