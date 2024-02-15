@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 array=()
 for i in {a..z} {A..Z}; 
    do
