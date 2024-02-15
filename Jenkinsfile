@@ -24,18 +24,7 @@ node {
         sh './jenkins-docker/Test/run-test.sh'
       }
     }
-    withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
-      remote.host = "52.8.24.164"
-      // remote.host = IP_ADDRESS
-      remote.user = username
-      remote.identityFile = identity
-      stage("Deploy") {
-        sshScript remote: remote, script: './jenkins-docker/Deploy/clone-checkout.sh'
-        sshPut remote: remote, from: './.env', into: '/home/ubuntu/wordle/', override: true
-        sshPut remote: remote, from: './app/services/Redis/redis.conf', into: '/home/ubuntu/wordle/app/services/Redis/', override: true
-        sshCommand remote: remote, command: "cd /home/ubuntu/wordle && chmod +x ./bin/server-init.sh && sudo ./bin/server-init.sh"
-      }
-    }
+    
   }
   catch (err) {
     currentBuild.result = "FAILURE"
@@ -52,6 +41,18 @@ node {
     
     if (currentBuild.result == 'SUCCESS') {
       echo 'BUILD SUCEEDED'
+      withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
+        remote.host = "52.8.24.164"
+        // remote.host = IP_ADDRESS
+        remote.user = username
+        remote.identityFile = identity
+        stage("Deploy") {
+          sshScript remote: remote, script: './jenkins-docker/Deploy/clone-checkout.sh'
+          sshPut remote: remote, from: './.env', into: '/home/ubuntu/wordle/', override: true
+          sshPut remote: remote, from: './app/services/Redis/redis.conf', into: '/home/ubuntu/wordle/app/services/Redis/', override: true
+          sshCommand remote: remote, command: "cd /home/ubuntu/wordle && chmod +x ./bin/server-init.sh && sudo ./bin/server-init.sh"
+        }
+      }
     }
     // ALWAYS
     sh './jenkins-docker/Post/post.sh'
