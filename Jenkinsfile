@@ -7,7 +7,7 @@ node {
   currentBuild.result = "SUCCESS"
   try {
     stage("Checkout") {
-      // cleanWs()
+      cleanWs()
       checkout scm
     }
     withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'redis-conf-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
@@ -22,9 +22,9 @@ node {
     withCredentials([string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Test") {
         unitTestStatusCode = sh script:'./jenkins-docker/Test/api-unit-test/api-unit-test.sh', returnStatus: true
-        echo "$unitTestStatusCode"
-        statusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
-        echo "$statusCode"
+        echo "unitTestStatusCode: $unitTestStatusCode"
+        integrationTestStatusCode = sh script:'./jenkins-docker/Test/run-test.sh', returnStatus:true
+        echo "integrationTestStatusCode $integrationTestStatusCode"
       }
     }
     

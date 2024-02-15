@@ -4,7 +4,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
 VITE_SECRET = os.environ.get('VITE_SECRET')
 
 c = TestClient(app)

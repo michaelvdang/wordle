@@ -11,9 +11,17 @@ RUN python3 -m pip install -r /wordle/orc-requirements.txt
 COPY . /wordle/
 
 ## include these lines if the service needs these databases (stats, check, validation)
+## but these lines create different databases for each container (not shared)
 RUN mkdir -p /wordle/var
 RUN chmod 544 /wordle/bin/docker-init-db.sh
 RUN chmod 544 /wordle/bin/TopTen.py
 RUN sh /wordle/bin/docker-init-db.sh
+# RUN python3 --version
 
+# multiple calls to uvicorn doesn't work
+## build each image separately, uncomment each one to build, then run docker compose
+# CMD ["uvicorn", "UserStatsRedis:app", "--host", "0.0.0.0", "--port", "9000"]
+# CMD ["uvicorn", "WordCheck:app", "--host", "0.0.0.0", "--port", "9100"]
+# CMD ["uvicorn", "WordValidation:app", "--host", "0.0.0.0", "--port", "9200"]
+# CMD ["uvicorn", "Play:app", "--host", "0.0.0.0", "--port", "9300"]
 CMD ["uvicorn", "Orchestrator:app", "--host", "0.0.0.0", "--port", "9400"]
