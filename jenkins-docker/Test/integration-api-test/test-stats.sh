@@ -30,21 +30,22 @@ curl -X POST "stats:9000/stats/users/new?username=${USERNAME}" >> /data/stats-ou
 echo '' >> /data/stats-output.txt
 
 echo Get user id - URL: "stats:9000/stats/id/${USERNAME}" >> /data/stats-output.txt
-curl "stats:9000/stats/id/${USERNAME}" > /data/curl-results.txt
-USER_ID=`cat /data/curl-results.txt | jq '.user_id' | tr -d '"' `
-cat /data/curl-results.txt >> /data/stats-output.txt
+curl "stats:9000/stats/id/${USERNAME}" > /data/stats-curl-results.txt
+USER_ID=`cat /data/stats-curl-results.txt | jq '.user_id' | tr -d '"' `
+cat /data/stats-curl-results.txt >> /data/stats-output.txt
 echo '' >> /data/stats-output.txt
 
 echo Get user stats - URL: "stats:9000/stats/username/${USER_ID}" >> /data/stats-output.txt
 curl "stats:9000/stats/username/${USER_ID}" >> /data/stats-output.txt
+echo '' >> /data/stats-output.txt
 
 echo Create new game - URL: "orc:9400/game/new?username=${USERNAME}" >> /data/stats-output.txt
-curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" > /data/curl_results.txt
-GUID=`cat /data/curl_results.txt | jq '.guid' | tr -d '"'`
+curl --no-progress-meter -X 'POST' "orc:9400/game/new?username=${USERNAME}" > /data/orc-curl-results.txt
+GUID=`cat /data/orc-curl-results.txt | jq '.guid' | tr -d '"'`
 echo guid is: $GUID >> /data/stats-output.txt
-GAME_ID1=`cat /data/curl_results.txt | jq '.game_id'`
+GAME_ID1=`cat /data/orc-curl-results.txt | jq '.game_id'`
 echo game_id1 is $GAME_ID1 >> /data/stats-output.txt
-USER_ID=`cat /data/curl_results.txt | jq '.user_id'`
+USER_ID=`cat /data/orc-curl-results.txt | jq '.user_id'`
 echo user_id is $USER_ID >> /data/stats-output.txt 
 echo '' >> /data/stats-output.txt
 
