@@ -39,7 +39,7 @@ if (os.name == 'posix'):
 else:
   path = Path('./var/')   #('Running in Windows and Docker on Windows')
 
-print('Path: ', path)
+# print('Path: ', path)
 GAME1_DB = os.path.join(path, 'game1.db')
 GAME2_DB = os.path.join(path, 'game2.db')
 GAME3_DB = os.path.join(path, 'game3.db')

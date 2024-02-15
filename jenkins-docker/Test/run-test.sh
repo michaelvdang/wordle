@@ -4,7 +4,8 @@ echo ===================Testing the api===================
 docker exec orc python3 /wordle/bin/TopTen.py
 
 # API unit testing
-docker exec orc pytest -vv
+pytest -vv
+# docker exec orc pytest -vv
 
 # API integration testing
 echo 'Buidling wordle-api-tester...'
