@@ -40,7 +40,7 @@ node {
   }
   finally {
     // if (currentBuild.result == 'FAILURE') {
-    if (unitTestStatusCode == 1 || integrationTestStatusCode == 1)
+    if (unitTestStatusCode == 1 || integrationTestStatusCode == 1) {
       echo 'TEST FAILED'
     }
     

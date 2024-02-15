@@ -145,7 +145,7 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
                             endpoints[APP_HOST]['check'] + '/answers/check', 
                             data=json.dumps(game))
             word_check = _word_check_future.json()
-            print(word_check)
+            # print(word_check)
             return word_check
 
     async def record_and_check_guess():
@@ -155,7 +155,7 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
 
     # WIN: guess is correct, they are all 2's? 
     # 1. record the win
-    print('word_check: ', word_check)
+    print('word_check results in Orchestrator: ', word_check)
     if word_check['results'].count(2) == 5:
         game_result = {'guesses': 6 - int(curr_game_result['remain']), 'won' : True, 'completed' : True}
         print('Orchestrator.py game_result: ', game_result)
