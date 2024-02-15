@@ -20,7 +20,7 @@ echo '' >> /data/orc-output.txt
 
 rm -f /data/curl_results.txt /data/curl-results.txt
 # USERNAME=`asdf`
-if [ -e random.sh ]
+if [ -e random-string.sh ]
 then 
   USERNAME=`bash random-string.sh`
 else

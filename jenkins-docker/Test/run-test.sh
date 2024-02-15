@@ -17,7 +17,7 @@ ls -al
 ls -al ./jenkins-docker
 ls -al ./jenkins-docker/Test
 ls -al ./jenkins-docker/Test/integration-api-test/
-docker build    -t wordle-api-tester-image ./jenkins-docker/Test/integration-api-test/
+docker build   --progress plain -t wordle-api-tester-image ./jenkins-docker/Test/integration-api-test/
 docker run -d --volume ./logs/:/data --name wordle-api-tester --network wordle-network wordle-api-tester-image
 
 echo 'Check if container is on the network...'
