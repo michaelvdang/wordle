@@ -23,23 +23,23 @@ echo 'Ping Redis...'
 docker exec redis redis-cli -a "$REDIS_SECRET" ping
 
 
-echo UTC date and time: `date +%m-%d\ %T` > logs/after-test-logs.txt
-echo After-test logs from redis: >> logs/after-test-logs.txt
-docker logs redis >> logs/after-test-logs.txt
-echo After-test logs from stats: >> logs/after-test-logs.txt
-docker logs stats >> logs/after-test-logs.txt
-echo After-test logs from wordcheck: >> logs/after-test-logs.txt
-docker logs wordcheck >> logs/after-test-logs.txt
-echo After-test logs from wordvalidation: >> logs/after-test-logs.txt
-docker logs wordvalidation >> logs/after-test-logs.txt
-echo After-test logs from play: >> logs/after-test-logs.txt
-docker logs play >> logs/after-test-logs.txt
-echo After-test logs from orc: >> logs/after-test-logs.txt
-docker logs orc >> logs/after-test-logs.txt
+echo UTC date and time: `date +%m-%d\ %T` > after-test-logs.txt
+echo After-test logs from redis: >> after-test-logs.txt
+docker logs redis >> after-test-logs.txt
+echo After-test logs from stats: >> after-test-logs.txt
+docker logs stats >> after-test-logs.txt
+echo After-test logs from wordcheck: >> after-test-logs.txt
+docker logs wordcheck >> after-test-logs.txt
+echo After-test logs from wordvalidation: >> after-test-logs.txt
+docker logs wordvalidation >> after-test-logs.txt
+echo After-test logs from play: >> after-test-logs.txt
+docker logs play >> after-test-logs.txt
+echo After-test logs from orc: >> after-test-logs.txt
+docker logs orc >> after-test-logs.txt
 
 
-echo After-test logs from wordle-api-tester >> logs/after-test-logs.txt
-docker logs wordle-api-tester >> logs/after-test-logs.txt
+echo After-test logs from wordle-api-tester >> after-test-logs.txt
+docker logs wordle-api-tester >> after-test-logs.txt
 
-# cat logs/after-test-logs.txt
-echo view logs in logs/after-test-logs.txt
+# cat after-test-logs.txt
+echo view logs in after-test-logs.txt
