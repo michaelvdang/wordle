@@ -64,7 +64,7 @@ def hello():
             'VITE_SECRET': VITE_SECRET}
 
 @app.post('/game/new', status_code=201)
-def start_new_game(username: str):# = Body()):
+def start_new_game(*, username: str = None):
     username = username.lower()
     # find user_id
     res = httpx.get(endpoints[APP_HOST]['stats'] + '/stats/id/' + username)
@@ -91,7 +91,12 @@ def start_new_game(username: str):# = Body()):
 
 
 @app.post('/game/{game_id}', status_code=201)
-def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: str):
+def add_guess(*, game_id: int = None,
+        username: str = None,
+        guid: str = None,
+        user_id: int = None,
+        guess: str = None
+    ):
     username = username.lower()
     # check word is valid and has guesses_remaining
 
@@ -194,7 +199,7 @@ def add_guess(*, game_id: int, username: str, guid: str, user_id: int, guess: st
         return {'guess_results': word_check['results'], **(curr_game_result), 'won': False, 'completed' : False}
 
 @app.get('/game/restore')
-def restore_game(username: str, game_id: int):
+def restore_game(*, username: str = None, game_id: int = None):
     '''
     return {'result': 0} if there is no data in Redis
     return {'result': 1, **user, **game_data} if there is data in Redis

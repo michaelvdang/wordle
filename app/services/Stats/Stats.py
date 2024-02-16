@@ -137,7 +137,6 @@ def store_game_result(
 @app.get('/stats/top-winners', status_code=200)
 def get_top_winners(r: RedisDep):
     top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
-    
     return [(user_id, int(score)) for (user_id, score) in top_wins]
 
 # return top 10 streaks
