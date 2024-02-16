@@ -69,6 +69,11 @@ def get_db3():
     with contextlib.closing(sqlite3.connect(settings.game3db)) as g3:
         yield g3
 
+RedisDep = Annotated[redis.Redis, Depends(get_redis)]
+UsersDatabaseDep = Annotated[sqlite3.Connection, Depends(get_udb)]
+Game1DatabaseDep = Annotated[sqlite3.Connection, Depends(get_db1)]
+Game2DatabaseDep = Annotated[sqlite3.Connection, Depends(get_db2)]
+Game3DatabaseDep = Annotated[sqlite3.Connection, Depends(get_db3)]
 
 settings = Settings()
 app = FastAPI()
@@ -103,10 +108,10 @@ def store_game_result(
         user_id: int, 
         game_id: int, 
         result: Result, 
-        g1: sqlite3.Connection = Depends(get_db1), 
-        g2: sqlite3.Connection = Depends(get_db2), 
-        g3: sqlite3.Connection = Depends(get_db3),
-        r: redis.Redis = Depends(get_redis)):
+        g1: Game1DatabaseDep, 
+        g2: Game2DatabaseDep, 
+        g3: Game3DatabaseDep,
+        r: RedisDep):
     try:
         gamedb = (g1, g2, g3)
         guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
@@ -130,19 +135,19 @@ def store_game_result(
 
 # return top 10 winners
 @app.get('/stats/top-winners', status_code=200)
-def get_top_winners(r: redis.Redis = Depends(get_redis)):
+def get_top_winners(r: RedisDep):
     top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
     
     return [(user_id, int(score)) for (user_id, score) in top_wins]
 
 # return top 10 streaks
 @app.get('/stats/top-streaks', status_code=200)
-def get_top_streaks(r: redis.Redis = Depends(get_redis)):
+def get_top_streaks(r: RedisDep):
     top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)
     return [(user_id, int(score)) for (user_id, score) in top_streaks]
 
 @app.get('/stats/top-streaks-and-winners', status_code=200)
-def get_top_streaks_and_winners(r: redis.Redis = Depends(get_redis)):
+def get_top_streaks_and_winners(r: RedisDep):
     top_wins = r.zrevrange('top_wins', 0, 9, withscores=True)
     top_streaks = r.zrevrange('top_streaks', 0, 9, withscores=True)
     return {'top_wins': top_wins, 'top_streaks': top_streaks}
@@ -152,10 +157,10 @@ def get_top_streaks_and_winners(r: redis.Redis = Depends(get_redis)):
 def get_user_stats(
         user_id: int, 
         username: str,
-        udb: sqlite3.Connection = Depends(get_udb), 
-        g1: sqlite3.Connection = Depends(get_db1), 
-        g2: sqlite3.Connection = Depends(get_db2), 
-        g3: sqlite3.Connection = Depends(get_db3)):
+        udb: UsersDatabaseDep, 
+        g1: Game1DatabaseDep, 
+        g2: Game2DatabaseDep, 
+        g3: Game3DatabaseDep):
     username = username.lower()
     gamedb = (g1, g2, g3)
     guid = uuid.uuid3(uuid.NAMESPACE_DNS, str(user_id)) # NOTE: generating guid from user_id because game object pulled from stats.db don't have username in them, only user_id, and joining stats.db.games with users table would be too much of a hassle and I don't want to  redesign the DB 
@@ -235,7 +240,7 @@ def get_user_stats(
     return stats
 
 @app.get('/stats/username/{user_id}')
-def get_username(user_id: int, udb: sqlite3.Connection = Depends(get_udb)):
+def get_username(user_id: int, udb: UsersDatabaseDep):
     print('user_id: ', user_id)
     print('type: ', type(user_id))  
     row = udb.execute('SELECT * FROM users WHERE user_id=?', [user_id])
@@ -247,7 +252,7 @@ def get_username(user_id: int, udb: sqlite3.Connection = Depends(get_udb)):
 
 # return user info for a given username
 @app.get('/stats/id/{username}')
-def get_user_id(username: str, udb: sqlite3.Connection = Depends(get_udb)):
+def get_user_id(username: str, udb: UsersDatabaseDep):
     username = username.lower()
     print('username: ', username)
     print('type: ', type(username))
@@ -268,10 +273,10 @@ def get_user_id(username: str, udb: sqlite3.Connection = Depends(get_udb)):
 # create new user
 @app.post('/stats/users/new', status_code=201)
 def create_user(username: str, 
-        udb: sqlite3.Connection = Depends(get_udb),
-        g1: sqlite3.Connection = Depends(get_db1), 
-        g2: sqlite3.Connection = Depends(get_db2), 
-        g3: sqlite3.Connection = Depends(get_db3)):
+        udb: UsersDatabaseDep,
+        g1: Game1DatabaseDep, 
+        g2: Game2DatabaseDep, 
+        g3: Game3DatabaseDep):
     username = username.lower()
     try:
         # check that username is unique
