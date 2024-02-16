@@ -12,6 +12,7 @@ node {
     }
     withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'redis-conf-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Set up env") {
+        deployApp = false
         sh 'chmod u+x -R ./jenkins-docker' 
         sh './jenkins-docker/Pre-Build/setup-env.sh'
       }
@@ -46,16 +47,18 @@ node {
     }
     else {
       echo 'TEST SUCEEDED'
-      withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
-        remote.host = "52.8.24.164"
-        // remote.host = IP_ADDRESS
-        remote.user = username
-        remote.identityFile = identity
-        stage("Deploy") {
-          sshScript remote: remote, script: './jenkins-docker/Deploy/clone-checkout.sh'
-          sshPut remote: remote, from: './.env', into: '/home/ubuntu/wordle/', override: true
-          sshPut remote: remote, from: './app/services/Redis/redis.conf', into: '/home/ubuntu/wordle/app/services/Redis/', override: true
-          sshCommand remote: remote, command: "cd /home/ubuntu/wordle && chmod +x ./bin/server-init.sh && sudo ./bin/server-init.sh"
+      if (deployApp == true) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'AWS-EC2', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'username')]) {
+          remote.host = "52.8.24.164"
+          // remote.host = IP_ADDRESS
+          remote.user = username
+          remote.identityFile = identity
+          stage("Deploy") {
+            sshScript remote: remote, script: './jenkins-docker/Deploy/clone-checkout.sh'
+            sshPut remote: remote, from: './.env', into: '/home/ubuntu/wordle/', override: true
+            sshPut remote: remote, from: './app/services/Redis/redis.conf', into: '/home/ubuntu/wordle/app/services/Redis/', override: true
+            sshCommand remote: remote, command: "cd /home/ubuntu/wordle && chmod +x ./bin/server-init.sh && sudo ./bin/server-init.sh"
+          }
         }
       }
     }

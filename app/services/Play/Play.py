@@ -3,6 +3,7 @@
 
 # from logging.handlers import WatchedFileHandler
 from fastapi import FastAPI, Depends, status
+from typing import Annotated
 import random
 import redis
 import os
@@ -21,6 +22,8 @@ def get_redis():
     password=REDISCLI_AUTH_PASSWORD
   )
 
+RedisDep = Annotated[redis.Redis, Depends(get_redis)]
+
 app = FastAPI()
 
 @app.get('/', status_code=status.HTTP_200_OK)
@@ -33,7 +36,7 @@ def hello():
 
 # create a new game object with 6 remaining guesses in Redis
 @app.post('/play', status_code=status.HTTP_201_CREATED)
-def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
+def play_new_game(guid: str, game_id: int, r: RedisDep):
   '''
   Create a new key in Redis that is of the form: <guid>:<game_id>
   with value 'remain' '6'
@@ -75,7 +78,7 @@ def play_new_game(guid: str, game_id: int, r: redis.Redis = Depends(get_redis)):
 def update_game_with_guess(guid: str, 
                            game_id: int, 
                            guess: str, 
-                           r: redis.Redis = Depends(get_redis)):
+                           r: RedisDep):
   '''
   Add a guess to game stored on Redis with key <guid>:<game_id>
   The key for this guess is one plus the highest guess# stored in Redis
@@ -102,7 +105,7 @@ def update_game_with_guess(guid: str,
 @app.get('/play', status_code=status.HTTP_200_OK)
 def restore_game(guid: str, 
                  game_id: int, 
-                 r: redis.Redis = Depends(get_redis)):
+                 r: RedisDep):
   '''
   Return a game from Redis that matches the key <guid>:<game_id>
     or a JSON with status and message on failure or exception
