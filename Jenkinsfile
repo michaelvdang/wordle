@@ -7,7 +7,7 @@ node {
   currentBuild.result = "SUCCESS"
   try {
     stage("Checkout") {
-      cleanWs()
+      // cleanWs()
       checkout scm
     }
     withCredentials([file(credentialsId: 'wordle-env-file', variable: 'ENV_FILE_PATH'), file(credentialsId: 'redis-conf-file', variable: 'REDIS_CONF_FILE_PATH'), string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
@@ -18,9 +18,6 @@ node {
     }
     stage("Build") {
       sh './jenkins-docker/Jenkins-build/build.sh'
-      sh 'ls -al'
-      sh 'docker exec orc rm -rf logs'
-      sh 'ls -al'
     }
     withCredentials([string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Test") {
