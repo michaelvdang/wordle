@@ -18,6 +18,7 @@ node {
     }
     stage("Build") {
       sh './jenkins-docker/Jenkins-build/build.sh'
+      sh 'docker exec orc rm -r logs'
     }
     withCredentials([string(credentialsId: 'redis-secret', variable: 'REDIS_SECRET')]) {
       stage("Test") {

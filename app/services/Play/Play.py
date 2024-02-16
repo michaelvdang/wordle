@@ -25,10 +25,11 @@ app = FastAPI()
 
 @app.get('/', status_code=status.HTTP_200_OK)
 def hello():
-  return {'message': 'Play.py',
-          # 'VITE_SERVER_IP': VITE_SERVER_IP,
-          'VITE_SECRET': VITE_SECRET,
-          }
+  return {
+    'message': 'Play.py',
+    # 'VITE_SERVER_IP': VITE_SERVER_IP,
+    'VITE_SECRET': VITE_SECRET,
+  }
 
 # create a new game object with 6 remaining guesses in Redis
 @app.post('/play', status_code=status.HTTP_201_CREATED)
