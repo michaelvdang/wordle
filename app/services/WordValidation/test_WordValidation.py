@@ -7,7 +7,7 @@ c = TestClient(app)
 def test_hello():
   res = c.get('/')
   assert res.status_code == 200
-  assert res.json() == {'message': 'WordValidation.py'}
+  assert res.json() == {'message': 'WordValidation.py', 'deploy': 'no deploy'}
 
 def test_is_valid():
   word = 'grunt'
