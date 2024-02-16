@@ -1,7 +1,7 @@
 import logging
 import sqlite3
 import contextlib
-
+from typing import Annotated
 from fastapi import FastAPI, Body, Depends
 from pydantic import BaseModel#, BaseSettings
 from pydantic_settings import BaseSettings
@@ -32,7 +32,7 @@ def hello():
     return {'hello': 'WordCheck.py'}
 
 @app.post("/answers/check")
-def check_answer(game: Game, db: sqlite3.Connection = Depends(get_db)):
+def check_answer(game: Game, db: Annotated[sqlite3.Connection, Depends(get_db)]):
     '''
     Check a guess against the correct ANSWER for a give game_id
     class Game(BaseModel):
@@ -65,7 +65,7 @@ def check_answer(game: Game, db: sqlite3.Connection = Depends(get_db)):
     return {'results': results, 'present_letters': present_letters, 'absent_letters': absent_letters}
 
 @app.put("/answers/change")
-def change_answer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(get_db)):
+def change_answer(word_id: int, new_word: str, db: Annotated[sqlite3.Connection, Depends(get_db)]):
     '''
     Change the correct answer to new_word for a the given word_id
     Return a JSON with keys 'status' and 'message'
@@ -78,7 +78,7 @@ def change_answer(word_id: int, new_word: str, db: sqlite3.Connection = Depends(
     return {'status': 'success', 'message': f'new word for id {word_id} is {row[1]}'}
 
 @app.get("/answers/count")
-def get_answers_count(db: sqlite3.Connection = Depends(get_db)):
+def get_answers_count(db: Annotated[sqlite3.Connection, Depends(get_db)]):
     '''
     Gets the number of answers in the database
     Return a JSON object with key 'count' for number of answers in database

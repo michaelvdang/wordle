@@ -59,7 +59,7 @@ middleware = [
 app = FastAPI(middleware=middleware)
 
 @app.get('/')
-def test():
+def hello():
     return {'message' : 'Orchestrator.py',
             'VITE_SECRET': VITE_SECRET}
 

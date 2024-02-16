@@ -24,7 +24,7 @@ def get_redis():
 app = FastAPI()
 
 @app.get('/', status_code=status.HTTP_200_OK)
-def hello(r: redis.Redis = Depends(get_redis)):
+def hello():
   return {'message': 'Play.py',
           # 'VITE_SERVER_IP': VITE_SERVER_IP,
           'VITE_SECRET': VITE_SECRET,
