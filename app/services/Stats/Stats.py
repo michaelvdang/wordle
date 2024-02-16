@@ -8,6 +8,7 @@ import sqlite3
 from pydantic import BaseModel#, BaseSettings
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic_settings import BaseSettings
+from typing import Annotated
 import json
 import uuid
 import redis

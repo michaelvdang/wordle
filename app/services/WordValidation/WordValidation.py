@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, status
+from typing import Annotated
 import sqlite3
 import contextlib
 from pydantic_settings import BaseSettings
@@ -10,6 +11,8 @@ def get_word_list_db():
     with contextlib.closing(sqlite3.connect(settings.word_list_db_path)) as word_list_db:
         yield word_list_db
 
+WordListDatabaseDep = Annotated[sqlite3.Connection, Depends(get_word_list_db)]
+
 settings = Settings()
 app = FastAPI()
 
@@ -18,7 +21,7 @@ def hello():
     return {'message': 'WordValidation.py'}
 
 @app.get("/word/is-valid/{word}", status_code=status.HTTP_200_OK)
-def is_valid(word: str, db: sqlite3.Connection = Depends(get_word_list_db)):
+def is_valid(word: str, db: WordListDatabaseDep):
     '''
     Return true if word is in the ValidWords table, false otherwise
     '''
@@ -28,7 +31,7 @@ def is_valid(word: str, db: sqlite3.Connection = Depends(get_word_list_db)):
         return {'is_valid_word': False}
 
 @app.post("/word/{word}", status_code=status.HTTP_201_CREATED)
-def add_word(word: str, db: sqlite3.Connection = Depends(get_word_list_db)):
+def add_word(word: str, db: WordListDatabaseDep):
     '''
     Add new word to ValidWords table
     '''
@@ -39,7 +42,7 @@ def add_word(word: str, db: sqlite3.Connection = Depends(get_word_list_db)):
         return {"Word added" : word}
 
 @app.delete("/word/{word}", status_code=status.HTTP_200_OK)
-def delete_word(word: str, db: sqlite3.Connection = Depends(get_word_list_db)):
+def delete_word(word: str, db: WordListDatabaseDep):
     '''
     Remove word from ValidWords table
     '''

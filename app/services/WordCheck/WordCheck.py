@@ -19,7 +19,7 @@ def get_db():
     with contextlib.closing(sqlite3.connect(settings.answers_database)) as db:
         yield db
 
-SqlDep = Annotated[sqlite3.Connection, Depends(get_db)]
+AnswersDatabaseDep = Annotated[sqlite3.Connection, Depends(get_db)]
 
 def get_logger():
     return logging.getLogger(__name__)
@@ -33,7 +33,7 @@ def hello():
     return {'hello': 'WordCheck.py'}
 
 @app.post("/answers/check")
-def check_answer(game: Game, db: SqlDep):
+def check_answer(game: Game, db: AnswersDatabaseDep):
     '''
     Check a guess against the correct ANSWER for a give game_id
     class Game(BaseModel):
@@ -66,7 +66,7 @@ def check_answer(game: Game, db: SqlDep):
     return {'results': results, 'present_letters': present_letters, 'absent_letters': absent_letters}
 
 @app.put("/answers/change")
-def change_answer(word_id: int, new_word: str, db: SqlDep):
+def change_answer(word_id: int, new_word: str, db: AnswersDatabaseDep):
     '''
     Change the correct answer to new_word for a the given word_id
     Return a JSON with keys 'status' and 'message'
@@ -79,7 +79,7 @@ def change_answer(word_id: int, new_word: str, db: SqlDep):
     return {'status': 'success', 'message': f'new word for id {word_id} is {row[1]}'}
 
 @app.get("/answers/count")
-def get_answers_count(db: SqlDep):
+def get_answers_count(db: AnswersDatabaseDep):
     '''
     Gets the number of answers in the database
     Return a JSON object with key 'count' for number of answers in database
