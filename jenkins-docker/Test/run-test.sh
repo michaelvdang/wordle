@@ -11,6 +11,7 @@ echo ''
 # API integration testing
 echo 'Buidling wordle-api-tester...'
 mkdir -p logs
+chmod +w logs
 docker build   --progress=plain -t wordle-api-tester-image ./jenkins-docker/Test/integration-api-test/
 docker run -d --volume ./logs/:/data --name wordle-api-tester --network wordle-network wordle-api-tester-image
 
